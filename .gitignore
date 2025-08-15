@@ -1,3 +1,4 @@
 dist
 tools/commit-helper.ps1
 tools/VERIFICATION.txt
+build.env
