@@ -241,7 +241,7 @@ mirror_pointer_github:
   script:
     - |
       pwsh
-     .\build\scripts\mirror\mirror-pointer-github.ps1
+      .\build\scripts\mirror\mirror-pointer-github.ps1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
