@@ -1,0 +1,17 @@
+#---CONFIG----------------------------
+$ModuleConfig = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
+$ModuleManifest = Test-ModuleManifest -path ".\dist\$moduleName\$moduleName`.psd1"
+$modulename = $ModuleManifest.name
+#---CONFIG----------------------------
+
+#------------------------------------
+publish-Module `
+  -path ".\dist\$modulename" `
+  -Repository 'psgallery' `
+  -NuGetApiKey $ENV:PSGAL_API_KEY `
+  -projecturi $ModuleManifest.PrivateData.PSData.ProjectUri `
+  -licenseuri $ModuleManifest.PrivateData.PSData.LicenseUri `
+  -IconUri $ModuleManifest.PrivateData.PSData.IconUri `
+  -ReleaseNotes $ModuleManifest.ReleaseNotes `
+  -Tags $ModuleManifest.Tags `
+  -Verbose
