@@ -70,6 +70,7 @@ public static class ParallelFolderSize
     }
 }
 "@
+
 function Get-FolderSizeParallel {
     [CmdletBinding()]
     param(
@@ -103,6 +104,3 @@ function Get-FolderSizeParallel {
         }
     }
 }
-
-# Usage:
-# Get-FolderSizeParallel -Path "C:\Windows"

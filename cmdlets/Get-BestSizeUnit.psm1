@@ -1,5 +1,9 @@
 function Get-BestSizeUnit {
-    param([long]$Bytes)
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [long]$Bytes
+    )
     
     if ($Bytes -ge 1PB) {
         return "$([Math]::Round($Bytes / 1PB, 2)) PB"
