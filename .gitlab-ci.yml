@@ -60,29 +60,25 @@ pester:
   <<: *test_template
   script:
     - |
-      pwsh
-      Invoke-Pester -Script .\test\Test-Unit-Pester.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script .\test\Test-Unit-Pester.ps1 -CI || exit 1
 
 pester_coverage:
   <<: *test_template
   script:
     - |
-      pwsh
-      Invoke-Pester -Script .\build\scripts\test\test-pester-before-build.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script .\build\scripts\test\test-pester-before-build.ps1 -CI || exit 1
 
 analyzer:
   <<: *test_template
   script:
     - |
-      pwsh
-      .\devops\scripts\test\test_scriptanalyzer_before_build.ps1
+      pwsh -c .\devops\scripts\test\test_scriptanalyzer_before_build.ps1
 
 coverage:
   <<: *deploy_template
   script:
     - |
-      pwsh
-      .\devops\scripts\test\test-deploy-codecov-report.ps1
+      pwsh -c .\devops\scripts\test\test-deploy-codecov-report.ps1
   needs:
     - job: pester_coverage
       artifacts: true
@@ -107,8 +103,7 @@ psmpacker-build:
       when: on_success
   script:
     - |
-      pwsh
-      .\devops\scripts\build\build-module.ps1
+      pwsh -c .\devops\scripts\build\build-module.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
 nupsforge_general_nuget_packages:
@@ -121,8 +116,7 @@ nupsforge_general_nuget_packages:
       when: on_success
   script:
     - |
-      pwsh
-      ./devops/scripts/build/Build-package-generic-nuget.ps1
+      pwsh -c ./devops/scripts/build/Build-package-generic-nuget.ps1
 
 nupsforge_chocolatey_nupsec:
   stage: build
@@ -134,8 +128,7 @@ nupsforge_chocolatey_nupsec:
       when: on_success
   script:
     - |
-      pwsh
-      ./devops/scripts/build/Build-package-choco.ps1
+      pwsh -c ./devops/scripts/build/Build-package-choco.ps1
 
 mono_chocolatey_package:
   stage: build
@@ -163,8 +156,7 @@ zip_build:
       when: on_success
   script:
     - |
-      pwsh
-      ./devops/scripts/build/Build-package-psgallery.ps1
+      pwsh -c ./devops/scripts/build/Build-package-psgallery.ps1
 
 #---------------------------------------------
 # ! || Deploy Stage ||
@@ -178,8 +170,7 @@ gitlab_nuget:
     - windows
   script:
     - |
-      pwsh
-      ./devops/scripts/deploy/deploy-gitlab.ps1
+      pwsh -c ./devops/scripts/deploy/deploy-gitlab.ps1
 
 # proget_nuget:
 #   <<: *deploy_template
@@ -213,8 +204,7 @@ psgal_zip:
      artifacts: true
   script:
     - |
-      pwsh
-      .\build\scripts\deploy\deploy-psgallary.ps1
+      pwsh -c .\build\scripts\deploy\deploy-psgallary.ps1
 
 #---------------------------------------------
 # ! || Release Stage ||
@@ -231,8 +221,7 @@ git_tag:
       artifacts: false
   script:
     - |
-      pwsh
-      .\devops\scripts\release\create-tag.ps1
+      pwsh -c .\devops\scripts\release\create-tag.ps1
 
 mirror_pointer_github:
   <<: *release_template
@@ -241,8 +230,7 @@ mirror_pointer_github:
       artifacts: false
   script:
     - |
-      pwsh
-      .\build\scripts\mirror\mirror-pointer-github.ps1
+      pwsh -c .\build\scripts\mirror\mirror-pointer-github.ps1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
@@ -261,8 +249,7 @@ gitlab_release:
       artifacts: false
   script:
     - |
-      pwsh
-      .\build\scripts\release\release-from-tag-gitlab.ps1
+      pwsh -c .\build\scripts\release\release-from-tag-gitlab.ps1
 
 github_release:
   <<: *release_template
@@ -287,8 +274,7 @@ codecov_release_coverage:
       artifacts: true
   script:
     - |
-      pwsh
-      .\build\scripts\release\release-codecov-report.ps1
+      pwsh -c .\build\scripts\release\release-codecov-report.ps1
   
 
 # coveralls_release_coverage:
