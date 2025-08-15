@@ -132,6 +132,7 @@ nupsforge_chocolatey_nupsec:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  script:
     - |
       pwsh
       ./devops/scripts/build/Build-package-choco.ps1
