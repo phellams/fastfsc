@@ -9,7 +9,8 @@
     HelpInfoURI        = 'https://github.com/phellams/fastfsc/blob/main/README.md'
     FunctionsToExport  = @(
         'Get-FolderSizeFast',
-        'Get-FolderSizeParallel'
+        'Get-FolderSizeParallel',
+        'Get-BestSizeUnit'
     )
     CmdletsToExport    = @()
     VariablesToExport  = @()
