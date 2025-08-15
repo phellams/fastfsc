@@ -1,5 +1,6 @@
+# WINDOWS LOCAL BUILD SCRIPT
 #---CONFIG----------------------------
-$ModuleConfig         = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
+$ModuleConfig         = Get-Content -Path .\build_config.json | ConvertFrom-Json
 $ModuleName           = $ModuleConfig.moduleName
 $ModuleManifest       = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
 $ModuleVersion        = $ModuleManifest.Version #-replace "\.\d+$",""

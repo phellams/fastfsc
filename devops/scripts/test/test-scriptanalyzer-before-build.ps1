@@ -1,7 +1,6 @@
-using module ..\keyfile\keyfile.psm1 # Import Get-KeyFromFile
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
-$ModuleManifest = Test-ModuleManifest -path ".\dist\$moduleName\$moduleName`.psd1"
+$ModuleConfig = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$modulename = $ModuleConfig.moduleName
 #---CONFIG----------------------------
 
 Invoke-ScriptAnalyzer -Path .\dist\$modulename `

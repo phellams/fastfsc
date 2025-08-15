@@ -1,7 +1,7 @@
 ############## CONFIG ##############
-$ModuleConfig = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
-$ModuleName = $ModuleConfig.moduleName
-$gitgroup = $ModuleConfig.gitgroup
+$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleName     = $ModuleConfig.moduleName
+$gitgroup       = $ModuleConfig.gitgroup
 ####################################
 
 # Define the path where you'll download the Codecov Uploader

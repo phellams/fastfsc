@@ -1,6 +1,8 @@
 #---CONFIG----------------------------
-$reponame = Get-KeyfromFile -path '.\build\build_config.json' -key 'ModuleName'
-$gituser = Get-KeyfromFile -path '.\build\build_config.json' -key 'GitGroup' # note: this is the user that will be used to push the tag ie if using group use group name
+$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleName = $ModuleConfig.moduleName
+$gituser = $ModuleConfig.gituser
+$gitgroup = $ModuleConfig.gitgroup
 #---CONFIG----------------------------
 
 $artifactsUrl = "https://$ENV:GITLAB_HOST/$gituser/$reponame/-/jobs/$($ENV:CI_JOB_ID)/artifacts/raw/dist"

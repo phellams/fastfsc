@@ -1,8 +1,5 @@
-using module ..\keyfile\keyfile.psm1 # Import Get-KeyFromFile
-
 #---CONFIG----------------------------
-#$ModuleConfig = Get-Content -Path .\build\build_config.json | ConvertFrom-Json
-#$moduleName = $ModuleConfig.moduleName
+
 #---CONFIG----------------------------
 
 # Pester Configration settings
@@ -15,12 +12,13 @@ $pesterConfig = New-PesterConfiguration -hashtable @{
     OutputPath            = 'coverage.xml'
     OutputEncoding        = 'utf8'
     CoveragePercentTarget = 85
-    path                  = @(".\cmdlets\*.psm1", ".\libs\*.psm1", ".\zypline.psm1")
+    #path                  = @(".\cmdlets\*.psm1", ".\libs\*.psm1", ".\*.psm1")
+    path                  = @(".\cmdlets\*.psm1", ".\*.psm1")
   }
   Run = @{
     #PassThru = $true
     #scriptblock = {'.\test\Test-Unit-Pester.ps1'}
-    Path     = '.\tests\Unit-tests.ps1';
+    Path     = '.\tests\Test-Unit-Pester.ps1';
   }
 }
 

@@ -1,5 +1,5 @@
 #---CONFIG----------------------------
-$Moduleconfig = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
+$ModuleConfig = Get-Content -Path .\build_config.json | ConvertFrom-Json
 $modulename = $Moduleconfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path ".\dist\$modulename\$modulename.psd1"
 $gitgroup = $Moduleconfig.gitgroup

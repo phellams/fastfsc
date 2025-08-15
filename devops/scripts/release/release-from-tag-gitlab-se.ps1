@@ -1,6 +1,7 @@
 #---CONFIG----------------------------
-$reponame = Get-KeyfromFile -path '.\devops\build_config.json' -key 'ModuleName'
-$gituser = Get-KeyfromFile -path '.\devops\build_config.json' -key 'GitGroup' # note: this is the user that will be used to push the tag ie if using group use group name
+$ModuleConfig = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleName = $ModuleConfig.moduleName
+$gituser = $ModuleConfig.gituser
 #---CONFIG----------------------------
 
 install-module -name commitfusion -force | import-module -force

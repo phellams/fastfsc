@@ -1,6 +1,6 @@
 using module ..\keyfile\keyfile.psm1 # Import Get-KeyFromFile
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path .\devops\build_config.json | ConvertFrom-Json
+$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
 $gituser = $ModuleConfig.gituser
 $gitgroup = $ModuleConfig.gitgroup
