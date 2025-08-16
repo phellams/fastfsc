@@ -17,9 +17,10 @@ import-module -name G:\devspace\projects\powershell\_repos\csverify\;
 .\devops\scripts\build\build-module.ps1 
 .\devops\scripts\build\build-package-psgallery.ps1
 .\devops\scripts\build\build-package-generic-nuget.ps1
+.\devops\scripts\build\Build-nuspec-choco.ps1 
 # Build for choco is built throw the choco docker mono image
 # # for local build only.#.\devops\scripts\deploy-psgallary.ps1
-.\devops\scripts\build\build-package-choco-windows.ps1 
+#.\devops\scripts\build\build-package-choco-windows.ps1 
 
 # TEST DEPLOY
 #.\devops\scripts\deploy-gitlab.ps1
