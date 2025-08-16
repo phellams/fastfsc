@@ -49,9 +49,9 @@ try {
   # Create Zip With .nuspec file for PSGallery
   # copy-item -recurse -path "./dist/$ModuleName" -destination "./dist/psgal/$ModuleName"
   compress-archive -path "./dist/$ModuleName/*" `
-                  -destinationpath "./dist/psgal/$zipFileName" `
-                  -compressionlevel optimal `
-                  -update
+                   -destinationpath "./dist/psgal/$zipFileName" `
+                   -compressionlevel optimal `
+                   -update
   # ===========================================
 }catch {
   [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )

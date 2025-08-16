@@ -28,5 +28,5 @@ Build-Module -SourcePath ./ `
              -FoldersToCopy $ModuleFolders `
              -ExcludedFiles $ModuleExclude `
              -Manifest `
-             -Version $AutoVersion `
-             -Dependencies @(@{type="module";name="quicklog";version="1.2.3"})
+             -Version $AutoVersion
+            #  -Dependencies @(@{type="module";name="quicklog";version="1.2.3"})
