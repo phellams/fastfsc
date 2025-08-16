@@ -209,6 +209,12 @@ git_tag:
   needs:
     - job: psmpacker-build
       artifacts: false
+    - job: nupsforge_general_nuget_packages
+      artifacts: true
+    - job: nupsforge_chocolatey_nupsec
+      artifacts: true
+    - job: mono_chocolatey_package
+      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
@@ -233,29 +239,27 @@ mirror_pointer_github:
 gitlab_release:
   <<: *release_template
   needs:
-    - job: nupsforge_general_nuget_packages
-      artifacts: true
     - job: git_tag
       artifacts: false
   script:
     - |
       pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
 
-github_release:
-  <<: *release_template
-  needs:
-    - job: nupsforge_general_nuget_packages
-      artifacts: true
-    - job: git_tag
-      artifacts: false
-    - job: mirror_pointer_github
-      artifacts: false
-    - job: gitlab_release
-      artifacts: false
-  script:
-    - |
-      pwsh
-      ./build/scripts/release/release-from-tag-github.ps1 || exit 1
+# github_release:
+#   <<: *release_template
+#   needs:
+#     - job: nupsforge_general_nuget_packages
+#       artifacts: true
+#     - job: git_tag
+#       artifacts: false
+#     - job: mirror_pointer_github
+#       artifacts: false
+#     - job: gitlab_release
+#       artifacts: false
+#   script:
+#     - |
+#       pwsh
+#       ./build/scripts/release/release-from-tag-github.ps1 || exit 1
 
 codecov_release_coverage:
   <<: *release_template 
