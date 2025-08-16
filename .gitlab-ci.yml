@@ -73,7 +73,7 @@ analyzer:
   script:
     - |
       chmod +x ./devops/scripts/test/test-sa-before-build.ps1
-      ./devops/scripts/test/test-sa-before-build.ps1
+      pwsn -c ./devops/scripts/test/test-sa-before-build.ps1
 
 #---------------------------------------------
 # ! || Build Stage ||
