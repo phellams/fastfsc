@@ -54,7 +54,7 @@ try {
 
   # Create New Verification CheckSums Request root module directory
   Set-Location "./dist/$ModuleName"
-  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
   Test-Verification -Path ./tools | Format-Table -auto
   Set-Location ../../ # back
   # Create Choco nuspec
