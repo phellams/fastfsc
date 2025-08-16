@@ -1,11 +1,10 @@
-using module ..\keyfile\keyfile.psm1 # Import Get-KeyFromFile
 #---CONFIG----------------------------
-$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
 $gituser = $ModuleConfig.gituser
 $gitgroup = $ModuleConfig.gitgroup
-$reponame = Get-KeyfromFile -path '.\devops\build_config.json' -key 'ModuleName'
-$user = Get-KeyfromFile -path '.\devops\build_config.json' -key 'gituser'
+$reponame = Get-KeyfromFile -path './devops/build_config.json' -key 'ModuleName'
+$user = Get-KeyfromFile -path './devops/build_config.json' -key 'gituser'
 #$gitlab_mirror_name = "gitlab_mirror"
 $github_mirror_name = "github_mirror"
     #---CONFIG----------------------------

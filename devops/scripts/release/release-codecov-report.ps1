@@ -1,5 +1,5 @@
 ############## CONFIG ##############
-$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
 $gitgroup       = $ModuleConfig.gitgroup
 ####################################

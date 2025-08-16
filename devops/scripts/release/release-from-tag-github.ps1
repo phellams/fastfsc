@@ -1,8 +1,7 @@
 #---CONFIG----------------------------
-$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
 $gituser = $ModuleConfig.gituser
-$gitgroup = $ModuleConfig.gitgroup
 #---CONFIG----------------------------
 
 $artifactsUrl = "https://$ENV:GITLAB_HOST/$gituser/$reponame/-/jobs/$($ENV:CI_JOB_ID)/artifacts/raw/dist"

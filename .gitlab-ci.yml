@@ -95,7 +95,7 @@ psmpacker-build:
       when: on_success
   script:
     - |
-      pwsh -c ./devops/scripts/build/build-module.ps1
+      pwsh -c ./devops/scripts/build/build-module.ps1 || exit 1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
 nupsforge_general_nuget_packages:
@@ -108,7 +108,7 @@ nupsforge_general_nuget_packages:
       when: on_success
   script:
     - |
-      pwsh -c ./devops/scripts/build/Build-package-generic-nuget.ps1
+      pwsh -c ./devops/scripts/build/Build-package-generic-nuget.ps1 || exit 1
 
 nupsforge_chocolatey_nupsec:
   stage: build
@@ -120,7 +120,7 @@ nupsforge_chocolatey_nupsec:
       when: on_success
   script:
     - |
-      pwsh -c ./devops/scripts/build/Build-package-choco.ps1
+      pwsh -c ./devops/scripts/build/Build-nuspec-choco.ps1 || exit 1
 
 mono_chocolatey_package:
   stage: build
@@ -136,7 +136,7 @@ mono_chocolatey_package:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
   script:
-    - choco pack --outputdirectory "./dist/choco"
+    - choco pack ./dist/fastfsc --outputdirectory "./dist/choco" || exit 1
 
 zip_build:
   stage: build
@@ -148,7 +148,7 @@ zip_build:
       when: on_success
   script:
     - |
-      pwsh -c ./devops/scripts/build/Build-package-psgallery.ps1
+      pwsh -c ./devops/scripts/build/Build-package-psgallery.ps1 || exit 1
 
 #---------------------------------------------
 # ! || Deploy Stage ||
@@ -162,7 +162,7 @@ gitlab_nuget:
     - windows
   script:
     - |
-      pwsh -c ./devops/scripts/deploy/deploy-gitlab.ps1
+      pwsh -c ./devops/scripts/deploy/deploy-gitlab.ps1 || exit 1
 
 # proget_nuget:
 #   <<: *deploy_template
@@ -196,7 +196,7 @@ psgal_zip:
      artifacts: true
   script:
     - |
-      pwsh -c ./build/scripts/deploy/deploy-psgallary.ps1
+      pwsh -c ./devops/scripts/deploy/deploy-psgallary.ps1 || exit 1
 
 #---------------------------------------------
 # ! || Release Stage ||
@@ -213,7 +213,7 @@ git_tag:
       artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/release/create-tag.ps1
+      pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
 
 mirror_pointer_github:
   <<: *release_template
@@ -222,7 +222,7 @@ mirror_pointer_github:
       artifacts: false
   script:
     - |
-      pwsh -c ./build/scripts/mirror/mirror-pointer-github.ps1
+      pwsh -c ./devops/scripts/mirror/mirror-pointer-github.ps1 || exit 1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
@@ -241,7 +241,7 @@ gitlab_release:
       artifacts: false
   script:
     - |
-      pwsh -c ./build/scripts/release/release-from-tag-gitlab.ps1
+      pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
 
 github_release:
   <<: *release_template
@@ -257,7 +257,7 @@ github_release:
   script:
     - |
       pwsh
-      ./build/scripts/release/release-from-tag-github.ps1
+      ./build/scripts/release/release-from-tag-github.ps1 || exit 1
 
 codecov_release_coverage:
   <<: *release_template 
@@ -266,7 +266,7 @@ codecov_release_coverage:
       artifacts: true
   script:
     - |
-      pwsh -c ./build/scripts/release/release-codecov-report.ps1
+      pwsh -c ./devops/scripts/release/release-codecov-report.ps1 || exit 1
   
 
 # coveralls_release_coverage:
@@ -275,4 +275,4 @@ codecov_release_coverage:
 #     - job: pester_coverage
 #       artifacts: true
 #   script:
-#     - ./build/scripts/release/release-codecov-report.ps1
+#     - ./devops/scripts/release/release-codecov-report.ps1
