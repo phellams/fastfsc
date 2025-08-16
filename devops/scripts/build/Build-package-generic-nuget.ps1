@@ -3,9 +3,10 @@ $ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
+$ModuleManifest = $ModuleManifest
 #---CONFIG----------------------------
 
-
+# Check if pre-release if so check name to reflect
 
 if (!(Test-Path -path "./dist/nuget")) { mkdir "./dist/nuget" }
 if (!(Test-Path -path "./dist/choco")) { mkdir "./dist/choco" }
@@ -34,19 +35,13 @@ try {
 
   # Create New Verification CheckSums requires root module directory
   set-location "./dist/$ModuleName"
-  New-VerificationFile -Path './' -Output '  ./tool's | Format-Table -auto
-  Test-Verification -Path './' | Format-Table -auto
+  New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
+  Test-Verification -Path ./ | Format-Table -auto
   Set-location ../../ # back
   # Create Nuget nuspec, Proget, gitlab, PSGallery
   New-NuspecPackageFile @NuSpecParams
   New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget"
   # ===========================================
-
-  # Rename choco package for build artifact as output name is the same 
-  # for psgal, nuget and choco
-  Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
-              -NewName "$ModuleName.$moduleVersion-choco.nupkg"
-
 }
 catch {
   [console]::write( "Error creating Nuget Generic package: $($_.Exception.Message)`n" )

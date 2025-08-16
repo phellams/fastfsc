@@ -36,7 +36,7 @@ $NuSpecParams = @{
 try {
   # Create New Verification CheckSums requires root module directory
   set-location "./dist/$ModuleName"
-  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
   Test-Verification -Path ./ | Format-Table -auto
   Set-location ../../ # back
   # Create Nuget nuspec, Proget, gitlab, PSGallery
