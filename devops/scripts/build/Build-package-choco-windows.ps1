@@ -19,19 +19,19 @@ if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
 #                CHOCOLATEY
 # ===========================================
 # Remove nuspec file from build bold
-#Remove-Item -Path ".\dist\$ModuleName\$ModuleName.nuspec"
+#Remove-Item -Path "./dist/$ModuleName/$ModuleName.nuspec"
 
 # Choco supports markdown nuget and psgallary done
-$markdown_readme = Get-Content -Path .\devops\choco_description.md -Raw `
+$markdown_readme = Get-Content -Path ./devops/choco_description.md -Raw `
                                -ErrorAction Stop `
                                -Encoding UTF8 `
                                -Force `
                                -WarningAction SilentlyContinue
 
 $NuSpecParamsChoco = @{
-  path              = ".\dist\$ModuleName"
+  path              = "./dist/$ModuleName"
   ModuleName        = $ModuleName
-  ModuleVersion     = $ModuleManifest.Version #-replace "\.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
+  ModuleVersion     = $ModuleManifest.Version #-replace "/.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
   Author            = $ModuleManifest.Author
   Description       = $markdown_readme #-replace '```', '```' -replace '\`', '``'
   Summary           = $ModuleManifest.PrivateData.PSData.Summary
@@ -53,9 +53,9 @@ $NuSpecParamsChoco = @{
 try {
 
   # Create New Verification CheckSums Request root module directory
-  Set-Location ".\dist\$ModuleName"
-  New-VerificationFile -Path .\ -Outpath .\tools | Format-Table -auto
-  Test-Verification -Path .\ | Format-Table -auto
+  Set-Location "./dist/$ModuleName"
+  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  Test-Verification -Path ./tools | Format-Table -auto
   Set-Location ../../ # back
   # Create Choco nuspec
   New-ChocoNuspecFile @NuSpecParamsChoco
