@@ -1,7 +1,8 @@
 # Fastfsc
 
-<img src="https://img.shields.io/badge/License-_mit-License?style=for-the-badge&labelColor=%23383838&color=%237A5ACF
+<img src="https://img.shields.io/badge/License-_mit-License?style=flat&labelColor=%23383838&color=%237A5ACF
 " alt="MIT License" />
+<img src="https://img.shields.io/gitlab/pipeline-status/phellams%2Ffastfsc?style=flat&logo=Gitlab&logoColor=%233478BD&labelColor=%232D2D34" alt="Build Status">
 
 A high-performance PowerShell module for calculating folder sizes using inline C# code. This module provides lightning-fast folder size calculations that are **3-10x** faster than native PowerShell methods, with support from bytes to petabytes.
 
