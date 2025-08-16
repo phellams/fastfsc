@@ -22,10 +22,10 @@ Describe "cmdlets" {
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PsCustomObject
     } 
-    it "Get-BestSizeUnit | Should Return a UnitSize PsCustomObject" {
+    it "Get-BestSizeUnit | Should Return a UnitSize String" {
         $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
-        $result = Get-BestSizeUnit -SizeBytes (Get-FolderSizeFast -Path $folder.FullName).SizeBytes
+        $result = Get-BestSizeUnit -Bytes (Get-FolderSizeFast -Path $folder.FullName).SizeBytes
         $result | Should -Not -BeNullOrEmpty
-        $result | Should -BeOfType PsCustomObject
+        $result | Should -BeOfType String
     }     
 }
