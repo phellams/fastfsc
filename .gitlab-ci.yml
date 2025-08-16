@@ -66,7 +66,7 @@ pester_coverage:
   <<: *test_template
   script:
     - |
-      pwsh -c Invoke-Pester -Script ./build/scripts/test/test-pester-before-build.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script ./devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
 
 analyzer:
   <<: *test_template
