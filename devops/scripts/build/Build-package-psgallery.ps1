@@ -33,11 +33,13 @@ $NuSpecParams = @{
 # ===========================================
 #             PowerShell Gallery
 # ===========================================
-try {
+
+# try {
   # Create New Verification CheckSums requires root module directory
   set-location "./dist/$ModuleName"
-  New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
-  Test-Verification -Path ./ | Format-Table -auto
+  New-VerificationFile -RootPath '.\' -OutputPath '.\tools' | Format-Table -auto
+
+  Test-Verification -Path '.\' | Format-Table -auto
   Set-location ../../ # back
   # Create Nuget nuspec, Proget, gitlab, PSGallery
   New-NuspecPackageFile @NuSpecParams
@@ -53,7 +55,7 @@ try {
                    -compressionlevel optimal `
                    -update
   # ===========================================
-}catch {
-  [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )
-  exit 1
-}
+# }catch {
+#   [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )
+#   exit 1
+# }
