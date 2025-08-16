@@ -72,7 +72,7 @@ analyzer:
   <<: *test_template
   script:
     - |
-      ./devops/scripts/test/test-scriptanalyzer-before-build.ps1
+      ./devops/scripts/test/test-sa-before-build.ps1
 
 #---------------------------------------------
 # ! || Build Stage ||
