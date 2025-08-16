@@ -72,7 +72,6 @@ analyzer:
   <<: *test_template
   script:
     - |
-      pwsh
       ./devops/scripts/test/test-scriptanalyzer-before-build.ps1
 
 #---------------------------------------------
