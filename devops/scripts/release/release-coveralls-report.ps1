@@ -18,17 +18,18 @@ $coverageReportFilePath = "./coverage.xml"
 # Get-Command is more robust for checking if an executable is truly available.
 # Using -ErrorAction Stop ensures immediate termination on failure.
 try {
-    $coverallsCommand = Get-Command $coverallsExe -ErrorAction Stop
+    $coverallsCommand = Get-Command $coveralls -ErrorAction Stop
     [console]::writeline("Found Coveralls executable: $($coverallsCommand.Source)")
 }
 catch {
-    throw [System.Exception]::new("Error: Unable to find '$coverallsExe' in your system's PATH. Please ensure it's installed and accessible.")
-    # No need for 'break' after 'throw' as 'throw' exits the script.
+    [console]::writeline("Error: Unable to find '$coveralls' in your system's PATH. Please ensure it's installed and accessible.`n")
+    exit 1
 }
 
 # 2. Verify the coverage report file exists
 if (!(Test-Path $coverageReportFilePath)) {
-    throw [System.Exception]::new("Error: Coverage report file not found at '$coverageReportFilePath'. Please ensure your test runner generated it correctly.")
+    [console]::writeline("Error: Coverage report file not found at '$coverageReportFilePath'. Please ensure your test runner generated it correctly.`n")
+    exit 1 
 }
 
 [console]::writeline("Found coverage report file: $coverageReportFilePath")

@@ -50,24 +50,24 @@ $NuSpecParamsChoco = @{
   LicenseAcceptance = $false
 }
 
-# Copy Custom Readme base on repository destination
-# Copy-item -Path "./devops/choco_description.md"  `
-#           -Destination "./dist/$ModuleName/readme.md" `
-#           -Force `
-#           -Verbose
+try {
+  # Create New Verification CheckSums Request root module directory
+  Set-Location "./dist/$ModuleName"
+  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  Test-Verification -Path ./ | Format-Table -auto
+  Set-Location ../../ # back
+  # Create Choco nuspec
+  New-ChocoNuspecFile @NuSpecParamsChoco
 
-# Create New Verification CheckSums Request root module directory
-Set-Location "./dist/$ModuleName"
-New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
-Test-Verification -Path ./ | Format-Table -auto
-Set-Location ../../ # back
-# Create Choco nuspec
-New-ChocoNuspecFile @NuSpecParamsChoco
+  # Create ENV as Choco image does not support powershell execution
+  # Set the choco package name as a ENV and use choco push
+  $choco_package_name = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
+  $choco_package_name | Out-File -FilePath "build.env"
 
-# Create ENV as Choco image does not support powershell execution
-# Set the choco package name as a ENV and use choco push
-$choco_package_name = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
-$choco_package_name | Out-File -FilePath "build.env"
+  # Use Choco mono to create choco package and deploy
+  #New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
 
-# Use Choco mono to create choco package and deploy
-#New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
+} catch {
+  [console]::write( "Error creating Choco package: $($_.Exception.Message)`n" )
+  exit 1
+}

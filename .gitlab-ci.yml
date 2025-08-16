@@ -158,8 +158,6 @@ gitlab_nuget:
   needs:
     - job: nupsforge_general_nuget_packages
       artifacts: true
-  tags:
-    - windows
   script:
     - |
       pwsh -c ./devops/scripts/deploy/deploy-gitlab.ps1 || exit 1

@@ -18,3 +18,10 @@ git config --global user.email "$($ENV:GITLAB_EMAIL)"
 
 git tag "$ModuleVersion"
 git push --tags https://${GITLAB_PUBLIC_API_KEY}@$gitlab_host/$gitgroup/$ModuleName.git HEAD:main
+
+if($LASTEXITCODE -ne 0) {
+    Write-Host "Failed to push tag $ModuleVersion to $gitgroup/$ModuleName.git"
+    exit 1
+} else {
+    Write-Host "Successfully pushed tag $ModuleVersion to $gitgroup/$ModuleName.git"
+}

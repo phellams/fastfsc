@@ -29,23 +29,26 @@ $NuSpecParams = @{
   dependencies  = $ModuleManifest.ExternalModuleDependencies
   PreRelease    = $PreRelease
 }
-# Copy Custom Readme base on repository destination
-# Copy-item -Path "./devops/choco_description.md"  `
-#           -Destination "./dist/$ModuleName/readme.md" `
-#           -Force `
-#           -Verbose
 
-# Create New Verification CheckSums requires root module directory
-set-location "./dist/$ModuleName"
-New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
-Test-Verification -Path ./ | Format-Table -auto
-Set-location ../../ # back
-# Create Nuget nuspec, Proget, gitlab, PSGallery
-New-NuspecPackageFile @NuSpecParams
-New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget"
-# ===========================================
+try {
 
-# Rename choco package for build artifact as output name is the same 
-# for psgal, nuget and choco
-Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
-            -NewName "$ModuleName.$moduleVersion-choco.nupkg"
+  # Create New Verification CheckSums requires root module directory
+  set-location "./dist/$ModuleName"
+  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  Test-Verification -Path ./ | Format-Table -auto
+  Set-location ../../ # back
+  # Create Nuget nuspec, Proget, gitlab, PSGallery
+  New-NuspecPackageFile @NuSpecParams
+  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget"
+  # ===========================================
+
+  # Rename choco package for build artifact as output name is the same 
+  # for psgal, nuget and choco
+  Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
+              -NewName "$ModuleName.$moduleVersion-choco.nupkg"
+
+}
+catch {
+  [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )
+  exit 1
+}

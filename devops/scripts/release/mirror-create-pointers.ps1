@@ -32,11 +32,13 @@ try {
     if($LASTEXITCODE -eq 0) {
         Write-Host "Github Mirror Added" #! should throw here for ci to fail
     }else {
-        throw [system.exception] "Failed to add Github Mirror Exit Code:$LASTEXITCODE, url:$repo_string"
+        [console]::write("Failed to add Github Mirror Exit Code:$LASTEXITCODE, url:$repo_string`n")
+        exit 1
     }
 
-    }catch [system.exception] {
-        [console]::write("failed to create local mirror: $($_.exception.message)`n")
+} catch [system.exception] {
+    [console]::write("failed to create local mirror: $($_.exception.message)`n")
+    
 }
 
 # Remove local Mirrors
