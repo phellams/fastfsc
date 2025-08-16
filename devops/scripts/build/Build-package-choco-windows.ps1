@@ -1,7 +1,7 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
-$ModuleManifest = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
+$ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $moduleVersion = $ModuleManifest.Version
 $PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
 #---CONFIG----------------------------
@@ -11,9 +11,9 @@ if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion
 else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 
-if (!(Test-Path -path ".\dist\nuget")) { mkdir ".\dist\nuget" }
-if (!(Test-Path -path ".\dist\choco")) { mkdir ".\dist\choco" }
-if (!(Test-Path -path ".\dist\psgal")) { mkdir ".\dist\psgal" }
+if (!(Test-Path -path "./dist/nuget")) { mkdir "./dist/nuget" }
+if (!(Test-Path -path "./dist/choco")) { mkdir "./dist/choco" }
+if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
 
 # ===========================================
 #                CHOCOLATEY
@@ -68,9 +68,9 @@ New-ChocoNuspecFile @NuSpecParamsChoco
 # Set the choco package name as a ENV and use choco push
 $ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
 
-New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
+New-ChocoPackage -path "./dist/$ModuleName"  -outpath "./dist/choco"
 
 # Rename choco package for build artifact as output name is the same 
 # for psgal, nuget and choco
-Rename-Item -Path ".\dist\choco\$ModuleName.$moduleVersion.nupkg" `
+Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
             -NewName "$ModuleName.$moduleVersion-choco.nupkg"

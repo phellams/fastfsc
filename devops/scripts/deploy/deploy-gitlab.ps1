@@ -1,7 +1,7 @@
 #---CONFIG----------------------------
-$ModuleConfig               = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig               = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName                 = $ModuleConfig.moduleName
-$ModuleManifest             = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
+$ModuleManifest             = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $gitlab_username            = $ModuleConfig.gituser
 $gitlab_uri                 = "https://gitlab.com" # https://$($ENV:GITLAB_HOST)"
 $projectid                  = $ModuleConfig.gitlabID_public
@@ -27,8 +27,8 @@ catch [system.exception] {
 
 try {
   Write-host -foregroundcolor yellow "Attempting to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath"
-  #dotnet nuget push .\dist\nuget\$modulename.$SemVerVersion.nupkg --source gitlab 
-  nuget push .\dist\nuget\$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_PUBLIC_API_KEY
+  #dotnet nuget push ./dist/nuget/$modulename.$SemVerVersion.nupkg --source gitlab 
+  nuget push ./dist/nuget/$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_PUBLIC_API_KEY
   nuget sources remove -Name "gitlab_$projectid_$ModuleName`_Packages"
 }
 catch [system.exception] {

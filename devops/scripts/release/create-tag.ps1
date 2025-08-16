@@ -1,9 +1,9 @@
 #---CONFIG----------------------------
-$ModuleConfig   = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
 $gituser        = $ModuleConfig.gituser
 $gitgroup       = $ModuleConfig.gitgroup
-$ModuleManifest = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
+$ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $PreRelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleVersion  = $ModuleManifest.Version.ToString()
 $gitlab_host    = "gitlab.com" # $ENV:GITLAB_HOST
