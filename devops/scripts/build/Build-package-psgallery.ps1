@@ -33,23 +33,27 @@ $NuSpecParams = @{
 # ===========================================
 #             PowerShell Gallery
 # ===========================================
+try {
+  # Create New Verification CheckSums requires root module directory
+  set-location "./dist/$ModuleName"
+  New-VerificationFile -Path ./ -Outpath ./tools | Format-Table -auto
+  Test-Verification -Path ./ | Format-Table -auto
+  Set-location ../../ # back
+  # Create Nuget nuspec, Proget, gitlab, PSGallery
+  New-NuspecPackageFile @NuSpecParams
 
-# Create New Verification CheckSums requires root module directory
-set-location "./dist/$ModuleName"
-New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
-Test-Verification -Path ./ | Format-Table -auto
-Set-location ../../ # back
-# Create Nuget nuspec, Proget, gitlab, PSGallery
-New-NuspecPackageFile @NuSpecParams
-
-[console]::write( "Creating Zip File for PSGallery `n" )
-[console]::write( "Source: ./dist/$($ModuleName)/* `n" )
-[console]::write( "output: ./dist/psgal/$($zipFileName) `n" )
-$zipFileName = "$ModuleName.zip"
-# Create Zip With .nuspec file for PSGallery
-# copy-item -recurse -path "./dist/$ModuleName" -destination "./dist/psgal/$ModuleName"
-compress-archive -path "./dist/$ModuleName/*" `
-                 -destinationpath "./dist/psgal/$zipFileName" `
-                 -compressionlevel optimal `
-                 -update
-# ===========================================
+  [console]::write( "Creating Zip File for PSGallery `n" )
+  [console]::write( "Source: ./dist/$($ModuleName)/* `n" )
+  [console]::write( "output: ./dist/psgal/$($zipFileName) `n" )
+  $zipFileName = "$ModuleName.zip"
+  # Create Zip With .nuspec file for PSGallery
+  # copy-item -recurse -path "./dist/$ModuleName" -destination "./dist/psgal/$ModuleName"
+  compress-archive -path "./dist/$ModuleName/*" `
+                  -destinationpath "./dist/psgal/$zipFileName" `
+                  -compressionlevel optimal `
+                  -update
+  # ===========================================
+}catch {
+  [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )
+  exit 1
+}

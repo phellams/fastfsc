@@ -1,5 +1,5 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path .\build_config.json | ConvertFrom-Json
+$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName = $ModuleConfig.moduleName
 $gituser = $ModuleConfig.gituser
 #---CONFIG----------------------------
@@ -10,11 +10,11 @@ $artifactsUrl = "https://$ENV:GITLAB_HOST/$gituser/$reponame/-/jobs/$($ENV:CI_JO
 $semver_version = "v$((Get-GitAutoVersion).version)" # requires Module Commit Fusion
 
 # Parse release body
-$release_template = Get-Content -Path '.\devops\release-template\release-template.md' -Raw
+$release_template = Get-Content -Path './devops/release-template/release-template.md' -Raw
 $release_template   = $release_template -replace $reponame, $modulename `
-                                        -replace $chocoRawLink, "$artifactsUrl\choco\$reponame.$version.nupkg"
+                                        -replace $chocoRawLink, "$artifactsUrl/choco/$reponame.$version.nupkg"
 $release_template   = $release_template -replace $reponame, $modulename `
-                                        -replace $chocoRawLink, "$artifactsUrl\nuget\$reponame.$version.nupkg"
+                                        -replace $chocoRawLink, "$artifactsUrl/nuget/$reponame.$version.nupkg"
 
 $release_template
 break;

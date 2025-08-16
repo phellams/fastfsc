@@ -5,12 +5,12 @@ $gitgroup       = $ModuleConfig.gitgroup
 ####################################
 
 # Define the path where you'll download the Codecov Uploader
-$codecovUploaderPath = "$PSScriptRoot/codecov" # Or any other suitable path
+$codecovUploaderPath = "codecov" # Or any other suitable path
 
 # 2. Verify the Codecov Uploader is found
 if (!(Get-Command $codecovUploaderPath -ErrorAction SilentlyContinue)) {
-    throw [System.Exception]::new("Unable to find codecov executable at $codecovUploaderPath")
-    break;
+    [console]::write("")
+    exit 1
 }
 
 # 3. Define your coverage report file(s)
@@ -20,7 +20,8 @@ $coverageReportFile = "./coverage.xml" # <--- IMPORTANT: Update this path!
 
 if (!(Test-Path $coverageReportFile)) {
     throw [System.Exception]::new("Coverage report file not found: $coverageReportFile. Please ensure your test runner generated it correctly.")
-    break;
+    [console]::write("Coverage report file not found: $coverageReportFile. Please ensure your test runner generated it correctly.`n")
+    exit 1
 }
 
 # 4. Upload to Codecov
@@ -31,12 +32,11 @@ if (!(Test-Path $coverageReportFile)) {
 Write-Host "Uploading coverage report to Codecov..."
 try {
     & $codecovUploaderPath upload-process -r "$gitgroup/$ModuleName" -t $env:codecov_token -f $coverageReportFile -v # -v for verbose output
-
     [console]::writeline("Codecov upload completed.")
-
 }
 catch {
     throw [System.Exception]::new("Codecov upload failed: $($_.Exception.Message)")
+    exit 1
     # Codecov Uploader itself often exits with a non-zero code on failure,
     # so this catch block might not always be hit depending on how you execute.
 }

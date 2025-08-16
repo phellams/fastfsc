@@ -50,27 +50,27 @@ $NuSpecParamsChoco = @{
   LicenseAcceptance = $false
 }
 
-# Copy Custom Readme base on repository destination
-# Copy-item -Path ".\devops\choco_description.md"  `
-#           -Destination ".\dist\$ModuleName\readme.md" `
-#           -Force `
-#           -Verbose
+try {
 
-# Create New Verification CheckSums Request root module directory
-Set-Location ".\dist\$ModuleName"
-New-VerificationFile -Path .\ -Output .\tools | Format-Table -auto
-Test-Verification -Path .\ | Format-Table -auto
-Set-Location ../../ # back
-# Create Choco nuspec
-New-ChocoNuspecFile @NuSpecParamsChoco
+  # Create New Verification CheckSums Request root module directory
+  Set-Location ".\dist\$ModuleName"
+  New-VerificationFile -Path .\ -Outpath .\tools | Format-Table -auto
+  Test-Verification -Path .\ | Format-Table -auto
+  Set-Location ../../ # back
+  # Create Choco nuspec
+  New-ChocoNuspecFile @NuSpecParamsChoco
 
-# Create ENV as Choco image does not support powershell execution
-# Set the choco package name as a ENV and use choco push
-$ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
+  # Create ENV as Choco image does not support powershell execution
+  # Set the choco package name as a ENV and use choco push
+  $ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
 
-New-ChocoPackage -path "./dist/$ModuleName"  -outpath "./dist/choco"
+  New-ChocoPackage -path "./dist/$ModuleName"  -outpath "./dist/choco"
 
-# Rename choco package for build artifact as output name is the same 
-# for psgal, nuget and choco
-Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
-            -NewName "$ModuleName.$moduleVersion-choco.nupkg"
+  # Rename choco package for build artifact as output name is the same 
+  # for psgal, nuget and choco
+  Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
+              -NewName "$ModuleName.$moduleVersion-choco.nupkg"
+} catch {
+  [console]::write( "Error creating Choco package: $($_.Exception.Message)`n" )
+  exit 1
+}
