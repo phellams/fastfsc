@@ -66,19 +66,19 @@ pester_coverage:
   <<: *test_template
   script:
     - |
-      pwsh -c Invoke-Pester -Script .\build\scripts\test\test-pester-before-build.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script ./build/scripts/test/test-pester-before-build.ps1 -CI || exit 1
 
 analyzer:
   <<: *test_template
   script:
     - |
-      pwsh -c .\devops\scripts\test\test_scriptanalyzer_before_build.ps1
+      pwsh -c ./devops/scripts/test/test_scriptanalyzer_before_build.ps1
 
 coverage:
   <<: *deploy_template
   script:
     - |
-      pwsh -c .\devops\scripts\test\test-deploy-codecov-report.ps1
+      pwsh -c ./devops/scripts/test/test-deploy-codecov-report.ps1
   needs:
     - job: pester_coverage
       artifacts: true
@@ -103,7 +103,7 @@ psmpacker-build:
       when: on_success
   script:
     - |
-      pwsh -c .\devops\scripts\build\build-module.ps1
+      pwsh -c ./devops/scripts/build/build-module.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
 nupsforge_general_nuget_packages:
@@ -194,7 +194,7 @@ mono_choco_nuget:
   tags:
     - docker
   script:
-    - choco push .\dist\choco\$ENV:CHOCO_NUPKG_PACKAGE_NAME.nupkg --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
+    - choco push ./dist/choco/$ENV:CHOCO_NUPKG_PACKAGE_NAME.nupkg --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
 
 # Deploy PSGallery module via zip and Publish modules
 psgal_zip:
@@ -204,7 +204,7 @@ psgal_zip:
      artifacts: true
   script:
     - |
-      pwsh -c .\build\scripts\deploy\deploy-psgallary.ps1
+      pwsh -c ./build/scripts/deploy/deploy-psgallary.ps1
 
 #---------------------------------------------
 # ! || Release Stage ||
@@ -221,7 +221,7 @@ git_tag:
       artifacts: false
   script:
     - |
-      pwsh -c .\devops\scripts\release\create-tag.ps1
+      pwsh -c ./devops/scripts/release/create-tag.ps1
 
 mirror_pointer_github:
   <<: *release_template
@@ -230,7 +230,7 @@ mirror_pointer_github:
       artifacts: false
   script:
     - |
-      pwsh -c .\build\scripts\mirror\mirror-pointer-github.ps1
+      pwsh -c ./build/scripts/mirror/mirror-pointer-github.ps1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
@@ -238,7 +238,7 @@ mirror_pointer_github:
 #     - job: git_tag
 #       artifacts: false
 #   script:
-#     - .\build\scripts\mirror-pointer-gitlab.ps1
+#     - ./build/scripts/mirror-pointer-gitlab.ps1
 
 gitlab_release:
   <<: *release_template
@@ -249,7 +249,7 @@ gitlab_release:
       artifacts: false
   script:
     - |
-      pwsh -c .\build\scripts\release\release-from-tag-gitlab.ps1
+      pwsh -c ./build/scripts/release/release-from-tag-gitlab.ps1
 
 github_release:
   <<: *release_template
@@ -265,7 +265,7 @@ github_release:
   script:
     - |
       pwsh
-      .\build\scripts\release\release-from-tag-github.ps1
+      ./build/scripts/release/release-from-tag-github.ps1
 
 codecov_release_coverage:
   <<: *release_template 
@@ -274,7 +274,7 @@ codecov_release_coverage:
       artifacts: true
   script:
     - |
-      pwsh -c .\build\scripts\release\release-codecov-report.ps1
+      pwsh -c ./build/scripts/release/release-codecov-report.ps1
   
 
 # coveralls_release_coverage:
@@ -283,4 +283,4 @@ codecov_release_coverage:
 #     - job: pester_coverage
 #       artifacts: true
 #   script:
-#     - .\build\scripts\release\release-codecov-report.ps1
+#     - ./build/scripts/release/release-codecov-report.ps1
