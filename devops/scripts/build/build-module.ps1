@@ -16,7 +16,7 @@ if (!(Test-Path -Path "./dist/$moduleName/tools")) {
 }
 
 # Create dist folder
-if (!(Test-Path -Path ./dist)){ 
+if (!(Test-Path -Path ./dist)){                                                                         
     New-Item -Path './dist' -ItemType Directory 
 }
 
