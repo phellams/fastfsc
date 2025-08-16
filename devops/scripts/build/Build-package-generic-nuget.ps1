@@ -1,8 +1,8 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
-$ModuleName = $ModuleConfig.moduleName
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName     = $ModuleConfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
-$PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
+$PreRelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleManifest = $ModuleManifest
 #---CONFIG----------------------------
 
@@ -35,7 +35,7 @@ try {
 
   # Create New Verification CheckSums requires root module directory
   set-location "./dist/$ModuleName"
-  New-VerificationFile -Path ./ -Output ./tools | Format-Table -auto
+  New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
   Test-Verification -Path ./ | Format-Table -auto
   Set-location ../../ # back
   # Create Nuget nuspec, Proget, gitlab, PSGallery
