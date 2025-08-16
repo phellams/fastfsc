@@ -32,7 +32,7 @@ workflow:
 .test_template: &test_template
   stage: test
   # rules:
-  #   - if: '$CI_COMMIT_BRANCH == "main "'
+  #   - if: '$CI_COMMIT_BRANCH == "main"'
   #     when: on_success
 
 .deploy_template: &deploy_template
@@ -72,16 +72,8 @@ analyzer:
   <<: *test_template
   script:
     - |
-      pwsh -c ./devops/scripts/test/test_scriptanalyzer_before_build.ps1
-
-coverage:
-  <<: *deploy_template
-  script:
-    - |
-      pwsh -c ./devops/scripts/test/test-deploy-codecov-report.ps1
-  needs:
-    - job: pester_coverage
-      artifacts: true
+      pwsh
+      ./devops/scripts/test/test-scriptanalyzer-before-build.ps1
 
 #---------------------------------------------
 # ! || Build Stage ||
