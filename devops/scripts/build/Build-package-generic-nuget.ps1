@@ -40,7 +40,7 @@ try {
   Set-location ../../ # back
   # Create Nuget nuspec, Proget, gitlab, PSGallery
   New-NuspecPackageFile @NuSpecParams
-  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget"
+  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
   # ===========================================
 }
 catch {

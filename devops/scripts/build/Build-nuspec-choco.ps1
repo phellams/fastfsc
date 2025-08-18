@@ -65,7 +65,7 @@ try {
   $choco_package_name | Out-File -FilePath "build.env"
 
   # Use Choco mono to create choco package and deploy
-  #New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
+  #New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco" -ci
 
 } catch {
   [console]::write( "Error creating Choco package: $($_.Exception.Message)`n" )
