@@ -128,8 +128,6 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
-    - job: psmpacker-build
-      artifacts: true
     - job: nupsforge_chocolatey_nupsec
       artifacts: true
   rules:
@@ -241,6 +239,10 @@ gitlab_release:
   needs:
     - job: git_tag
       artifacts: false
+    - job: nupsforge_general_nuget_packages
+      artifacts: true
+    - job: mono_choco_nuget
+      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
@@ -266,6 +268,8 @@ codecov_release_coverage:
   needs: 
     - job: pester_coverage
       artifacts: true
+    - job: git_tag
+      artifacts: false
   script:
     - |
       pwsh -c ./devops/scripts/release/release-codecov-report.ps1 || exit 1
