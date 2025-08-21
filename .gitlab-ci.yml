@@ -130,8 +130,6 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
-    - job: psmpacker-build
-      artifacts: true
     - job: nupsforge_chocolatey_nupsec
       artifacts: true
   rules:
@@ -143,7 +141,7 @@ mono_chocolatey_package:
 zip_build:
   stage: build
   needs:
-    - job: psmpacker-build
+    - job: nupsforge_general_nuget_packages
       artifacts: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
