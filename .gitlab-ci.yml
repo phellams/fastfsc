@@ -31,9 +31,9 @@ workflow:
 # Define job templates for reuse (via YAML anchors)
 .test_template: &test_template
   stage: test
-  # rules:
-  #   - if: '$CI_COMMIT_BRANCH == "main"'
-  #     when: on_success
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
 
 .deploy_template: &deploy_template
   stage: deploy
@@ -130,6 +130,8 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
+    - job: psmpacker-build
+      artifacts: true
     - job: nupsforge_chocolatey_nupsec
       artifacts: true
   rules:
