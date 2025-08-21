@@ -31,6 +31,10 @@ try {
   #dotnet nuget push ./dist/nuget/$modulename.$SemVerVersion.nupkg --source gitlab 
   nuget push ./dist/nuget/$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_API_KEY
   nuget sources remove -Name "gitlab_$projectid_$ModuleName`_Packages"
+  if($LASTEXITCODE -ne 0) {
+    Write-Host "Failed to push to gitlab"
+    exit $LASTEXITCODE
+  }    
 }
 catch [system.exception] {
   Write-Host "Failed to push to gitlab"
