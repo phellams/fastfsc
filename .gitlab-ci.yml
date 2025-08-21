@@ -31,7 +31,7 @@ workflow:
 .test_template: &test_template
   stage: test
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"'
       when: on_success
 
 .deploy_template: &deploy_template
