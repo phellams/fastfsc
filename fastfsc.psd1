@@ -17,7 +17,7 @@
     AliasesToExport    = @()
     PrivateData        = @{
         PSData = @{
-            Tags             = @('FolderSize', 'fast', 'speed', 'PowerShell', 'paralell', 'performance')
+            Tags             = @('FolderSize', 'speed', 'PowerShell', 'paralell', 'performance')
             ReleaseNotes     = @{
                 # '1.2.1' = 'Initial release with New-PHWriter cmdlet for custom help formatting and enhanced layout.'
             }
