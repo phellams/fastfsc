@@ -50,20 +50,21 @@ $NuSpecParamsChoco = @{
   LicenseAcceptance = $false
 }
 
+
+
+# Create New Verification CheckSums Request root module directory
+Set-Location "./dist/$ModuleName"
+New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
+Test-Verification -Path ./ | Format-Table -auto
+Set-Location ../../ # back
+# Create Choco nuspec
+New-ChocoNuspecFile @NuSpecParamsChoco
+
+# Create ENV as Choco image does not support powershell execution
+# Set the choco package name as a ENV and use choco push
+$ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
+
 try {
-
-  # Create New Verification CheckSums Request root module directory
-  Set-Location "./dist/$ModuleName"
-  New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
-  Test-Verification -Path ./ | Format-Table -auto
-  Set-Location ../../ # back
-  # Create Choco nuspec
-  New-ChocoNuspecFile @NuSpecParamsChoco
-
-  # Create ENV as Choco image does not support powershell execution
-  # Set the choco package name as a ENV and use choco push
-  $ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
-
   New-ChocoPackage -path "./dist/$ModuleName"  -outpath "./dist/choco"
 
   # Rename choco package for build artifact as output name is the same 

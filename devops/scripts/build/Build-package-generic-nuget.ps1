@@ -36,17 +36,19 @@ $NuSpecParams = @{
   PreRelease    = $PreRelease
 }
 
-try {
 
-  # Create New Verification CheckSums requires root module directory
-  set-location "./dist/$ModuleName"
-  New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
-  Test-Verification -Path ./ | Format-Table -auto
-  Set-location ../../ # back
+
+# Create New Verification CheckSums requires root module directory
+set-location "./dist/$ModuleName"
+New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
+Test-Verification -Path ./ | Format-Table -auto
+Set-location ../../ # back
+
+
+try {
   # Create Nuget nuspec, Proget, gitlab, PSGallery
   New-NuspecPackageFile @NuSpecParams
   New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
-  # ===========================================
 }
 catch {
   [console]::write( "Error creating Nuget Generic package: $($_.Exception.Message)`n" )
