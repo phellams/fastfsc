@@ -136,7 +136,9 @@ mono_chocolatey_package:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
   script:
-    - choco pack ./dist/fastfsc --outputdirectory "./dist/choco" || exit 1
+    - |
+      cd ./dist/fastfsc
+      choco pack --outputdirectory "./dist/choco" || exit 1
 
 zip_build:
   stage: build
@@ -179,7 +181,7 @@ mono_choco_nuget:
   <<: *deploy_template
   image: docker.io/chocolatey/choco:latest
   needs:
-    - job: nupsforge_chocolatey_nupsec
+    - job: mono_chocolatey_package
       artifacts: true
   tags:
     - docker
