@@ -43,12 +43,11 @@ set-location "./dist/$ModuleName"
 New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
 Test-Verification -Path ./ | Format-Table -auto
 Set-location ../../ # back
-
+# Create Nuget nuspec, Proget, gitlab, PSGallery
+New-NuspecPackageFile @NuSpecParams
 
 try {
-  # Create Nuget nuspec, Proget, gitlab, PSGallery
-  New-NuspecPackageFile @NuSpecParams
-  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
+  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci -UseDotNetNugetPacker
 }
 catch {
   [console]::write( "Error creating Nuget Generic package: $($_.Exception.Message)`n" )

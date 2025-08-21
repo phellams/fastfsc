@@ -3,13 +3,24 @@ if ( test-path ".\dist" ){ remove-item ".\dist" -Recurse -Force -erroraction sil
 else { New-Item -Path .\ -Name "dist" -ItemType Directory }
 
 # Import Modules local for now
-import-module -Name G:\devspace\projects\powershell\_repos\commitfusion\; # Get-GitAutoVerion extracted and used as standalone
-import-module -name G:\devspace\projects\powershell\_repos\quicklog\;
-import-module -name G:\devspace\projects\powershell\_repos\shelldock\;
-import-module -name G:\devspace\projects\powershell\_repos\psmpacker\; 
-import-module -Name G:\devspace\projects\powershell\_repos\nupsforge\; 
-import-module -name G:\devspace\projects\powershell\_repos\csverify\; 
-
+if($isWindows){
+    # Import-Module -Name /mnt/g/devspace/projects/powershell/_repos/colorconsole
+    import-module -Name G:\devspace\projects\powershell\_repos\commitfusion\; # Get-GitAutoVerion extracted and used as standalone
+    import-module -name G:\devspace\projects\powershell\_repos\quicklog\;
+    import-module -name G:\devspace\projects\powershell\_repos\shelldock\;
+    import-module -name G:\devspace\projects\powershell\_repos\psmpacker\; 
+    import-module -Name G:\devspace\projects\powershell\_repos\nupsforge\; 
+    import-module -name G:\devspace\projects\powershell\_repos\csverify\; 
+}
+if($IsLinux){
+    Import-Module -Name /mnt/g/devspace/projects/powershell/_repos/colorconsole
+    import-module -Name /mnt/g/devspace/projects/powershell/_repos/commitfusion/;
+    import-module -name /mnt/g/devspace/projects/powershell/_repos/quicklog/;
+    import-module -name /mnt/g/devspace/projects/powershell/_repos/shelldock/;
+    import-module -name /mnt/g/devspace/projects/powershell/_repos/psmpacker/;
+    import-module -Name /mnt/g/devspace/projects/powershell/_repos/nupsforge/;
+    import-module -name /mnt/g/devspace/projects/powershell/_repos/csverify/;
+}
 # Build the module
 #NOTE: Tools folder is automaticlly included in the module, so no need to specify it in the build_config.json
 
