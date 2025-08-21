@@ -68,13 +68,6 @@ pester_coverage:
     - |
       pwsh -c Invoke-Pester -Script ./devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
 
-analyzer:
-  <<: *test_template
-  script:
-    - |
-      chmod +x ./devops/scripts/test/test-sa-before-build.ps1
-      pwsh -c ./devops/scripts/test/test-sa-before-build.ps1
-
 #---------------------------------------------
 # ! || Build Stage ||
 #==============================================
@@ -86,16 +79,25 @@ psmpacker-build:
   needs:
     - job: pester
       artifacts: false
-    - job: pester_coverage
-      artifacts: true
-    - job: analyzer
-      artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
   script:
     - |
       pwsh -c ./devops/scripts/build/build-module.ps1 || exit 1
+
+analyzer:
+  stage: build
+  needs:
+    - job: psmpacker-build
+      artifacts: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+  script:
+    - |
+      chmod +x ./devops/scripts/test/test-sa-before-build.ps1
+      pwsh -c ./devops/scripts/test/test-sa-before-build.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
 nupsforge_general_nuget_packages:
@@ -205,13 +207,11 @@ psgal_zip:
 git_tag:
   <<: *release_template
   needs:
-    - job: psmpacker-build
-      artifacts: false
     - job: nupsforge_general_nuget_packages
       artifacts: true
-    - job: nupsforge_chocolatey_nupsec
-      artifacts: true
     - job: mono_chocolatey_package
+      artifacts: true
+    - job: psgal_zip
       artifacts: true
   script:
     - |
@@ -239,10 +239,6 @@ gitlab_release:
   needs:
     - job: git_tag
       artifacts: false
-    - job: nupsforge_general_nuget_packages
-      artifacts: true
-    - job: mono_choco_nuget
-      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
