@@ -6,12 +6,16 @@ default:
     - docker
   artifacts:
     paths:
-      - ./dist/*
+      - ./dist
       - ./coverage.xml
+    expire_in: 1 week
     reports:
       # This is the key line. It tells GitLab to load build.env
       # and make its contents available as environment variables.
       dotenv: build.env
+    # script:
+    #   - |
+    #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
 
 #---------------------------------------------
 # Define the stages of the pipeline
@@ -20,7 +24,7 @@ stages:
   - build
   - deploy
   - release
-
+2
 #---------------------------------------------
 # Define pipeline-wide workflow control
 workflow:
@@ -130,6 +134,8 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
+    - job: psmpacker-build
+      artifacts: false
     - job: nupsforge_chocolatey_nupsec
       artifacts: true
   rules:
@@ -210,11 +216,11 @@ git_tag:
   <<: *release_template
   needs:
     - job: nupsforge_general_nuget_packages
-      artifacts: true
+      artifacts: false
     - job: mono_chocolatey_package
-      artifacts: true
+      artifacts: false
     - job: psgal_zip
-      artifacts: true
+      artifacts: false
   script:
     - |
       pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
