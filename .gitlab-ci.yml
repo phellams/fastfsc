@@ -9,10 +9,6 @@ default:
       - ./dist
       - ./coverage.xml
     expire_in: 1 week
-    reports:
-      # This is the key line. It tells GitLab to load build.env
-      # and make its contents available as environment variables.
-      dotenv: build.env
     # script:
     #   - |
     #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
@@ -189,7 +185,7 @@ mono_choco_nuget:
   tags:
     - docker
   script:
-    - choco push ./dist/choco/$ENV:CHOCO_NUPKG_PACKAGE_NAME.nupkg --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
+    - choco push ./dist/choco/${CHOCO_NUPKG_PACKAGE_NAME} --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
 
 # Deploy PSGallery module via zip and Publish modules
 psgal_zip:
