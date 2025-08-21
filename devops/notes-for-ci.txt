@@ -15,3 +15,6 @@ workflow:
   - Confirm Mono Version
 
 Name Image: docker.io/sgkens/phellams-automator-choco:latest
+ - Version Test Successfull, works with choco pack and choco push, cant install
+   and test choco powershell or binary packages.
+ - Chart at
