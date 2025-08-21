@@ -134,8 +134,6 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
-    - job: psmpacker-build
-      artifacts: false
     - job: nupsforge_chocolatey_nupsec
       artifacts: true
   rules:
