@@ -185,7 +185,10 @@ mono_choco_nuget:
   tags:
     - docker
   script:
-    - choco push ./dist/choco/${CHOCO_NUPKG_PACKAGE_NAME} --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
+    - |
+      cd ./dist/choco
+      # Ensure the package name is set correctly
+      choco push ${CHOCO_NUPKG_PACKAGE_NAME} --source 'https://community.chocolatey.org/' --api-key $ENV:CHOCO_API_KEY
 
 # Deploy PSGallery module via zip and Publish modules
 psgal_zip:
