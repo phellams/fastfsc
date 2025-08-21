@@ -36,8 +36,7 @@ Get-FolderSizeParallel -Path "D:\LargeDataset"
 
 # Pipeline support
 "C:\Users", "C:\Program Files" | Get-FolderSizeFast
-```
-
+``
 ## Functions
 
 ### Get-FolderSizeFast
