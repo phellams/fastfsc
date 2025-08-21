@@ -1,10 +1,14 @@
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$modulename     = $ModuleConfig.modulename
 $ModuleManifest = Test-ModuleManifest -path "./dist/$moduleName/$moduleName.psd1"
-$modulename     = $ModuleConfig.name
+$ModuleVersion  = $ModuleManifest.Version
+$prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 #---CONFIG----------------------------
 
-#------------------------------------
+# Set PreRelease
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
+else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 try {
   [console]::writeline("Attempting to publish $modulename to PSGallery")
