@@ -3,8 +3,12 @@ $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $PreRelease     = $ModuleManifest.PrivateData.PSData.Prerelease
-$ModuleManifest = $ModuleManifest
 #---CONFIG----------------------------
+
+# Set PreRelease
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
+else { $ModuleVersion = "$ModuleVersion-$prerelease" }
+
 
 # Check if pre-release if so check name to reflect
 
