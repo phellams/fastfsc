@@ -10,14 +10,19 @@ $ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
 
 $AutoVersion = (Get-GitAutoVersion).Version
 
-# for csverify
-if (!(Test-Path -Path "./dist/$moduleName/tools")) { 
-    New-Item -Path "./dist/$moduleName/tools" -ItemType Directory 
-}
-
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
     New-Item -Path './dist' -ItemType Directory 
+}
+
+# for build output
+if (!(Test-Path -path "./dist/nuget")) { mkdir "./dist/nuget" }
+if (!(Test-Path -path "./dist/choco")) { mkdir "./dist/choco" }
+if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
+
+# for csverify
+if (!(Test-Path -Path "./dist/$moduleName/tools")) { 
+    New-Item -Path "./dist/$moduleName/tools" -ItemType Directory 
 }
 
 Build-Module -SourcePath ./ `
