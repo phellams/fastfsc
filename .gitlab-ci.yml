@@ -137,7 +137,7 @@ mono_chocolatey_package:
   script:
     - |
       cd ./dist/fastfsc
-      choco pack --outputdirectory "./dist/choco" || exit 1
+      choco pack --outputdirectory "../dist/choco" || exit 1
 
 zip_build:
   stage: build
