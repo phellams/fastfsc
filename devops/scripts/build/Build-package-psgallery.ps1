@@ -6,12 +6,9 @@ $PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleVersion = $ModuleManifest.Version #-replace "/./d+$", ""
 #---CONFIG----------------------------
 
-
-
-if (!(Test-Path -path "./dist/nuget")) { mkdir "./dist/nuget" }
-if (!(Test-Path -path "./dist/choco")) { mkdir "./dist/choco" }
-if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
-
+# Set PreRelease
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
+else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 
 # ===========================================
@@ -34,10 +31,6 @@ $NuSpecParams = @{
 # ===========================================
 #             PowerShell Gallery
 # ===========================================
-
-if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
-else { $ModuleVersion = "$ModuleVersion-$prerelease" }
-
 set-location "./dist/$ModuleName"
 New-VerificationFile -RootPath '.\' -OutputPath '.\tools' | Format-Table -auto
 
