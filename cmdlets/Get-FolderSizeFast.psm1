@@ -120,7 +120,12 @@ function Get-FolderSizeFast {
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
         [string]$Path,
         
-        [switch]$Detailed
+        [Parameter(Mandatory = $false)]
+        [switch]$Detailed,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('json', 'xml', 'text')]                    
+        [switch]$json
     )
     
     process {
@@ -157,8 +162,3 @@ function Get-FolderSizeFast {
         }
     }
 }
-
-# Usage examples:
-# Get-FolderSizeFast -Path "C:\Windows"
-# Get-FolderSizeFast -Path "C:\Users" -Detailed
-# "C:\Program Files", "C:\Windows" | Get-FolderSizeFast
