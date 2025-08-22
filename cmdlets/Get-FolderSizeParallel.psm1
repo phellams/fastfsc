@@ -75,7 +75,9 @@ function Get-FolderSizeParallel {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$Path
+        [string]$Path,
+        [Parameter(Mandatory = $false)]
+        [switch]$json
     )
     
     process {
@@ -87,7 +89,7 @@ function Get-FolderSizeParallel {
             
             $stopwatch.Stop()
             
-            [PSCustomObject]@{
+            $folderstats = [PSCustomObject]@{
                 Path              = $resolvedPath.Path
                 SizeBytes         = $size
                 SizeKB            = [Math]::Round($size / 1KB, 2)
@@ -100,7 +102,12 @@ function Get-FolderSizeParallel {
             }
         }
         catch {
-            Write-Error "Error calculating folder size for '$Path': $($_.Exception.Message)"
+            [console]::writeline("Error: $($_.Exception.Message)")
+        }
+        if ($json) {
+            return $folderstats | ConvertTo-Json -Depth 5
+        } else {
+            return $folderstats
         }
     }
 }
