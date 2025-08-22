@@ -47,7 +47,7 @@ Set-location ../../ # back
 New-NuspecPackageFile @NuSpecParams
 
 try {
-  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci -UseDotNetNugetPacker
+  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
 }
 catch {
   [console]::write( "Error creating Nuget Generic package: $($_.Exception.Message)`n" )
