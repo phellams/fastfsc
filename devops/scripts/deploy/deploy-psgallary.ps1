@@ -10,6 +10,9 @@ $prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
 else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
+
+# Check if module version exists
+
 try {
   [console]::writeline("Attempting to publish $modulename to PSGallery")
   publish-Module `

@@ -27,7 +27,7 @@ if($IsLinux){
 # TEST BUILD
 ./devops/scripts/build/build-module.ps1 
 ./devops/scripts/build/build-package-psgallery.ps1
-#./devops/scripts/build/build-package-generic-nuget.ps1
+./devops/scripts/build/build-package-generic-nuget.ps1
 #./devops/scripts/build/Build-nuspec-choco.ps1 
 # Build for choco is built throw the choco docker mono image
 # # for local build only.#./devops/scripts/deploy-psgallary.ps1
@@ -35,6 +35,6 @@ if($IsLinux){
 1
 # TEST DEPLOY
 #./devops/scripts/deploy/deploy-gitlab.ps1
-./devops/scripts/deploy/deploy-psgallary.ps1
+#./devops/scripts/deploy/deploy-psgallary.ps1
 #./devops/scripts/deploy-extended-chocolatey.ps1
 #./devops/scripts/create-tag.ps1

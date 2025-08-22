@@ -11,14 +11,6 @@ if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion
 else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 
-# Check if pre-release if so check name to reflect
-
-if (!(Test-Path -path "./dist/nuget")) { mkdir "./dist/nuget" }
-if (!(Test-Path -path "./dist/choco")) { mkdir "./dist/choco" }
-if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
-
-
-
 # ===========================================
 # https://raw.githubusercontent.com/yokoffing/Betterfox/main/user.js
 # ===========================================
