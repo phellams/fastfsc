@@ -1,8 +1,14 @@
+[cmdletbinding()]
 param (
     [switch]$localBuild,
     [switch]$wslBuild,
     [switch]$Automator,
-    [switch]$Linux
+    [switch]$Linux,
+    [switch]$build,
+    [switch]$PsGalNupkg,
+    [switch]$GenericNupkg,
+    [switch]$ChocoNuSpec,
+    [switch]$ChocoNupkgWindows
 )
 
 # Remove dist folder if it exists
@@ -46,7 +52,6 @@ if ($GenericNupkg) { ./devops/scripts/build/build-package-generic-nuget.ps1 }
 if ($ChocoNuSpec)  { ./devops/scripts/build/Build-nuspec-choco.ps1 }
 if ($ChocoNupkgWindows)   { ./devops/scripts/build/build-package-choco-windows.ps1  }
 
-1
 # TEST DEPLOY
 #./devops/scripts/deploy/deploy-gitlab.ps1
 #./devops/scripts/deploy/deploy-psgallary.ps1
