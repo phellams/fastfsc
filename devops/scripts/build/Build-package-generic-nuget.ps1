@@ -14,6 +14,14 @@ else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 # ===========================================
 # https://raw.githubusercontent.com/yokoffing/Betterfox/main/user.js
 # ===========================================
+
+# Create New Verification CheckSums requires root module directory
+# set-location "./dist/$ModuleName"
+# New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
+# Test-Verification -Path ./ | Format-Table -auto
+# Set-location ../../ # back
+
+# Create Nuget nuspec, Proget, gitlab, PSGallery
 $NuSpecParams = @{
   path          = "./dist/$ModuleName"
   ModuleName    = $ModuleName
@@ -28,20 +36,5 @@ $NuSpecParams = @{
   PreRelease    = $PreRelease
 }
 
-
-
-# Create New Verification CheckSums requires root module directory
-set-location "./dist/$ModuleName"
-New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
-Test-Verification -Path ./ | Format-Table -auto
-Set-location ../../ # back
-# Create Nuget nuspec, Proget, gitlab, PSGallery
 New-NuspecPackageFile @NuSpecParams
-
-try {
-  New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
-}
-catch {
-  [console]::write( "Error creating Nuget Generic package: $($_.Exception.Message)`n" )
-  exit 1
-}
+New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci

@@ -31,11 +31,12 @@ $NuSpecParams = @{
 # ===========================================
 #             PowerShell Gallery
 # ===========================================
-set-location "./dist/$ModuleName"
-New-VerificationFile -RootPath '.\' -OutputPath '.\tools' | Format-Table -auto
+# set-location "./dist/$ModuleName"
+# New-VerificationFile -RootPath '.\' -OutputPath '.\tools' | Format-Table -auto
 
-Test-Verification -Path '.\' | Format-Table -auto
-Set-location ../../ # back
+# Test-Verification -Path '.\' | Format-Table -auto
+# Set-location ../../ # back
+
 # Create Nuget nuspec, Proget, gitlab, PSGallery
 New-NuspecPackageFile @NuSpecParams
 

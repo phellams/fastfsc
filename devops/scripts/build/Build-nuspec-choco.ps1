@@ -52,10 +52,10 @@ $NuSpecParamsChoco = @{
 
 try {
   # Create New Verification CheckSums Request root module directory
-  Set-Location "./dist/$ModuleName"
-  New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
-  Test-Verification -Path ./ | Format-Table -auto
-  Set-Location ../../ # back
+  # Set-Location "./dist/$ModuleName"
+  # New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
+  # Test-Verification -Path ./ | Format-Table -auto
+  # Set-Location ../../ # back
   # Create Choco nuspec
   New-ChocoNuspecFile @NuSpecParamsChoco
 
