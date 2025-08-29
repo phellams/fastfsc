@@ -213,8 +213,6 @@ upload-artifacts:
   script:
     - |
       pwsh -c ./devops/scripts/deploy/deploy-artifacts.ps1 || exit 1
-  only:
-    - tags
 #---------------------------------------------
 # ! || Release Stage ||
 #==============================================
