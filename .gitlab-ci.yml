@@ -200,6 +200,21 @@ psgal_zip:
     - |
       pwsh -c ./devops/scripts/deploy/deploy-psgallary.ps1 || exit 1
 
+# using curl to upload artifacts
+upload-artifacts:
+  <<: *deploy_template
+  needs:
+   - job: psgal_zip
+     artifacts: false
+   - job: nupsforge_general_nuget_packages
+     artifacts: false
+   - job: mono_chocolatey_package
+     artifacts: false
+  script:
+    - |
+      pwsh -c ./devops/scripts/deploy/deploy-artifacts.ps1 || exit 1
+  only:
+    - tags
 #---------------------------------------------
 # ! || Release Stage ||
 #==============================================
