@@ -36,5 +36,8 @@ $NuSpecParams = @{
   PreRelease    = $PreRelease
 }
 
+$module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
+$module_output_path = [system.io.path]::combine($pwd, "dist", "nuget")
+
 New-NuspecPackageFile @NuSpecParams
-New-NupkgPackage -path "./dist/$ModuleName"  -outpath "./dist/nuget" -ci
+New-NupkgPackage -path $module_source_path  -outpath $module_output_path -ci

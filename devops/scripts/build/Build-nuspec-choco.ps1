@@ -28,8 +28,10 @@ $markdown_readme = Get-Content -Path .\devops\choco_description.md -Raw `
                                -Force `
                                -WarningAction SilentlyContinue
 
+$module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
+
 $NuSpecParamsChoco = @{
-  path              = ".\dist\$ModuleName"
+  path              = $module_source_path
   ModuleName        = $ModuleName
   ModuleVersion     = $ModuleManifest.Version #-replace "\.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
   Author            = $ModuleManifest.Author

@@ -53,10 +53,10 @@ $NuSpecParamsChoco = @{
 
 
 # Create New Verification CheckSums Request root module directory
-# Set-Location "./dist/$ModuleName"
-# New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
-# Test-Verification -Path ./ | Format-Table -auto
-# Set-Location ../../ # back
+# # # # # Set-Location "./dist/$ModuleName"
+# # # # # New-VerificationFile -RootPath ./ -OutputPath ./tools | Format-Table -auto
+# # # # # Test-Verification -Path ./ | Format-Table -auto
+# # # # # Set-Location ../../ # back
 # Create Choco nuspec
 New-ChocoNuspecFile @NuSpecParamsChoco
 
@@ -64,13 +64,16 @@ New-ChocoNuspecFile @NuSpecParamsChoco
 # Set the choco package name as a ENV and use choco push
 $ENV:CHOCO_NUPKG_PACKAGE_NAME = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion"
 
+$module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
+$module_output_path = [system.io.path]::combine($pwd, "dist", "choco")
+
 try {
-  New-ChocoPackage -path "./dist/$ModuleName"  -outpath "./dist/choco"
+  New-ChocoPackage -path $module_source_path  -outpath $module_output_path
 
   # Rename choco package for build artifact as output name is the same 
   # for psgal, nuget and choco
-  Rename-Item -Path "./dist/choco/$ModuleName.$moduleVersion.nupkg" `
-              -NewName "$ModuleName.$moduleVersion-choco.nupkg"
+  # Rename-Item -Path "$module_source_path$ModuleName.$moduleVersion.nupkg" `
+  #             -NewName "$ModuleName.$moduleVersion-choco.nupkg"
 } catch {
   [console]::write( "Error creating Choco package: $($_.Exception.Message)`n" )
   exit 1
