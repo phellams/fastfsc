@@ -36,7 +36,7 @@ Get-FolderSizeParallel -Path "D:\LargeDataset"
 
 # Pipeline support
 "C:\Users", "C:\Program Files" | Get-FolderSizeFast
-``
+```
 ## Functions
 
 ### Get-FolderSizeFast
@@ -72,6 +72,7 @@ BestUnit    : 12.0 GB
 FileCount   : 45234
 FolderCount : 3421
 ```
+
 
 ### Get-FolderSizeParallel
 
@@ -192,18 +193,21 @@ The module gracefully handles common issues:
 ## Troubleshooting
 
 ### Access Denied Errors
+
 ```powershell
 # Run PowerShell as Administrator for system directories
 # Or use specific credentials for network shares
 ```
 
 ### Slow Performance on Network Drives
+
 ```powershell
 # Use the parallel version for better network performance
 Get-FolderSizeParallel -Path "\\network\path"
 ```
 
 ### Memory Issues with Huge Directories
+
 ```powershell
 # The C# implementation is memory efficient, but for extremely large
 # directories (millions of files), consider processing subdirectories individually
@@ -222,4 +226,3 @@ This module is designed to be lightweight and fast. When contributing:
 This code is provided as-is for educational and practical use. Feel free to modify and distribute according to your needs.
 
 ## Changelog
-
