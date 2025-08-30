@@ -63,8 +63,17 @@ try {
 
   # Create ENV as Choco image does not support powershell execution
   # Set the choco package name as a ENV and use choco push
+  # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
+  New-Item -Type File -Path "build.env" -Force -Value $null
   $choco_package_name = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
-  $choco_package_name | Out-File -FilePath "build.env"
+  $package_version = "BUILD_PACKAGE_VERSION=$ModuleVersion"
+  $package_name = "BUILD_PACKAGE_NAME=$ModuleName"
+  $BuildEnvContent = @(
+    $choco_package_name,
+    $package_version,
+    $package_name
+  )
+  Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 
   # Use Choco mono to create choco package and deploy
   #New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco" -ci
