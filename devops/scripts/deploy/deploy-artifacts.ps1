@@ -35,7 +35,7 @@ if ($chocoFile) {
 }
 
 # Upload ZIP file
-$zipFile = Get-ChildItem -Recurse ./dist/psgal -Filter "$modulename-$ModuleVersion.zip" | Select-Object -First 1
+$zipFile = Get-ChildItem -Recurse ./dist/psgal -Filter "$modulename-$ModuleVersion-psgal.zip" | Select-Object -First 1
 if ($zipFile) {
     [console]::writeline("Uploading ZIP file: $($zipFile.Name)")
     Invoke-RestMethod -Uri "$baseUrl/$($zipFile.Name)" -Method Put -InFile $zipFile.FullName -Headers $headers
