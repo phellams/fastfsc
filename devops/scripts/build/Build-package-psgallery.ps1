@@ -44,7 +44,7 @@ New-NuspecPackageFile @NuSpecParams
 # copy-item -recurse -path "./dist/$ModuleName" -destination "./dist/psgal/$ModuleName"
 $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 $module_output_path = [system.io.path]::combine($pwd, "dist", "psgal")
-$zipFileName = "$ModuleName-$ModuleVersion.zip"
+$zipFileName = "$ModuleName-$ModuleVersion-psgal.zip"
 [console]::write( "Creating Zip File for PSGallery `n" )
 [console]::write( "Source: $module_source_path/* `n" )
 [console]::write( "output: $module_output_path/$($zipFileName) `n" )
