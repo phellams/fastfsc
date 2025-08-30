@@ -7,27 +7,6 @@ $prerelease = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleVersion = $ModuleManifest.Version
 #---CONFIG----------------------------
 
-$assets = @{
-  links = @(
-    @{
-      name      = "NuGet Package"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module.$env:CI_COMMIT_TAG.nupkg"
-      link_type = "package"
-    },
-    @{
-      name      = "Chocolatey Package"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module.$env:CI_COMMIT_TAG-choco.nupkg"
-      link_type = "package"
-    },
-    @{
-      name      = "ZIP Archive"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module-$env:CI_COMMIT_TAG.zip"
-      link_type = "package"
-    }
-  )
-}
-
-
 # Parse release body
 $release_template = Get-Content -Path './devops/templates/release-template.md' -Raw
 
@@ -40,6 +19,27 @@ else {
   $release_template = $release_template -replace 'PRERELEASE_CHOCO_PLACE_HOLDER', "--prerelease $prerelease" `
                                         -replace 'PRERELEASE_PSGAL_PLACE_HOLDER', "-AllowPrerelease"
 }
+
+$assets = @{
+  links = @(
+    @{
+      name      = "NuGet Package"
+      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion.nupkg"
+      link_type = "package"
+    },
+    @{
+      name      = "Chocolatey Package"
+      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion-choco.nupkg"
+      link_type = "package"
+    },
+    @{
+      name      = "ZIP Archive"
+      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module-$env:CI_COMMIT_TAG.zip"
+      link_type = "package"
+    }
+  )
+}
+
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `

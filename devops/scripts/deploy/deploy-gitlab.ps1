@@ -15,29 +15,43 @@ if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion
 else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 try {
-  Write-host -foregroundcolor yellow "Attempting to Register Gitlab: $gitlab_uri@$Gitlab_Username"
+  [console]::writeline("Attempting to Register Gitlab: $gitlab_uri@$Gitlab_Username")
   #dotnet nuget add source $gitlab_uri/$NugetProjectPath --name gitlab --username $GitLab_Username --password $ENV:GITLAB_API_KEY
   nuget sources add -name "gitlab_$projectid_$ModuleName`_Packages" -source $gitlab_uri/$NugetProjectPath -username $GitLab_Username -password $env:GITLAB_API_KEY
-  Write-host -foregroundcolor green "Complete"
+  [console]::writeline("Successfully registered Gitlab: $gitlab_uri/$NugetProjectPath")
 }
 catch [system.exception] {
-  Write-Host "Failed to push to gitlab"
-  Write-Host $_
+  [console]::writeline("Failed to register Gitlab: $gitlab_uri/$NugetProjectPath")
+  [console]::writeline($_.Exception.Message)
   exit 1
+}
+
+# check if package already exists
+try {
+  $response = Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/$projectid/packages/nuget/$ModuleName/$ModuleVersion"
+  if ($response.StatusCode -eq 200) {
+    [console]::writeline("Package already exists: $gitlab_uri/$NugetProjectPath")
+    exit 0
+  }
+}
+catch {
+  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
 }
 
 try {
   Write-host -foregroundcolor yellow "Attempting to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath"
   #dotnet nuget push ./dist/nuget/$modulename.$SemVerVersion.nupkg --source gitlab 
   nuget push ./dist/nuget/$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_API_KEY
+  
+  if ($LASTEXITCODE -ne 0) {
+    [console]::writeline("Failed to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
+    exit 1
+  }
+
   nuget sources remove -Name "gitlab_$projectid_$ModuleName`_Packages"
-  if($LASTEXITCODE -ne 0) {
-    Write-Host "Failed to push to gitlab"
-    exit $LASTEXITCODE
-  }    
 }
 catch [system.exception] {
-  Write-Host "Failed to push to gitlab"
-  Write-Host $_
+  [console]::writeline("Failed to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
+  [console]::writeline($_.Exception.Message)
   exit 1
 }

@@ -55,6 +55,6 @@ try{
                    -compressionlevel optimal `
                    -update
 }catch {
-  [console]::write( "Error creating PSGallery package: $($_.Exception.Message)`n" )
+  [console]::write( "Error creating ZIP of PSGallery Folder: $($_.Exception.Message)`n" )
   exit 1
 }

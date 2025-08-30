@@ -12,7 +12,15 @@ else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 
 # Check if module version exists
+$psgal_curretnversion = Find-Module -Name $modulename -Repository 'psgallery' | Select-Object -ExpandProperty Version
+if ($psgal_curretnversion -eq $ModuleVersion) {
+  [console]::writeline("Module version $ModuleVersion already exists in PSGallery")
+  exit 0
+} else {
+  [console]::writeline("Module version $ModuleVersion does not exist in PSGallery")
+}
 
+# Publish to PSGallery if version does not exist
 try {
   [console]::writeline("Attempting to publish $modulename to PSGallery")
   publish-Module `
@@ -27,8 +35,9 @@ try {
     -Verbose
 
 } catch {
-  Write-Host "Failed to publish to PSGallery"
-  Write-Host $_
+  [console]::writeline("Failed to publish $modulename to PSGallery")
+  [console]::writeline("Error details:")
+  [console]::writeline($_.Exception.Message)
   exit 1
 }
 
