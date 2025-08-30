@@ -250,7 +250,7 @@ mirror_pointer_github:
 gitlab_release:
   <<: *release_template
   needs:
-    - job: upload-artifacts
+    - job: upload_artifacts
       artifacts: true
   script:
     - |
