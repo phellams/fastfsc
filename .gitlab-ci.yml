@@ -18,8 +18,8 @@ default:
 stages:
   - test
   - build
-  - deploy
   - release
+  - deploy
 #---------------------------------------------
 # Define pipeline-wide workflow control
 workflow:
@@ -135,9 +135,10 @@ mono_chocolatey_package:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
   script:
-    - |
+    - | # Build the Chocolatey package and remove the nupkg file
       cd ./dist/fastfsc
       choco pack --outputdirectory "../choco" || exit 1
+      mv ../choco/*.nupkg "../choco/${CHOCO_NUPKG_PACKAGE_NAME}" || exit 1
 
 zip_build:
   stage: build
@@ -186,9 +187,8 @@ upload_chocolatey:
     - docker
   script:
     - |
-      cd ./dist/choco
-      # Ensure the package name is set correctly
-      choco push "${CHOCO_NUPKG_PACKAGE_NAME}" --source 'https://community.chocolatey.org/' --api-key "${CHOCO_API_KEY}"
+      bash -c ./devops/scripts/deploy/deploy-choco.sh || exit 1
+      
 
 # Deploy PSGallery module via zip and Publish modules
 upload_psgallery:
