@@ -99,7 +99,7 @@ analyzer:
       pwsh -c ./devops/scripts/test/test-sa-before-build.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
-nupsforge_general_nuget_packages:
+nupsforge_general_nuget_package:
   stage: build
   needs:
     - job: psmpacker-build
@@ -111,7 +111,7 @@ nupsforge_general_nuget_packages:
     - |
       pwsh -c ./devops/scripts/build/Build-package-generic-nuget.ps1 || exit 1
 
-nupsforge_chocolatey_nupsec:
+nupsforge_chocolatey_nupsec_file:
   stage: build
   needs:
     - job: psmpacker-build
@@ -129,7 +129,7 @@ mono_chocolatey_package:
   tags:
     - docker
   needs:
-    - job: nupsforge_chocolatey_nupsec
+    - job: nupsforge_chocolatey_nupsec_file
       artifacts: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
@@ -142,7 +142,7 @@ mono_chocolatey_package:
 zip_build:
   stage: build
   needs:
-    - job: nupsforge_general_nuget_packages
+    - job: nupsforge_general_nuget_package
       artifacts: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
@@ -154,10 +154,10 @@ zip_build:
 #---------------------------------------------
 # ! || Deploy Stage ||
 #==============================================
-gitlab_nuget:
+upload_gitlab_package:
   <<: *deploy_template
   needs:
-    - job: nupsforge_general_nuget_packages
+    - job: nupsforge_general_nuget_package
       artifacts: true
   script:
     - |
@@ -166,7 +166,7 @@ gitlab_nuget:
 # proget_nuget:
 #   <<: *deploy_template
 #   needs:
-#     - job: nupsforge_general_nuget_packages
+#     - job: nupsforge_general_nuget_package
 #       artifacts: true
 #   script:
 #     - ./devops/scripts/deploy-proget.ps1
@@ -176,7 +176,7 @@ gitlab_nuget:
 #? Does modules require chocolatey?
 #? building choco from source with mono will encounter issues.
 #? Choco releases a docker image that can be used to build packages
-mono_choco_nuget:
+upload_chocolatey:
   <<: *deploy_template
   image: docker.io/chocolatey/choco:latest
   needs:
@@ -188,10 +188,10 @@ mono_choco_nuget:
     - |
       cd ./dist/choco
       # Ensure the package name is set correctly
-      choco push ${CHOCO_NUPKG_PACKAGE_NAME} --source 'https://community.chocolatey.org/' --api-key ${CHOCO_API_KEY}
+      choco push "${CHOCO_NUPKG_PACKAGE_NAME}" --source 'https://community.chocolatey.org/' --api-key "${CHOCO_API_KEY}"
 
 # Deploy PSGallery module via zip and Publish modules
-psgal_zip:
+upload_psgallery:
   <<: *deploy_template
   needs:
    - job: zip_build
@@ -201,15 +201,15 @@ psgal_zip:
       pwsh -c ./devops/scripts/deploy/deploy-psgallary.ps1 || exit 1
 
 # using curl to upload artifacts
-upload-artifacts:
+upload_artifacts:
   <<: *deploy_template
   needs:
-   - job: psgal_zip
-     artifacts: false
-   - job: nupsforge_general_nuget_packages
-     artifacts: false
+   - job: zip_build
+     artifacts: true
+   - job: nupsforge_general_nuget_package
+     artifacts: true
    - job: mono_chocolatey_package
-     artifacts: false
+     artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/deploy/deploy-artifacts.ps1 || exit 1
@@ -224,12 +224,8 @@ upload-artifacts:
 git_tag:
   <<: *release_template
   needs:
-    - job: nupsforge_general_nuget_packages
-      artifacts: false
-    - job: mono_chocolatey_package
-      artifacts: false
-    - job: psgal_zip
-      artifacts: false
+    - job: upload_artifacts
+      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
@@ -254,8 +250,8 @@ mirror_pointer_github:
 gitlab_release:
   <<: *release_template
   needs:
-    - job: git_tag
-      artifacts: false
+    - job: upload_artifacts
+      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
@@ -263,7 +259,7 @@ gitlab_release:
 # github_release:
 #   <<: *release_template
 #   needs:
-#     - job: nupsforge_general_nuget_packages
+#     - job: nupsforge_general_nuget_package
 #       artifacts: true
 #     - job: git_tag
 #       artifacts: false
