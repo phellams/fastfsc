@@ -13,7 +13,7 @@ else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 # Check if module version exists
 [console]::writeline("Checking if module version $ModuleVersion exists in PSGallery")
-[string]$psgal_curretnversion = Find-Module -Name $modulename `
+[string]$psgal_currentnversion = Find-Module -Name $modulename `
                                             -RequiredVersion $ModuleVersion `
                                             -Repository 'psgallery' `
                                             -AllowPrerelease | Select-Object -ExpandProperty Version
