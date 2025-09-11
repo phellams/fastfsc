@@ -34,14 +34,14 @@ try {
     [console]::writeline("Package already exists: $gitlab_uri/$NugetProjectPath")
     exit 0
   }
-  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath"
+  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
 }
 catch {
   [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
 }
 
 try {
-  Write-host -foregroundcolor yellow "Attempting to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath"
+  [console]::writeline("Pushing $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
   #dotnet nuget push ./dist/nuget/$modulename.$SemVerVersion.nupkg --source gitlab 
   nuget push ./dist/nuget/$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_API_KEY
   
