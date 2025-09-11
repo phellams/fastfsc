@@ -8,7 +8,7 @@ default:
     paths:
       - ./dist
       - ./coverage.xml
-    expire_in: 1 week
+    #expire_in: 1 week
     # script:
     #   - |
     #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
@@ -140,6 +140,11 @@ mono_chocolatey_package:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  before_script:
+    - |
+      if [ -f build.env ]; then
+        source build.env
+      fi
   script:
     - | # Build the Chocolatey package and remove the nupkg file
       cd ./dist/fastfsc
