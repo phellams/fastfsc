@@ -6,7 +6,7 @@
 - **Build Date**: $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss UTC')
 - **Commit**: $env:CI_COMMIT_SHA
 
-### 🌐 Package RepositoriesREPONAME_PLACE_HOLDER 
+### 🌐 Package Repositories REPONAME_PLACE_HOLDER 
 
 Phellams Modules are available in the following repositories:
 

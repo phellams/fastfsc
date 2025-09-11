@@ -104,6 +104,8 @@ nupsforge_general_nuget_package:
   needs:
     - job: psmpacker-build
       artifacts: true
+    - job: analyzer
+      artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
@@ -116,6 +118,8 @@ nupsforge_chocolatey_nupsec_file:
   needs:
     - job: psmpacker-build
       artifacts: true
+    - job: analyzer
+      artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
@@ -131,6 +135,8 @@ mono_chocolatey_package:
   needs:
     - job: nupsforge_chocolatey_nupsec_file
       artifacts: true
+    - job: analyzer
+      artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
@@ -138,13 +144,15 @@ mono_chocolatey_package:
     - | # Build the Chocolatey package and remove the nupkg file
       cd ./dist/fastfsc
       choco pack --outputdirectory "../choco" || exit 1
-      mv ../choco/${PACKAGE_NAME}${PACKAGE_VERSION}.nupkg "../choco/${CHOCO_NUPKG_PACKAGE_NAME}" || exit 1
+      mv ../choco/${BUILD_PACKAGE_NAME}.${BUILD_PACKAGE_VERSION}.nupkg "../choco/${CHOCO_NUPKG_PACKAGE_NAME}" || exit 1
 
 zip_build:
   stage: build
   needs:
     - job: nupsforge_general_nuget_package
       artifacts: true
+    - job: analyzer
+      artifacts: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success

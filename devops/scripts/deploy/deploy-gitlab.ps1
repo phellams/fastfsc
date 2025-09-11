@@ -28,11 +28,13 @@ catch [system.exception] {
 
 # check if package already exists
 try {
+  [console]::writeline("Checking if package exists: $gitlab_uri/$NugetProjectPath")
   $response = Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/$projectid/packages/nuget/$ModuleName/$ModuleVersion"
   if ($response.StatusCode -eq 200) {
     [console]::writeline("Package already exists: $gitlab_uri/$NugetProjectPath")
     exit 0
   }
+  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath"
 }
 catch {
   [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
