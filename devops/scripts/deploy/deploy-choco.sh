@@ -1,7 +1,7 @@
 #!/bin/bash
 
 MODULE_NAME=NUPKG_PACKAGE_VERSION
-MODULE_VERSION=PACKAGE_VERSION
+MODULE_VERSION=BUILD_PACKAGE_VERSION
 choco_query=$(choco search ${MODULE_NAME} --version ${MODULE_VERSION} --pre)
 
 for line in $choco_query; do
