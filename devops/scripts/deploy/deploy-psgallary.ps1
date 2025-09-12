@@ -2,7 +2,7 @@
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $modulename     = $ModuleConfig.modulename
 $ModuleManifest = Test-ModuleManifest -path "./dist/$moduleName/$moduleName.psd1"
-$ModuleVersion  = $ModuleManifest.Version
+[string]$moduleversion   = $ModuleManifest.Version.ToString()
 $prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 #---CONFIG----------------------------
 
