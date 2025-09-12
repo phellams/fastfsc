@@ -55,14 +55,14 @@ $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$Module
 [string]$moduleversion   = $ModuleManifest.Version.ToString()
 
 if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
-else { $moduleversion = "$moduleversion$prerelease" }
+else { $moduleversion = "$moduleversion-$prerelease" }
 
 New-Item -Type File -Path "build.env" -Force -Value $null
 
 $BuildEnvContent = @(
-    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-choco.nupkg",
-    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-psgal.nupkg",
-    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion.nupkg",
+    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-choco.nupkg",
+    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-psgal.nupkg",
+    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion.nupkg",
     "BUILD_PACKAGE_VERSION=$moduleversion",
     "BUILD_PACKAGE_NAME=$ModuleName"
 )
