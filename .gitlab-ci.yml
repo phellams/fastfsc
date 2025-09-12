@@ -186,6 +186,8 @@ zip_build:
 upload_artifacts:
   <<: *release_template
   needs:
+   - job: psmpacker-build
+     artifacts: true
    - job: zip_build
      artifacts: true
    - job: nupsforge_general_nuget_package
@@ -300,6 +302,7 @@ upload_chocolatey:
     - docker
   script:
     - |
+      chmod +x ./devops/scripts/deploy/deploy-choco.sh || exit 1
       bash -c ./devops/scripts/deploy/deploy-choco.sh || exit 1
       
 
