@@ -13,9 +13,6 @@ default:
     # script:
     #   - |
     #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
-  before_script:
-    - |
-      git fetch --all
 
 #---------------------------------------------
 # Define the stages of the pipeline
@@ -97,6 +94,9 @@ analyzer:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  before_script:
+    - |
+      git fetch --all
   script:
     - |
       chmod +x ./devops/scripts/test/test-sa-before-build.ps1
@@ -113,6 +113,9 @@ nupsforge_general_nuget_package:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  before_script:
+    - |
+      git fetch --all
   script:
     - |
       pwsh -c ./devops/scripts/build/build-package-generic-nuget.ps1 || exit 1
@@ -127,6 +130,9 @@ nupsforge_chocolatey_nupsec_file:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  before_script:
+    - |
+      git fetch --all
   script:
     - |
       pwsh -c ./devops/scripts/build/build-nuspec-choco.ps1 || exit 1
@@ -161,6 +167,9 @@ zip_build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  before_script:
+    - |
+      git fetch --all
   script:
     - |
       pwsh -c ./devops/scripts/build/build-package-psgallery.ps1 || exit 1
