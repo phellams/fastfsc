@@ -18,15 +18,6 @@ if (!(Test-Path -path ".\dist\psgal")) { mkdir ".\dist\psgal" }
 # ===========================================
 #                CHOCOLATEY
 # ===========================================
-# Remove nuspec file from build bold
-#Remove-Item -Path ".\dist\$ModuleName\$ModuleName.nuspec"
-
-# Choco supports markdown nuget and psgallary done
-$markdown_readme = Get-Content -Path .\devops\choco_description.md -Raw `
-                               -ErrorAction Stop `
-                               -Encoding UTF8 `
-                               -Force `
-                               -WarningAction SilentlyContinue
 
 $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 
@@ -35,7 +26,7 @@ $NuSpecParamsChoco = @{
   ModuleName        = $ModuleName
   ModuleVersion     = $ModuleManifest.Version #-replace "\.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
   Author            = $ModuleManifest.Author
-  Description       = $markdown_readme #-replace '```', '```' -replace '\`', '``'
+  Description       = $ModuleManifest.PrivateData.PSData.ChocoDescription
   Summary           = $ModuleManifest.PrivateData.PSData.Summary
   ProjectUrl        = $ModuleManifest.PrivateData.PSData.ProjectUrl
   IconUrl           = $ModuleManifest.PrivateData.PSData.IconUrl

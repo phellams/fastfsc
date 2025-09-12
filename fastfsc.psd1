@@ -1,6 +1,6 @@
 @{
     RootModule         = 'fastfsc.psm1'
-    ModuleVersion      = '0.2.17'
+    ModuleVersion      = '0.2.19'
     GUID               = 'ccc9be26-17aa-4a86-8d5b-14d6d15def37'
     Author             = 'Garvey k. Snow'
     CompanyName        = 'Phellams'
@@ -35,6 +35,18 @@
             projectSourceUrl = 'https://github.com/phellams/fastfsc'
             bugTrackerUrl    = 'https://github.com/phellams/fastfsc/issues'
             Summary          = 'A PowerShell module for advanced file and folder searching with configuration management.'
+            chocoDescription = @"
+## Features
+
+- ⚡ **Ultra-fast performance** - 3-10x faster than `Get-ChildItem | Measure-Object`
+- 🔄 **Parallel processing** - Multi-threaded calculations for even better performance
+- 📊 **Multiple size units** - Automatic conversion to KB, MB, GB, TB, and PB
+- 🎯 **Smart unit selection** - `BestUnit` property shows the most readable format
+- 📈 **Detailed reporting** - File counts, folder counts, and calculation timing
+- 🛡️ **Error resilient** - Gracefully handles access denied and missing files
+- 🔗 **Pipeline support** - Works with PowerShell pipeline for batch operations
+- 🏢 **Enterprise ready** - Handles massive directory structures efficiently
+"@
             # CHOCOLATE ---------------------
 
         }        
