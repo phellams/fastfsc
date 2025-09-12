@@ -1,14 +1,21 @@
 using module ../../Get-GitAutoVersion.psm1
 
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
-[string[]]$ModuleFiles = $ModuleConfig.ModuleFiles
+$ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName              = $ModuleConfig.moduleName
+$ModuleManifest          = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
+$prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
+[string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
-[string]$moduleName = $ModuleConfig.moduleName
+[string]$moduleName      = $ModuleConfig.moduleName
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
+
+
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
+else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
@@ -41,10 +48,9 @@ $BuildEnvContent = @(
     $package_version,
     $package_name
 )
-New-Item -Type File -Path "build.env" -Force -Value $null
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 
-
+# Copy module files to dist for packaging
 Build-Module -SourcePath ./ `
              -DestinationPath './dist' `
              -Name $moduleName `
