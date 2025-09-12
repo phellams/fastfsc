@@ -5,7 +5,7 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 $ModuleName              = $ModuleConfig.moduleName
 $ModuleManifest          = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
 $prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
-$moduleVersion           = $ModuleManifest.Version
+[string]$moduleVersion   = $ModuleManifest.Version
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
@@ -15,8 +15,7 @@ $moduleVersion           = $ModuleManifest.Version
 $AutoVersion = (Get-GitAutoVersion).Version
 
 
-if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
-else { $ModuleVersion = "$ModuleVersion-$prerelease" }
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion } else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
