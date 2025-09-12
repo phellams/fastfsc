@@ -5,7 +5,7 @@ $ModuleManifest             = Test-ModuleManifest -path "./dist/$ModuleName/$Mod
 $gitlab_username            = $ModuleConfig.gituser
 $gitlab_uri                 = "https://gitlab.com" # https://$($ENV:GITLAB_HOST)"
 $projectid                  = $ModuleConfig.gitlabID_public
-$ModuleVersion              = $ModuleManifest.Version
+[string]$moduleversion   = $ModuleManifest.Version.ToString()
 $prerelease                 = $ModuleManifest.PrivateData.PSData.Prerelease
 $NugetProjectPath           = "api/v4/projects/$projectid/packages/nuget/index.json"
 #---CONFIG----------------------------

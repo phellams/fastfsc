@@ -8,14 +8,14 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
 $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 [string]$prerelease      = $ModuleManifest.PrivateData.PSData.Prerelease
-[string]$moduleVersion   = $ModuleManifest.Version
+[string]$moduleversion   = $ModuleManifest.Version.ToString()
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
 
 
-if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
-else { $ModuleVersion = "$ModuleVersion-$prerelease" }
+if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
+else { $moduleversion = "$moduleversion$prerelease" }
 
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
@@ -37,18 +37,18 @@ if (!(Test-Path -Path "./dist/$moduleName/tools")) {
 # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
 New-Item -Type File -Path "build.env" -Force -Value $null
 $BuildEnvContent = @(
-    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion-choco.nupkg",
-    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion-psgal.nupkg",
-    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion.nupkg",
-    "BUILD_PACKAGE_VERSION=$ModuleVersion",
+    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-choco.nupkg",
+    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-psgal.nupkg",
+    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion.nupkg",
+    "BUILD_PACKAGE_VERSION=$moduleversion",
     "BUILD_PACKAGE_NAME=$ModuleName"
 )
 
 # Echo out build env
-Write-Host "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
-Write-Host "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-psgal.nupkg"
-Write-Host "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion.nupkg"
-Write-Host "BUILD_PACKAGE_VERSION=$ModuleVersion"
+Write-Host "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-choco.nupkg"
+Write-Host "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-psgal.nupkg"
+Write-Host "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion.nupkg"
+Write-Host "BUILD_PACKAGE_VERSION=$moduleversion"
 Write-Host "BUILD_PACKAGE_NAME=$ModuleName"
 
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
