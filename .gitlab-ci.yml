@@ -302,6 +302,7 @@ upload_chocolatey:
     - docker
   script:
     - |
+      chmod +x ./devops/scripts/deploy/deploy-choco.sh || exit 1
       bash -c ./devops/scripts/deploy/deploy-choco.sh || exit 1
       
 
