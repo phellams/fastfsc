@@ -57,3 +57,5 @@ Build-Module -SourcePath ./ `
              -Version $AutoVersion
             #  -Dependencies @(@{type="module";name="quicklog";version="1.2.3"})
 
+
+# NOTE: This is a note
