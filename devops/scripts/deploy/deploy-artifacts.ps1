@@ -1,9 +1,9 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
-$ModuleName = $ModuleConfig.moduleName
-$ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
-$ModuleVersion = $ModuleManifest.Version #-replace "/./d+$",""
-$PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
+$ModuleConfig    = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName      = $ModuleConfig.moduleName
+$ModuleManifest  = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
+$ModuleVersion   = $ModuleManifest.Version #-replace "/./d+$",""
+$PreRelease      = $ModuleManifest.PrivateData.PSData.Prerelease
 
 #---CONFIG----------------------------
 if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }

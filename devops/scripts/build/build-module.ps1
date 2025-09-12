@@ -3,7 +3,7 @@ using module ../../Get-GitAutoVersion.psm1
 #---CONFIG----------------------------
 $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName              = $ModuleConfig.moduleName
-$ModuleManifest          = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
+$ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 $prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
 [string]$moduleVersion   = $ModuleManifest.Version
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
