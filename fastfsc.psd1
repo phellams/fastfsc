@@ -29,11 +29,11 @@
             # CHOCOLATE ---------------------
             LicenseUrl       = 'https://choosealicense.com/licenses/mit'
             ProjectUrl       = 'https://github.com/phellams/ptoml'
-            IconUrl          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/fastfsc/dist/png/fastfsc-logo-128x128.png'
+            IconUrl          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/phellams/dist/png/phellams-logo-128x128.png'
             Docsurl          = 'https://pages.gitlab.io/sgkens/ptoml'
-            MailingListUrl   = 'https://github.com/phellams/fastfsc/issues'
-            projectSourceUrl = 'https://github.com/phellams/fastfsc'
-            bugTrackerUrl    = 'https://github.com/phellams/fastfsc/issues'
+            MailingListUrl   = 'https://gitlab.com/phellams/fastfsc/issues'
+            projectSourceUrl = 'https://gitlab.com/phellams/fastfsc'
+            bugTrackerUrl    = 'https://gitlab.com/phellams/fastfsc/issues'
             Summary          = 'A PowerShell module for advanced file and folder searching with configuration management.'
             chocoDescription = @"
 ## Features
