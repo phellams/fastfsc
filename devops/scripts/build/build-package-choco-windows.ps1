@@ -1,9 +1,9 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
-$ModuleName = $ModuleConfig.moduleName
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName     = $ModuleConfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
-$moduleVersion = $ModuleManifest.Version
-$PreRelease = $ModuleManifest.PrivateData.PSData.Prerelease
+$moduleVersion  = $ModuleManifest.Version
+$PreRelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 #---CONFIG----------------------------
 
 # Set PreRelease

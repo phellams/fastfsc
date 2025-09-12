@@ -13,6 +13,9 @@ default:
     # script:
     #   - |
     #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
+  before_script:
+    - |
+      git fetch --all
 
 #---------------------------------------------
 # Define the stages of the pipeline
