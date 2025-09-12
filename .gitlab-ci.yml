@@ -144,6 +144,7 @@ mono_chocolatey_package:
       when: on_success
   script:
     - |
+      chmod +x ./devops/scripts/build/build-package-choco.sh || exit 1
       bash -c ./devops/scripts/build/build-package-choco.sh || exit 1
 
 zip_build:
