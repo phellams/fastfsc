@@ -5,6 +5,7 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 $ModuleName              = $ModuleConfig.moduleName
 $ModuleManifest          = Test-ModuleManifest -path ".\dist\$ModuleName\$ModuleName.psd1"
 $prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
+$moduleVersion           = $ModuleManifest.Version
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
@@ -36,24 +37,19 @@ if (!(Test-Path -Path "./dist/$moduleName/tools")) {
 # Set the choco package name as a ENV and use choco push
 # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
 New-Item -Type File -Path "build.env" -Force -Value $null
-$choco_package_name = "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
-$psgal_package_name = "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-psgal.nupkg"
-$gitlab_package_name = "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion.nupkg"
-$package_version = "BUILD_PACKAGE_VERSION=$ModuleVersion"
-$package_name = "BUILD_PACKAGE_NAME=$ModuleName"
 $BuildEnvContent = @(
-    $choco_package_name,
-    $psgal_package_name,
-    $gitlab_package_name,
-    $package_version,
-    $package_name
+    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion-choco.nupkg",
+    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion-psgal.nupkg",
+    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion.nupkg",
+    "BUILD_PACKAGE_VERSION=$ModuleVersion",
+    "BUILD_PACKAGE_NAME=$ModuleName"
 )
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 
 # Copy module files to dist for packaging
 Build-Module -SourcePath ./ `
              -DestinationPath './dist' `
-             -Name $moduleName `
+             -Name $ModuleName `
              -IncrementVersion None `
              -FilesToCopy $ModuleFiles `
              -FoldersToCopy $ModuleFolders `
