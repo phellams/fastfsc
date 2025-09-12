@@ -11,9 +11,6 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 $AutoVersion = (Get-GitAutoVersion).Version
 
 
-if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
-else { $moduleversion = "$moduleversion$prerelease" }
-
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
     New-Item -Path './dist' -ItemType Directory 
@@ -56,6 +53,9 @@ if((Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1")) {
 $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
 [string]$prerelease      = $ModuleManifest.PrivateData.PSData.Prerelease
 [string]$moduleversion   = $ModuleManifest.Version.ToString()
+
+if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
+else { $moduleversion = "$moduleversion$prerelease" }
 
 New-Item -Type File -Path "build.env" -Force -Value $null
 
