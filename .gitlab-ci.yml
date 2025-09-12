@@ -186,6 +186,8 @@ zip_build:
 upload_artifacts:
   <<: *release_template
   needs:
+   - job: psmpacker-build
+     artifacts: true
    - job: zip_build
      artifacts: true
    - job: nupsforge_general_nuget_package
