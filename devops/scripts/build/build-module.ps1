@@ -41,7 +41,6 @@ $BuildEnvContent = @(
     $package_version,
     $package_name
 )
-
 New-Item -Type File -Path "build.env" -Force -Value $null
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 
