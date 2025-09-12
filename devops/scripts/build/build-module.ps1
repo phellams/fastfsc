@@ -6,9 +6,6 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
-$ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
-[string]$prerelease      = $ModuleManifest.PrivateData.PSData.Prerelease
-[string]$moduleversion   = $ModuleManifest.Version.ToString()
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
@@ -32,10 +29,36 @@ if (!(Test-Path -Path "./dist/$moduleName/tools")) {
     New-Item -Path "./dist/$moduleName/tools" -ItemType Directory 
 }
 
+# Copy module files to dist for packaging
+Build-Module -SourcePath ./ `
+             -DestinationPath './dist' `
+             -Name $ModuleName `
+             -IncrementVersion None `
+             -FilesToCopy $ModuleFiles `
+             -FoldersToCopy $ModuleFolders `
+             -ExcludedFiles $ModuleExclude `
+             -Manifest `
+             -Version $AutoVersion
+            #  -Dependencies @(@{type="module";name="quicklog";version="1.2.3"})
+
+
+
 # Create ENV as Choco image does not support powershell execution
 # Set the choco package name as a ENV and use choco push
 # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
+if((Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1")) {
+    [console]::writeline("Module manifest found at ./dist/$ModuleName/$ModuleName.psd1")    
+} else {
+    [console]::writeline("Module manifest not found at ./dist/$ModuleName/$ModuleName.psd1")
+    exit 1
+
+}
+$ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
+[string]$prerelease      = $ModuleManifest.PrivateData.PSData.Prerelease
+[string]$moduleversion   = $ModuleManifest.Version.ToString()
+
 New-Item -Type File -Path "build.env" -Force -Value $null
+
 $BuildEnvContent = @(
     "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-choco.nupkg",
     "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName`.$moduleversion-psgal.nupkg",
@@ -52,18 +75,5 @@ Write-Host "BUILD_PACKAGE_VERSION=$moduleversion"
 Write-Host "BUILD_PACKAGE_NAME=$ModuleName"
 
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
-
-# Copy module files to dist for packaging
-Build-Module -SourcePath ./ `
-             -DestinationPath './dist' `
-             -Name $ModuleName `
-             -IncrementVersion None `
-             -FilesToCopy $ModuleFiles `
-             -FoldersToCopy $ModuleFolders `
-             -ExcludedFiles $ModuleExclude `
-             -Manifest `
-             -Version $AutoVersion
-            #  -Dependencies @(@{type="module";name="quicklog";version="1.2.3"})
-
 
 # NOTE: This is a note
