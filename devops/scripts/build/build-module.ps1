@@ -15,7 +15,8 @@ $prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
 $AutoVersion = (Get-GitAutoVersion).Version
 
 
-if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion } else { $ModuleVersion = "$ModuleVersion-$prerelease" }
+if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
+else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
@@ -37,9 +38,9 @@ if (!(Test-Path -Path "./dist/$moduleName/tools")) {
 # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
 New-Item -Type File -Path "build.env" -Force -Value $null
 $BuildEnvContent = @(
-    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion-choco.nupkg",
-    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion-psgal.nupkg",
-    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$ModuleVersion.nupkg",
+    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion-choco.nupkg",
+    "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion-psgal.nupkg",
+    "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName`.$ModuleVersion.nupkg",
     "BUILD_PACKAGE_VERSION=$ModuleVersion",
     "BUILD_PACKAGE_NAME=$ModuleName"
 )
