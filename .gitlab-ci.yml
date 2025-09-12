@@ -7,6 +7,8 @@ default:
   artifacts:
     paths:
       - ./dist
+      - ./coverage.xml
+      - ./build.env
     #expire_in: 1 week
     # script:
     #   - |
@@ -62,9 +64,6 @@ pester:
 
 pester_coverage:
   <<: *test_template
-  artifacts:
-    paths:
-      - ./coverage.xml
   script:
     - |
       pwsh -c Invoke-Pester -Script ./devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
@@ -83,9 +82,6 @@ psmpacker-build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
-  artifacts:
-    paths:
-      - ./build.env
   script:
     - |
       pwsh -c ./devops/scripts/build/build-module.ps1 || exit 1
