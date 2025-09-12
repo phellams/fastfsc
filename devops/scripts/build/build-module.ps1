@@ -2,14 +2,13 @@ using module ../../Get-GitAutoVersion.psm1
 
 #---CONFIG----------------------------
 $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-Json
-$ModuleName              = $ModuleConfig.moduleName
-$ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
-$prerelease              = $ModuleManifest.PrivateData.PSData.Prerelease
-[string]$moduleVersion   = $ModuleManifest.Version
+[string]$ModuleName      = $ModuleConfig.moduleName
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
-[string]$moduleName      = $ModuleConfig.moduleName
+$ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1"
+[string]$prerelease      = $ModuleManifest.PrivateData.PSData.Prerelease
+[string]$moduleVersion   = $ModuleManifest.Version
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
@@ -44,6 +43,14 @@ $BuildEnvContent = @(
     "BUILD_PACKAGE_VERSION=$ModuleVersion",
     "BUILD_PACKAGE_NAME=$ModuleName"
 )
+
+# Echo out build env
+Write-Host "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-choco.nupkg"
+Write-Host "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion-psgal.nupkg"
+Write-Host "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleVersion.nupkg"
+Write-Host "BUILD_PACKAGE_VERSION=$ModuleVersion"
+Write-Host "BUILD_PACKAGE_NAME=$ModuleName"
+
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 
 # Copy module files to dist for packaging
