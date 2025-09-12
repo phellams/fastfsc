@@ -83,6 +83,9 @@ psmpacker-build:
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: on_success
+  artifacts:
+    paths:
+      - ./build.env
   script:
     - |
       pwsh -c ./devops/scripts/build/build-module.ps1 || exit 1
