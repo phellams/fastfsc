@@ -6,16 +6,19 @@ $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$Module
 $PreRelease              = $ModuleManifest.PrivateData.PSData.Prerelease
 
 #---CONFIG----------------------------
-if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
-else { $ModuleVersion = "$ModuleVersion-$prerelease" }
+if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
+else { $moduleversion = "$moduleversion-$prerelease" }
 
 $headers = @{ "JOB-TOKEN" = $env:CI_JOB_TOKEN }
 $baseUrl = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG"
 
 # Upload NuGet package
-[console]::writeline("Finding NuGet package: $ModuleName-$ModuleVersion to upload...")
-$nugetFile = Get-ChildItem -Recurse './dist/nuget' -Filter "$ModuleName-$ModuleVersion.nupkg" | Select-Object -First 1
-if ($null -ne $nugetFile) {
+[console]::writeline("Finding NuGet package: $ModuleName-$moduleversion.nupkg to upload...")
+$nugetFile = Get-ChildItem -Recurse './dist/nuget' -Filter "$ModuleName*" | Select-Object -First 1
+
+$nugetFile | Select-Object Name, FullName
+
+if ($null -ne $nugetFile.FullName) {
     [console]::writeline("Uploading NuGet package: $($nugetFile.Name)")
     Invoke-RestMethod -Uri "$baseUrl/$($nugetFile.Name)" -Method Put -InFile $nugetFile.FullName -Headers $headers
     [console]::writeline("Uploaded: $($nugetFile.Name)")
@@ -25,9 +28,12 @@ if ($null -ne $nugetFile) {
 }
 
 # Upload Chocolatey package
-[console]::writeline("Finding Chocolatey package: $ModuleName-$ModuleVersion-choco.nupkg to upload...")
-$chocoFile = Get-ChildItem -Recurse ./dist/choco -Filter "$ModuleName-$ModuleVersion-choco.nupkg" | Select-Object -First 1
-if ($null -ne $chocoFile) {
+[console]::writeline("Finding Chocolatey package: $ModuleName-$moduleversion-choco.nupkg to upload...")
+$chocoFile = Get-ChildItem -Recurse './dist/choco' -Filter "$ModuleName*" | Select-Object -First 1
+
+$chocoFile | Select-Object Name, FullName
+
+if ($null -ne $chocoFile.FullName) {
     [console]::writeline("Uploading Chocolatey package: $($chocoFile.Name)")
     Invoke-RestMethod -Uri "$baseUrl/$($chocoFile.Name)" -Method Put -InFile $chocoFile.FullName -Headers $headers
     [console]::writeline("Uploaded: $($chocoFile.Name)")
@@ -37,9 +43,12 @@ if ($null -ne $chocoFile) {
 }
 
 # Upload ZIP file
-[console]::writeline("Finding ZIP file: $ModuleName-$ModuleVersion-psgal.zip to upload...")
-$zipFile = Get-ChildItem -Recurse ./dist/psgal -Filter "$ModuleName-$ModuleVersion-psgal.zip" | Select-Object -First 1
-if ($null -ne $zipFile) {
+[console]::writeline("Finding ZIP file: $ModuleName-$moduleversion-psgal.zip to upload...")
+$zipFile = Get-ChildItem -Recurse './dist/psgal' -Filter "$ModuleName*" | Select-Object -First 1
+
+$zipFile | Select-Object Name, FullName
+
+if ($null -ne $zipFile.FullName) {
     [console]::writeline("Uploading ZIP file: $($zipFile.Name)")
     Invoke-RestMethod -Uri "$baseUrl/$($zipFile.Name)" -Method Put -InFile $zipFile.FullName -Headers $headers
     [console]::writeline("Uploaded: $($zipFile.Name)")
