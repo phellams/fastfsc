@@ -1,8 +1,13 @@
 #!/bin/bash
 
-MODULE_NAME=BUILD_PACKAGE_NAME
-MODULE_VERSION=BUILD_PACKAGE_VERSION
-choco_query=$(choco search ${MODULE_NAME} --version ${MODULE_VERSION} --pre)
+if [ -f build.env ]; then
+    source build.env
+else
+    echo "build.env file not found!"
+    exit 1
+fi
+
+choco_query=$(choco search ${BUILD_PACKAGE_NAME} --version ${BUILD_PACKAGE_VERSION} --pre)
 
 for line in $choco_query; do
  echo "Processing: $line"
@@ -14,13 +19,13 @@ done
 
 if [[ ${choco_version[2]} != '0' ]]; then
     echo "==choco version: ${choco_version[@]}"
-    echo "+ choco package found for version ${MODULE_VERSION}"
+    echo "+ choco package found for version ${BUILD_PACKAGE_VERSION}"
     echo " + choco module version: ${choco_version[3]}"
-    echo " + Local module version: ${MODULE_VERSION}"
+    echo " + Local module version: ${BUILD_PACKAGE_VERSION}"
     exit 0
 fi
 
-echo "No choco package found for version ${MODULE_VERSION}"
+echo "No choco package found for version ${BUILD_PACKAGE_VERSION}"
 echo "continueing deployment..."
 
 echo "Pushing choco package to chocolatey.org"
