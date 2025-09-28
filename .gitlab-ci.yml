@@ -298,6 +298,8 @@ upload_chocolatey:
   needs:
     - job: mono_chocolatey_package
       artifacts: true
+    - job: psmpacker-build
+      artifacts: true
   tags:
     - docker
   script:
@@ -311,6 +313,8 @@ upload_psgallery:
   <<: *deploy_template
   needs:
    - job: zip_build
+     artifacts: true
+   - job: psmpacker-build
      artifacts: true
   script:
     - |
