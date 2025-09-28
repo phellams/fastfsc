@@ -20,6 +20,14 @@ else {
                                         -replace 'PRERELEASE_PSGAL_PLACE_HOLDER', "-AllowPrerelease"
 }
 
+$release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
+                                      -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `
+                                      -replace 'PSGAL_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
+                                      -replace 'NUGET_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
+                                      -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
+                                      -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
+                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"
+
 $assets = @{
   links = @(
     @{
@@ -38,29 +46,26 @@ $assets = @{
       link_type = "package"
     }
   )
-} | ConvertTo-Json -Depth 5
-
-
-$release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
-                                      -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `
-                                      -replace 'PSGAL_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
-                                      -replace 'NUGET_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
-                                      -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
-                                      -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
-                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"
+}
 
 $headers = @{
   "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
   "Content-Type"  = "application/json"
 }
 
-try {
-  Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$($ENV:CI_PROJECT_ID)/releases" -Method 'POST' -Headers $headers -Body @{
+$body = @{
     name        = "Release v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
     assets      = $assets
-  }
+} | ConvertTo-Json -Depth 5
+
+try {
+  Write-Host "Creating release v$ModuleVersion for $gitgroup/$modulename"
+  $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$($ENV:CI_PROJECT_ID)/releases" `
+                                -Method 'POST' `
+                                -Headers $headers `
+                                -Body $body
 
   Write-Host "✅ Release created successfully: $($response.tag_name)"
   Write-Host "🔗 Release URL: $($response._links.self)"
