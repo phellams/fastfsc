@@ -204,6 +204,8 @@ git_tag:
   needs:
     - job: upload_artifacts
       artifacts: false
+    - job: psmpacker-build
+      artifacts: true
   script:
     - |
       pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
@@ -229,6 +231,8 @@ mirror_pointer_github:
 gitlab_release:
   <<: *release_template
   needs:
+    - job: psmpacker-build
+      artifacts: true
     - job: upload_artifacts
       artifacts: true
   script:
