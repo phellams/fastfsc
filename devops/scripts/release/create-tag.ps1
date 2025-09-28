@@ -17,7 +17,10 @@ git config --global user.name $gitUser
 git config --global user.email "$($ENV:GITLAB_EMAIL)"
 
 git tag "$ModuleVersion"
-git push --tags https://${ENV:GITLAB_API_KEY}@$gitlab_host/$gitgroup/$ModuleName.git HEAD:main
+
+$git_remote_url = "https://oauth2:$($ENV:GITLAB_API_KEY)@$gitlab_host/$gitgroup/$ModuleName.git"
+
+git push --tags $git_remote_url HEAD:main
 
 if($LASTEXITCODE -ne 0) {
     Write-Host "Failed to push tag $ModuleVersion to $gitgroup/$ModuleName.git"

@@ -1,10 +1,10 @@
 #---CONFIG----------------------------
-$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
-$modulename = $Moduleconfig.moduleName
+$ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$modulename     = $Moduleconfig.moduleName
 $ModuleManifest = Test-ModuleManifest -path "./dist/$modulename/$modulename.psd1"
-$gitgroup = $Moduleconfig.gitgroup
-$prerelease = $ModuleManifest.PrivateData.PSData.Prerelease
-$ModuleVersion = $ModuleManifest.Version
+$gitgroup       = $Moduleconfig.gitgroup
+$prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
+$ModuleVersion  = $ModuleManifest.Version
 #---CONFIG----------------------------
 
 # Parse release body
