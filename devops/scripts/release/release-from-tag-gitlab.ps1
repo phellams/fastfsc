@@ -49,12 +49,13 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
                                       -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"
 
-$headers = New-Object 'System.Collections.Generic.Dictionary[[String],[String]]'
-$headers.Add("PRIVATE-TOKEN", "$($ENV:GITLAB_API_KEY)")
-$headers.Add("Content-Type", "application/json")
+$headers = @{
+  "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
+  "Content-Type"  = "application/json"
+}
 
 try {
-  Invoke-RestMethod -Uri "https://$ENV:GITLAB_HOST/api/v4/projects/$($ENV:CI_PROJECT_ID)/releases" -Method 'POST' -Headers $headers -Body @{
+  Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$($ENV:CI_PROJECT_ID)/releases" -Method 'POST' -Headers $headers -Body @{
     name        = "Release v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
