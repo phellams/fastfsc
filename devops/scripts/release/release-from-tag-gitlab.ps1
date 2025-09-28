@@ -38,7 +38,7 @@ $assets = @{
       link_type = "package"
     }
   )
-}
+} | ConvertTo-Json -Depth 5
 
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
