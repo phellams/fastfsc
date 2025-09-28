@@ -218,7 +218,7 @@ mirror_pointer_github:
       artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/release/mirror-pointer-github.ps1 || exit 1
+      pwsh -c ./devops/scripts/release/mirror-create-pointers.ps1 || exit 1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
