@@ -1,3 +1,5 @@
+using module ../core/Test-GitLabReleaseVersion.psm1
+
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $modulename     = $Moduleconfig.moduleName
@@ -6,6 +8,13 @@ $gitgroup       = $Moduleconfig.gitgroup
 $prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleVersion  = $ModuleManifest.Version
 #---CONFIG----------------------------
+
+if(Test-GitLabReleaseVersion -reponame "$gitgroup/$modulename" -version $ModuleVersion) {
+  Write-Host "❌ Release $ModuleVersion already exists for $gitgroup/$modulename"
+  exit 0
+}else{
+  Write-Host "✅ Release $ModuleVersion does not exist. Proceeding to create release."
+}
 
 # Parse release body
 $release_template = Get-Content -Path './devops/templates/release-template.md' -Raw
@@ -31,17 +40,17 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
 $assets = @{
   links = @(
     @{
-      name      = "$modulename.$moduleversion.nupkg Package"
+      name      = "$modulename.$moduleversion.nupkg"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion.nupkg"
       link_type = "package"
     },
     @{
-      name      = "$modulename.$moduleversion-choco.nupkg Package"
+      name      = "$modulename.$moduleversion-choco.nupkg"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion-choco.nupkg"
       link_type = "package"
     },
     @{
-      name      = "$modulename.$moduleversion-psgal.nupkg Package"
+      name      = "$modulename.$moduleversion-psgal.nupkg"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module-$env:CI_COMMIT_TAG.zip"
       link_type = "package"
     }
