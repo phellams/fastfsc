@@ -35,7 +35,10 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'NUGET_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
                                       -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
-                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"
+                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"`
+                                      -replace 'CI_PIPELINE_ID', "$env:CI_PIPELINE_ID" `
+                                      -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
+                                      -replace 'BUILD_DATE', "$env:CI_PIPELINE_CREATED_AT"
 
 $assets = @{
   links = @(
