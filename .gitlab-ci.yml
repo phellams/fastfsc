@@ -139,7 +139,7 @@ nupsforge_chocolatey_nupsec_file:
 
 mono_chocolatey_package:
   stage: build
-  image: docker.io/chocolatey/choco:latest
+  image: docker.io/chocolatey/choco:v2.5.0
   tags:
     - docker
   needs:
@@ -298,11 +298,11 @@ upload_gitlab_package:
 # Deploy Chocolatey package via choco push
 upload_chocolatey:
   <<: *deploy_template
-  image: docker.io/chocolatey/choco:latest
+  image: docker.io/chocolatey/choco:v2.5.0
   needs:
-    - job: mono_chocolatey_package
-      artifacts: true
     - job: psmpacker-build
+      artifacts: true
+    - job: mono_chocolatey_package
       artifacts: true
   tags:
     - docker
