@@ -60,7 +60,7 @@ else { $moduleversion = "$moduleversion-$prerelease" }
 New-Item -Type File -Path "build.env" -Force -Value $null
 
 $BuildEnvContent = @(
-    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-choco.nupkg",
+    "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion.nupkg",
     "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-psgal.nupkg",
     "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion.nupkg",
     "BUILD_PACKAGE_VERSION=$moduleversion",
