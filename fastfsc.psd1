@@ -18,9 +18,9 @@
     PrivateData        = @{
         PSData = @{
             Tags             = @('FolderSize', 'speed', 'PowerShell', 'paralell', 'performance')
-            ReleaseNotes     = @{
-                # '1.2.1' = 'Initial release with New-PHWriter cmdlet for custom help formatting and enhanced layout.'
-            }
+            ReleaseNotes     = @(
+                'v0.1.0-prerelease - Initial release with Get-FolderSizeFast and Get-BestSizeUnit functions.'
+            )
             LicenseUri       = 'https://choosealicense.com/licenses/mit'
             ProjectUri       = 'https://gitlab.com/phellams/fastfsc.git'
             IconUri          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/fastfsc/dist/png/fastfsc-logo-128x128.png'
@@ -28,9 +28,9 @@
 
             # CHOCOLATE ---------------------
             LicenseUrl       = 'https://choosealicense.com/licenses/mit'
-            ProjectUrl       = 'https://github.com/phellams/ptoml'
+            ProjectUrl       = 'https://github.com/phellams/fastfsc'
             IconUrl          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/phellams/dist/png/phellams-logo-128x128.png'
-            Docsurl          = 'https://pages.gitlab.io/sgkens/ptoml'
+            Docsurl          = 'https://pages.gitlab.io/sgkens/fastfsc'
             MailingListUrl   = 'https://gitlab.com/phellams/fastfsc/issues'
             projectSourceUrl = 'https://gitlab.com/phellams/fastfsc'
             bugTrackerUrl    = 'https://gitlab.com/phellams/fastfsc/issues'

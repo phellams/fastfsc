@@ -21,6 +21,23 @@ if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
 
 $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 
+# release notes are in the form of an hashtable but choco needs a string
+[string]$notes = ''
+[string]$releaseNotes = "<![CDATA["
+if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [System.Collections.Hashtable]) {
+  $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes.Values -join "`n"
+}
+else {
+  $releaseNotes = $ModuleManifest.PrivateData.PSData.ReleaseNotes
+}
+
+if ($Notes.Length -gt 0) {
+  $releaseNotes = $releaseNotes + $Notes + "`n]]>"
+}
+else {
+  $releaseNotes = $releaseNotes + "No release notes provided.`n]]>"
+}
+
 $NuSpecParamsChoco = @{
   path              = $module_source_path
   ModuleName        = $ModuleName

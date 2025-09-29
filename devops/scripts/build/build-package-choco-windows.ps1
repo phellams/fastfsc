@@ -28,6 +28,13 @@ $markdown_readme = Get-Content -Path ./devops/choco_description.md -Raw `
                                -Force `
                                -WarningAction SilentlyContinue
 
+# release notes are in the form of an hashtable but choco needs a string
+if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [System.Collections.Hashtable]) {
+    $releaseNotes = $ModuleManifest.PrivateData.PSData.ReleaseNotes.Values -join "`n"
+} else {
+    $releaseNotes = $ModuleManifest.PrivateData.PSData.ReleaseNotes
+}
+
 $NuSpecParamsChoco = @{
   path              = "./dist/$ModuleName"
   ModuleName        = $ModuleName
