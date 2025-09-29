@@ -24,11 +24,12 @@ $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 # release notes are in the form of an hashtable but choco needs a string
 [string]$notes = ''
 [string]$releaseNotes = "<![CDATA[`n"
-if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [System.Collections.Hashtable]) {
+if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [array]) {
   $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes -join "`n"
 }
 else {
-  $releaseNotes = $ModuleManifest.PrivateData.PSData.ReleaseNotes
+  [console]::writeline("Release notes must be an array of strings in the module manifest.")
+  exit 1
 }
 
 if ($Notes.Length -gt 0) {

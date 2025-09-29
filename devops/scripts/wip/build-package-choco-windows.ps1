@@ -22,7 +22,7 @@ if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
 #Remove-Item -Path "./dist/$ModuleName/$ModuleName.nuspec"
 
 # Choco supports markdown nuget and psgallary done
-$markdown_readme = Get-Content -Path ./devops/choco_description.md -Raw `
+$markdown_readme = Get-Content -Path ./devops/templates/choco_description.md -Raw `
                                -ErrorAction Stop `
                                -Encoding UTF8 `
                                -Force `
