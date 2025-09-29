@@ -23,7 +23,7 @@ $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 
 # release notes are in the form of an hashtable but choco needs a string
 [string]$notes = ''
-[string]$releaseNotes = "<![CDATA["
+[string]$releaseNotes = "<![CDATA[`n"
 if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [System.Collections.Hashtable]) {
   $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes -join "`n"
 }
