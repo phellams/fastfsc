@@ -39,12 +39,22 @@ else {
   $releaseNotes = $releaseNotes + "No release notes provided.`n]]>"
 }
 
+# Description for choco is in the PrivateData.PSData.chocoDescription field
+
+if ($ModuleManifest.PrivateData.PSData.ChocoDescription -is [string]) {
+  $ChocoDescription = "<![CDATA[`n" + $ModuleManifest.PrivateData.PSData.ChocoDescription + "`n]]>"
+}
+else {
+  [console]::writeline("Choco description must a string in from or single or mitli-line")
+  exit 1
+}
+
 $NuSpecParamsChoco = @{
   path              = $module_source_path
   ModuleName        = $ModuleName
   ModuleVersion     = $ModuleManifest.Version #-replace "\.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
   Author            = $ModuleManifest.Author
-  Description       = $ModuleManifest.PrivateData.PSData.ChocoDescription
+  Description       = $ChocoDescription
   Summary           = $ModuleManifest.PrivateData.PSData.Summary
   ProjectUrl        = $ModuleManifest.PrivateData.PSData.ProjectUrl
   IconUrl           = $ModuleManifest.PrivateData.PSData.IconUrl
