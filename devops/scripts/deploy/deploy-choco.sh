@@ -7,7 +7,7 @@ set -e
 if [ -f build.env ]; then
     source build.env
 else
-    echo "build.env file not found! Expected variables: BUILD_PACKAGE_NAME, BUILD_PACKAGE_VERSION, CHOCO_API_KEY, CHOCO_NUPKG_PACKAGE_NAME"
+    echo "build.env file not found! Expected variables: BUILD_PACKAGE_NAME, BUILD_PACKAGE_VERSION, CHOCO_NUPKG_PACKAGE_NAME"
     exit 1
 fi
 
