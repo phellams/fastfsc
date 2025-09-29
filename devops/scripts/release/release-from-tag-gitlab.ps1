@@ -31,17 +31,17 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
 $assets = @{
   links = @(
     @{
-      name      = "NuGet Package"
+      name      = "$modulename.$moduleversion.nupkg Package"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion.nupkg"
       link_type = "package"
     },
     @{
-      name      = "Chocolatey Package"
+      name      = "$modulename.$moduleversion-choco.nupkg Package"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion-choco.nupkg"
       link_type = "package"
     },
     @{
-      name      = "ZIP Archive"
+      name      = "$modulename.$moduleversion-psgal.nupkg Package"
       url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module-$env:CI_COMMIT_TAG.zip"
       link_type = "package"
     }

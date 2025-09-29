@@ -14,7 +14,7 @@ if (!$prerelease -or $prerelease.Length -eq 0) {
 
 # Rename Choco package file for build artifact as output name is the same 
 # for psgal, nuget and choco
-Rename-Item -Path "./dist/$ModuleName/$ModuleName.$moduleversion.nupkg" `
+Rename-Item -Path "./dist/choco/$ModuleName/$ModuleName.$moduleversion.nupkg" `
             -NewName "$ModuleName.$moduleversion-choco.nupkg"
 
 $headers = @{ "JOB-TOKEN" = $env:CI_JOB_TOKEN }
