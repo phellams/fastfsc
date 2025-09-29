@@ -23,7 +23,7 @@ $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 
 # release notes are in the form of an hashtable but choco needs a string
 [string]$notes = ''
-[string]$releaseNotes = "<![CDATA[`n"
+[string]$releaseNotes = ""
 if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [array]) {
   $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes -join "`n"
 }
@@ -33,28 +33,19 @@ else {
 }
 
 if ($Notes.Length -gt 0) {
-  $releaseNotes = $releaseNotes + $Notes + "`n]]>"
+  $releaseNotes = $releaseNotes + $Notes
 }
 else {
-  $releaseNotes = $releaseNotes + "No release notes provided.`n]]>"
+  $releaseNotes = $releaseNotes + "No release notes provided."
 }
 
-# Description for choco is in the PrivateData.PSData.chocoDescription field
-
-if ($ModuleManifest.PrivateData.PSData.ChocoDescription -is [string]) {
-  $ChocoDescription = "<![CDATA[`n" + $ModuleManifest.PrivateData.PSData.ChocoDescription + "`n]]>"
-}
-else {
-  [console]::writeline("Choco description must a string in from or single or mitli-line")
-  exit 1
-}
 
 $NuSpecParamsChoco = @{
   path              = $module_source_path
   ModuleName        = $ModuleName
   ModuleVersion     = $ModuleManifest.Version #-replace "\.\d+$", "" # remove the extra .0 as semver has 0.0.0 and powershell 0.0.0.0
   Author            = $ModuleManifest.Author
-  Description       = $ChocoDescription
+  Description       = $ModuleManifest.PrivateData.PSData.ChocoDescription
   Summary           = $ModuleManifest.PrivateData.PSData.Summary
   ProjectUrl        = $ModuleManifest.PrivateData.PSData.ProjectUrl
   IconUrl           = $ModuleManifest.PrivateData.PSData.IconUrl
@@ -81,7 +72,9 @@ try {
   New-ChocoNuspecFile @NuSpecParamsChoco
 
   # Use Choco mono to create choco package and deploy
-  #New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco" -ci
+  if($IsWindows){
+    New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
+  }
 
 } catch {
   [console]::write( "Error creating Choco package: $($_.Exception.Message)`n" )
