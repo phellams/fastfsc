@@ -1,7 +1,7 @@
 #---------------------------------------------
 # Default values for all jobs unless overridden
 default:
-  image: docker.io/sgkens/phellams-automator:2.5.0
+  image: docker.io/sgkens/phellams-automator:2.5.1
   tags:
     - docker
   artifacts:
@@ -139,7 +139,7 @@ nupsforge_chocolatey_nupsec_file:
 
 mono_chocolatey_package:
   stage: build
-  image: docker.io/chocolatey/choco:v2.5.0
+  image: docker.io/chocolatey/choco:v2.5.1
   tags:
     - docker
   needs:
@@ -298,7 +298,7 @@ upload_gitlab_package:
 # Deploy Chocolatey package via choco push
 upload_chocolatey:
   <<: *deploy_template
-  image: docker.io/chocolatey/choco:v2.5.0
+  image: docker.io/chocolatey/choco:v2.5.1
   needs:
     - job: psmpacker-build
       artifacts: true
