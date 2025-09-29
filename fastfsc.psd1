@@ -1,6 +1,6 @@
 @{
     RootModule         = 'fastfsc.psm1'
-    ModuleVersion      = '0.2.30'
+    ModuleVersion      = '0.2.31'
     GUID               = 'ccc9be26-17aa-4a86-8d5b-14d6d15def37'
     Author             = 'Garvey k. Snow'
     CompanyName        = 'Phellams'
