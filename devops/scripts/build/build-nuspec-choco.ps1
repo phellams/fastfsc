@@ -25,7 +25,7 @@ $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 [string]$notes = ''
 [string]$releaseNotes = "<![CDATA["
 if ($ModuleManifest.PrivateData.PSData.ReleaseNotes -is [System.Collections.Hashtable]) {
-  $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes.Values -join "`n"
+  $Notes = $ModuleManifest.PrivateData.PSData.ReleaseNotes -join "`n"
 }
 else {
   $releaseNotes = $ModuleManifest.PrivateData.PSData.ReleaseNotes
