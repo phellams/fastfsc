@@ -1,5 +1,6 @@
-using module ../core/Test-GitLabReleaseVersion.psm1
 using module ../core/core.psm1
+using module ../core/Test-GitLabReleaseVersion.psm1
+using module ../cmdlets/request-GenericPackage.psm1
 
 #---UI ELEMENTS Shortened-------------
 $interLogger = $global:__phellams_devops_template.interLogger
@@ -36,6 +37,11 @@ else {
                                         -replace 'PRERELEASE_GITLAB_PLACE_HOLDER' , "-pre"
 }
 
+# nupkg, choco, psgal file hash
+$nuget_nupkg_hash = (Get-FileHash -Path "./dist/nuget/$modulename.$ModuleVersion.nupkg" -Algorithm SHA256).Hash
+$choco_nupkg_hash = (Get-FileHash -Path "./dist/choco/$modulename.$ModuleVersion-choco.nupkg" -Algorithm SHA256).Hash
+$psgal_zip_hash  = (Get-FileHash -Path "./dist/psgal/$modulename.$ModuleVersion-psgal.zip" -Algorithm SHA256).Hash
+
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `
                                       -replace 'PSGAL_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
@@ -48,22 +54,51 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
                                       -replace 'BUILD_DATE', "$(Get-Date -Date $env:CI_PIPELINE_CREATED_AT)" `
                                       -replace 'CI_PROJECT_ID', "$env:CI_PROJECT_ID" `
+                                      -replace 'NUGET_NUPKG_HASH', "$nuget_nupkg_hash" `
+                                      -replace 'CHOCO_NUPKG_HASH', "$choco_nupkg_hash" `
+                                      -replace 'PSGAL_ZIP_HASH', "$psgal_zip_hash"
+
+
+# Extract package versions using request-genericpackage
+$nuget_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
+                                        -PackageType "generic" `
+                                        -PackageName "$modulename.$ModuleVersion.nupkg" `
+                                        -PackageVersion "$ModuleVersion" `
+                                        -ApiKey $ENV:GITLAB_API_KEY `
+                                        -ci
+
+$choco_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
+                                        -PackageType "generic" `
+                                        -PackageName "$modulename.$ModuleVersion-choco.nupkg" `
+                                        -PackageVersion "$ModuleVersion" `
+                                        -ApiKey $ENV:GITLAB_API_KEY `
+                                        -ci
+
+$psgal_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
+                                        -PackageType "generic" `
+                                        -PackageName "$modulename.$ModuleVersion-psgal.zip" `
+                                        -PackageVersion "$ModuleVersion" `
+                                        -ApiKey $ENV:GITLAB_API_KEY `
+                                        -ci
 
 $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion.nupkg/download"
+      url       = "$ENV:gitlab_host/$($nuget_package.links.web_path)/download"
+      #url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion.nupkg/download"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-choco.nupkg/download"
+      url       = "$ENV:gitlab_host/$($choco_package.links.web_path)/download"
+      #url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-choco.nupkg/download"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-psgal.zip"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-psgal.zip/download"
+      url       = "$ENV:gitlab_host/$($psgal_package.links.web_path)/download"
+      #url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-psgal.zip/download"
       link_type = "package"
     }
   )
@@ -75,7 +110,7 @@ $headers = @{
 }
 
 $body = @{
-    name        = "Release v$ModuleVersion"
+    name        = "v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
     assets      = $assets
