@@ -27,17 +27,18 @@ Rename-Item -Path "./dist/choco/$ModuleName.$moduleversion.nupkg" `
 $headers = @{ "JOB-TOKEN" = $env:CI_JOB_TOKEN }
 
 # Check if we should use CI_COMMIT_SHA instead of CI_COMMIT_TAG
-$versionTag = if ($env:CI_COMMIT_TAG) { $env:CI_COMMIT_TAG } else { $env:CI_COMMIT_SHA }
+$CommitTag = if ($env:CI_COMMIT_TAG) { $env:CI_COMMIT_TAG } else { $env:CI_COMMIT_SHA }
 
 # Base URL
-$baseUrl = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/assets-v$moduleversion"
+# .../packages/generic/:package_name/:package_version/:file_name
+$baseUrl = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/assets/$moduleversion"
 
 $interLogger.invoke("deploy", "Uploading artifacts to {kv:url=$baseUrl}", $false, 'info')
 
 [console]::writeline("=== ENVIRONMENT VARIABLES DEBUG ===")
 $kv.invoke("CI_API_V4_URL", "$env:CI_API_V4_URL")
 $kv.invoke("CI_PROJECT_ID", "$env:CI_PROJECT_ID")
-$kv.invoke("CI_COMMIT_TAG", "$env:CI_COMMIT_TAG")
+$kv.invoke("CI_COMMIT_TAG", "$CommitTag")
 $kv.invoke("CI_JOB_TOKEN", "$($null -ne $env:CI_JOB_TOKEN)")
 $kv.invoke("VERSION TAG", "$versionTag")
 [console]::writeline("=================================")
