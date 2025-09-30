@@ -40,7 +40,7 @@ else {
 # nupkg, choco, psgal file hash
 $nuget_nupkg_hash = (Get-FileHash -Path "./dist/nuget/$modulename.$ModuleVersion.nupkg" -Algorithm SHA256).Hash
 $choco_nupkg_hash = (Get-FileHash -Path "./dist/choco/$modulename.$ModuleVersion-choco.nupkg" -Algorithm SHA256).Hash
-$psgal_zip_hash  = (Get-FileHash -Path "./dist/psgal/$modulename.$ModuleVersion-psgal.zip" -Algorithm SHA256).Hash
+$psgal_zip_hash   = (Get-FileHash -Path "./dist/psgal/$modulename.$ModuleVersion-psgal.zip" -Algorithm SHA256).Hash
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `
