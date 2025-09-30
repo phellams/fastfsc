@@ -51,8 +51,8 @@ a Personal Access Token using the -Headers parameter.
 
     # --- Construct the API URL ---
     # The API endpoint for a specific tag is: 
-    # '/projects/{encoded_path}/repository/tags/{tag_name}'
-    $url = "$gitlabUrl/api/v4/projects/$encodedRepoName/repository/tags/$version"
+    # '/projects/{encoded_path}/repository/releases/{release_name}'
+    $url = "$gitlabUrl/api/v4/projects/$encodedRepoName/repository/releases/$version"
 
     [console]::writeline("Checking URL: $url")
 
@@ -63,7 +63,7 @@ a Personal Access Token using the -Headers parameter.
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $Headers -ErrorAction Stop
 
         # If Invoke-RestMethod completes without error, the tag exists.
-        [console]::writeline("Tag found: $($response.name)")
+        [console]::writeline("Release found: $($response.name)")
         return $true
 
     }
@@ -71,7 +71,7 @@ a Personal Access Token using the -Headers parameter.
         # --- Handle API Errors ---
         # A 404 error is the expected error when the tag is NOT found.
         if ($_.Exception.Response.StatusCode -eq 404) {
-            [console]::writeline("Tag not found: $version in $reponame")
+            [console]::writeline("Release not found: $version in $reponame")
             return $false
         }
         
