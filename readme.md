@@ -23,27 +23,27 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 - 🏢 **Enterprise ready** - Handles massive directory structures efficiently
 
 ## Installation
-Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [Gitlab packages].
+
+Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [**Gitlab Packages**](https://gitlab.com/phellams/fastfsc/-/packages?type=NuGet&orderBy=name&sort=asc).
 ||||
 |-|-|-|
-| 📦 PSGallery | <img src="https://img.shields.io/powershellgallery/v/fastfsc?label=version&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery"> | <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery-downloads"> |
+|📦 PSGallery | <img src="https://img.shields.io/powershellgallery/v/fastfsc?label=version&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery"> | <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery-downloads"> |
 |📦 Chocolatey | <img src="https://img.shields.io/chocolatey/v/fastfsc?label=version&include_prereleases&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey"> | <img src="https://img.shields.io/chocolatey/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&include_prereleases&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey-downloads"> |
 |💼 Releases/Tags | <img src="https://img.shields.io/gitlab/v/release/phellams%2Ffastfsc?include_prereleases&sort=semver&&style=flat-square&logoColor=%2300B2A9&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab-release"> |<img src="https://img.shields.io/gitlab/v/tag/phellams%2Ffastfsc?include_prereleases&sort=semver&style=flat-square&logoColor=%&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab tags"> |
 
 ### Additinonal Installation Options:
 
-### 📦 GitLab Packages using nuget
+### 🟢 GitLab Packages using nuget
 
 See the [**packages**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) page for installation instructions.
 
-For instructions on using nuget to source 
-module packages from gitlb see [**Releases**](https://github.com/sgkens/fastfsc/releases) artifacts.
+For instructions on using nuget to source module packages from gitlb see [**Releases**](https://github.com/sgkens/fastfsc/releases) artifacts.
 
-### 🗃️ Geneneric Assets
+### 🟢 Generic Assets
 
 The latest release artifacts can be downloaded from the [**Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=type&sort=desc&type=Generic) page.
 
-### Using git
+### 🟢 Git Clone
 > **Note**: This method is not recommended for production use.
 
 ```bash
