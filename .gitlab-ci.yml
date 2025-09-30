@@ -233,7 +233,7 @@ gitlab_release:
   needs:
     - job: psmpacker_build
       artifacts: true
-    - job: mono_choco_package
+    - job: mono_chocolatey_package
       artifacts: true
     - job: zip_build
       artifacts: true
