@@ -18,10 +18,9 @@ function Request-GenericPackage {
     if(!$ApiUrl) {
         $ApiUrl = "https://gitlab.com/api/v4"
     }
-    
-    # Construct the API URL for fetching the package details
-    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&version=$PackageVersion&Type=$PackageType&sort=desc&per_page=1"
 
+    # Construct the API URL for fetching the package details
+    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&package_version=$PackageVersion&package_Type=$PackageType"
 
     if(!$apikey -and $ci) {
         $env:GITLAB_API_KEY = $ApiKey
@@ -40,13 +39,14 @@ function Request-GenericPackage {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $Headers
 
         if ($response -and $response.Count -gt 0) {
-            return @{
-                Id      = $response[0].id
-                Name    = $response[0].name
-                Version = $response[0].version
-                CreatedAt = $response[0].created_at
-                Links   = $response[0]._links
-            }
+            return $response
+            # return @{
+            #     Id      = $response[0].id
+            #     Name    = $response[0].name
+            #     Version = $response[0].version
+            #     CreatedAt = $response[0].created_at
+            #     Links   = $response[0]._links
+            # }
         } else {
             Write-Error "No package found with name '$PackageName' and version '$PackageVersion'."
             return $null

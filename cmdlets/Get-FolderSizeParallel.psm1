@@ -72,6 +72,38 @@ public static class ParallelFolderSize
 }
 "@
 
+<#
+    .SYNOPSIS
+        Calculates the size of a folder using parallel processing to enhance performance.
+
+    .DESCRIPTION
+        Calculates the size of a folder using parallel processing to enhance performance. This cmdlet processes files and subdirectories in parallel, which can significantly speed up the calculation process.
+
+    .PARAMETER Path
+        The path of the folder to calculate the size for. This parameter is mandatory and accepts pipeline input.
+
+    .PARAMETER Format
+        The format to use for the output. Valid options are 'json' and 'xml'. Default is 'json'.
+
+    .PARAMETER Help
+        If specified, the cmdlet returns help information for the command.
+
+    .EXAMPLE
+        Get-FolderSizeParallel -Path "C:\MyFolder"
+        Calculates the size of "C:\MyFolder" and returns the size in bytes, MB, and GB.
+
+    .EXAMPLE
+        Get-FolderSizeParallel -Path "C:\MyFolder" -Detailed
+        Calculates the size of "C:\MyFolder" and returns detailed information including file count, folder count, and calculation time.
+
+    .EXAMPLE
+        "C:\MyFolder" | Get-FolderSizeParallel -Detailed
+        Uses pipeline input to calculate the size of "C:\MyFolder" with detailed output.
+
+    .NOTES
+    
+#>
+
 function Get-FolderSizeParallel {
     [CmdletBinding()]
     param(
