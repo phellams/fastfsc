@@ -16,19 +16,15 @@ $prerelease     = $ModuleManifest.PrivateData.PSData.Prerelease
 $ModuleVersion  = $ModuleManifest.Version
 #---CONFIG----------------------------
 
-if(Test-GitLabReleaseVersion -reponame "$gitgroup/$modulename" -version $ModuleVersion) {
-  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} already exists for {kv:module=$gitgroup/$modulename}. Skipping release creation.", $false, 'info')
-  exit 0
-}else{
-  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
-}
-
 # Parse release body
 $release_template = Get-Content -Path './devops/templates/release-template.md' -Raw
 
 
 if (!$prerelease -or $prerelease.Length -eq 0) { 
   $ModuleVersion = $ModuleVersion
+  $release_template = $release_template -replace 'PRERELEASE_CHOCO_PLACE_HOLDER', "" `
+                                        -replace 'PRERELEASE_PSGAL_PLACE_HOLDER', "" `
+                                        -replace 'PRERELEASE_GITLAB_PLACE_HOLDER' , ""
 }
 else { 
   $ModuleVersion = "$ModuleVersion-$prerelease" 
@@ -37,15 +33,24 @@ else {
                                         -replace 'PRERELEASE_GITLAB_PLACE_HOLDER' , "-pre"
 }
 
-# nupkg, choco, psgal file hash
-$nuget_nupkg_hash = (Get-FileHash -Path "./dist/nuget/$modulename.$ModuleVersion.nupkg" -Algorithm SHA256).Hash
-$choco_nupkg_hash = (Get-FileHash -Path "./dist/choco/$modulename.$ModuleVersion-choco.nupkg" -Algorithm SHA256).Hash
-$psgal_zip_hash   = (Get-FileHash -Path "./dist/psgal/$modulename.$ModuleVersion-psgal.zip" -Algorithm SHA256).Hash
+if (Test-GitLabReleaseVersion -reponame "$gitgroup/$modulename" -version $ModuleVersion) {
+  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} already exists for {kv:module=$gitgroup/$modulename}. Skipping release creation.", $false, 'info')
+  exit 0
+}
+else {
+  exit 1
+  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
+}
+
+# nupkg, choco, psgal file hashr
+$nuget_nupkg = Get-ItemProperty -Path "./dist/nuget/$modulename.$ModuleVersion.nupkg"
+$nuget_nupkg_hash = (Get-FileHash -Path $nuget_nupkg.fullName -Algorithm SHA256).Hash
+$choco_nupkg = Get-ItemProperty -Path "./dist/choco/$modulename.$ModuleVersion-choco.nupkg"
+$choco_nupkg_hash = (Get-FileHash -Path $choco_nupkg.fullName -Algorithm SHA256).Hash
+$psgal_nupkg = Get-ItemProperty -Path "./dist/psgal/$modulename.$ModuleVersion-psgal.zip"
+$psgal_zip_hash   = (Get-FileHash -Path $psgal_nupkg.fullName -Algorithm SHA256).Hash
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
-                                      -replace 'CHOCO_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "Chocolatey Package"}) `
-                                      -replace 'PSGAL_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
-                                      -replace 'NUGET_ARTIFACT_PLACE_HOLDER', $assets.links.where({$_.name -eq "NuGet Package"}) `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
                                       -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
                                       -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"`

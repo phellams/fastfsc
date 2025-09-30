@@ -26,7 +26,7 @@ Phellams Modules are distributed to **GitLab Packages**, **Chocolatey Packages**
 ### 🟦 **Powershell Gallery**
 
 ```powershell 
-Find-Module -Name REPONAME_PLACE_HOLDER -MinimumVersion ONLY_VERSION_PLACE_HOLDER PRERELEASE_PSGAL_PLACE_HOLDER  | Install-module | Import-Module
+Find-Module -Name REPONAME_PLACE_HOLDER -MinimumVersion ONLY_VERSION_PLACE_HOLDER PRERELEASE_PSGAL_PLACE_HOLDER| Install-module | Import-Module
 ```
 ### 🟫 **Chocolatey**
 
