@@ -13,6 +13,12 @@
 |🔑 | Commit SHA |`⦿` **COMMIT_SHA** |
 
 
+### **SHA256 Checksums**
+
+REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg SHA256: `⦿` **`NUGET_NUPKG_HASH`** \
+REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER-choco.nupkg SHA256: `⦿` **`CHOCO_NUPKG_HASH`**
+REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER-psgal.zip SHA256: `⦿` **`PSGAL_ZIP_HASH`**
+
 ## REPONAME_PLACE_HOLDER Package epositories 
 
 Phellams Modules are distributed to **GitLab Packages**, **Chocolatey Packages**, and **Powershell Gallery** repositories.

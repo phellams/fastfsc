@@ -1,4 +1,7 @@
-# Add C# code inline to PowerShell
+# # Add C# code inline to PowerShell
+using module .\Get-BestSizeUnit.psm1
+using module ../libs/phwriter/phwriter.psm1
+
 Add-Type -TypeDefinition @"
 using System;
 using System.IO;
@@ -113,29 +116,66 @@ public static class FastFolderSize
 }
 "@
 
-# PowerShell wrapper functions
+<#
+.SYNOPSIS
+    Quickly calculates the size of a folder in bytes, MB, and GB.
+.DESCRIPTION
+    Get-FolderSizeFast is a PowerShell cmdlet that efficiently computes the total size of a specified folder, including all its subfolders and files. It provides options for detailed output, including file and folder counts, and supports error handling for inaccessible files or directories.
+.PARAMETER Path
+    The path of the folder to calculate the size for. This parameter is mandatory and accepts pipeline input.   
+.PARAMETER Detailed
+    If specified, the cmdlet returns additional details including file count, folder count, and calculation time.
+.PARAMETER json
+    If specified, the output will be formatted as JSON.
+.EXAMPLE
+    Get-FolderSizeFast -Path "C:\MyFolder"
+    Calculates the size of "C:\MyFolder" and returns the size in bytes, MB, and GB.
+.EXAMPLE
+    Get-FolderSizeFast -Path "C:\MyFolder" -Detailed
+    Calculates the size of "C:\MyFolder" and returns detailed information including file count, folder count, and calculation time.
+.EXAMPLE
+    "C:\MyFolder" | Get-FolderSizeFast -Detailed
+    Uses pipeline input to calculate the size of "C:\MyFolder" with detailed output.
+.NOTES
+#>
 function Get-FolderSizeFast {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [string]$Path,
         
         [Parameter(Mandatory = $false)]
         [switch]$Detailed,
 
         [Parameter(Mandatory = $false)]
-        [ValidateSet('json', 'xml', 'text')]                    
-        [switch]$json
+        [ValidateSet('json', 'xml')]                    
+        [switch]$Format,
+
+        [parameter(mandatory=$false)]
+        [switch] $help
     )
     
     process {
+        
+        if ($help) {
+            New-PHWriter -JsonFile "./libs/help_metadata/Get-FolderSizeFast_phwriter_metadata.json"
+            return;
+        }
+        if(!$Path -and !$Help) {
+            Write-Error "Path parameter is required. Use -Help for usage information."
+            return;
+        }
+
         try {
             $resolvedPath = Resolve-Path $Path -ErrorAction Stop
-            
+            $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+
             if ($Detailed) {
                 $fileCount = 0
                 $folderCount = 0
                 $size = [FastFolderSize]::GetFolderSizeWithSubfolders($resolvedPath.Path, [ref]$fileCount, [ref]$folderCount)
+                
+                $stopwatch.stop()
                 
                 [PSCustomObject]@{
                     Path        = $resolvedPath.Path
@@ -144,6 +184,10 @@ function Get-FolderSizeFast {
                     SizeGB      = [Math]::Round($size / 1GB, 3)
                     FileCount   = $fileCount
                     FolderCount = $folderCount - 1  # Subtract 1 to exclude root folder
+                    BestUnit          = Get-BestSizeUnit -Bytes $size
+                    CalculationTimeMs = $stopwatch.ElapsedMilliseconds
+                    CalculationTimeSec = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)                              
+                    CalculationTimeMin = [Math]::Round($stopwatch.Elapsed.TotalMinutes, 2)
                 }
             }
             else {

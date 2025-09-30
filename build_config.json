@@ -16,7 +16,9 @@
         "readme.txt"
     ],
     "modulefolders": [
-        "cmdlets"
+        "cmdlets",
+        "libs",
+        "tools"
     ],
     "moduleexclude": [
         "commit-helper.ps1"

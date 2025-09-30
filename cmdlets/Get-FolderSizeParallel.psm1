@@ -1,4 +1,5 @@
 using module .\Get-BestSizeUnit.psm1
+using module ../libs/phwriter/phwriter.psm1
 
 Add-Type -TypeDefinition @"
 using System;
@@ -74,13 +75,25 @@ public static class ParallelFolderSize
 function Get-FolderSizeParallel {
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true, ValueFromPipeline = $true)]
+        [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [string]$Path,
         [Parameter(Mandatory = $false)]
-        [switch]$json
+        [ValidateSet('json', 'xml')]                    
+        [string]$Format,
+        [Parameter(Mandatory = $false)]
+        [switch]$Help
     )
-    
     process {
+
+        if ($help) {
+            New-PHWriter -JsonFile "./libs/help_metadata/Get-FolderSizeParallel_phwriter_metadata.json"
+            return;
+        }
+        if(!$Path -and !$Help) {
+            Write-Error "Path parameter is required. Use -Help for usage information."
+            return;
+        }
+
         try {
             $resolvedPath = Resolve-Path $Path -ErrorAction Stop
             $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -99,6 +112,8 @@ function Get-FolderSizeParallel {
                 SizePB            = [Math]::Round($size / 1PB, 5)
                 BestUnit          = Get-BestSizeUnit -Bytes $size
                 CalculationTimeMs = $stopwatch.ElapsedMilliseconds
+                CalculationTimeSec = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)                              
+                CalculationTimeMin = [Math]::Round($stopwatch.Elapsed.TotalMinutes, 2)
             }
         }
         catch {
@@ -106,6 +121,8 @@ function Get-FolderSizeParallel {
         }
         if ($json) {
             return $folderstats | ConvertTo-Json -Depth 5
+        } elseif($xml){
+            return $folderstats | ConvertTo-Xml -NoTypeInformation -Depth 5
         } else {
             return $folderstats
         }

@@ -16,7 +16,7 @@ $PreRelease              = $ModuleManifest.PrivateData.PSData.Prerelease
 if (!$prerelease -or $prerelease.Length -eq 0) { 
     $moduleversion = $moduleversion 
 } else { 
-    $moduleversion = "$moduleversion-$prerelease" 
+    $moduleversion = "$moduleversion-$prerelease"
 }
 
 # Rename Choco package file for build artifact as output name is the same 
@@ -31,23 +31,25 @@ $CommitTag = if ($env:CI_COMMIT_TAG) { $env:CI_COMMIT_TAG } else { $env:CI_COMMI
 
 # Base URL
 # .../packages/generic/:package_name/:package_version/:file_name
-$baseUrl = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/assets/$moduleversion"
+# Note this filed when i first did it with $env:CI_COMMIT_TAG and the tag had a 'v' in it like v1.0.0
+# FIX: try with "$modulename/$moduleversion/$ModuleName-$moduleversion.nupkg" name
+$baseUrl = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion"
 
 $interLogger.invoke("deploy", "Uploading artifacts to {kv:url=$baseUrl}", $false, 'info')
 
-[console]::writeline("=== ENVIRONMENT VARIABLES DEBUG ===")
+[console]::writeline("==== ENVIRONMENT VARIABLES DEBUG ====")
 $kv.invoke("CI_API_V4_URL", "$env:CI_API_V4_URL")
 $kv.invoke("CI_PROJECT_ID", "$env:CI_PROJECT_ID")
-$kv.invoke("CI_COMMIT_TAG", "$CommitTag")
+$kv.invoke("CI_COMMIT_TAG", "$env:CI_COMMIT_SHA")
 $kv.invoke("CI_JOB_TOKEN", "$($null -ne $env:CI_JOB_TOKEN)")
-$kv.invoke("VERSION TAG", "$versionTag")
-[console]::writeline("=================================")
+[console]::writeline("====================================")
 
-[console]::writeline("=== MODULE INFO ===")
+[console]::writeline("===== MODULE INFO ==================")
 $kv.invoke("MODULE NAME", "$ModuleName")
 $kv.invoke("MODULE VERSION", "$moduleversion")
 $kv.invoke("BASE URL", "$baseUrl")
-[console]::writeline("=================================")
+[console]::writeline("====================================")
+
 
 # Upload NuGet package
 $interLogger.invoke("deploy", "Finding NuGet package: $ModuleName-$moduleversion.nupkg to upload...", $false, 'info')

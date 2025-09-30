@@ -19,6 +19,19 @@ $AutoVersion = (Get-GitAutoVersion).Version
 $interLogger.invoke("Build", "Running Build on {kv:module=$ModuleName} ", $false, 'info')
 $interLogger.invoke("Build", "Creating dist folders", $false, 'info')
 
+if((Test-Path -Path './phwriter-metadata.ps1')) {                                                                         
+    $interLogger.invoke("Build", "Generating PHWriter metadata from {kv:path=./phwriter-metadata.ps1}", $false, 'info')
+    . ./phwriter-metadata.ps1
+    foreach ($helpdata in $phwriter_metadata_array) {
+        $cmdlet_name = $helpdata.CommandInfo.cmdlet
+        $json_output_path = "./libs/help_metadata/$($cmdlet_name)_phwriter_metadata.json"
+        $helpdata | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8
+        $interLogger.invoke("Build", "Generated help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $false, 'info')
+    }
+} else {
+    $interLogger.invoke("Build", "PHWriter metadata file not found at {kv:path=./phwriter-metadata.ps1}", $false, 'warning')
+}
+
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
     New-Item -Path './dist' -ItemType Directory 
