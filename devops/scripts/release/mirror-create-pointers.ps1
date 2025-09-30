@@ -1,3 +1,10 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
@@ -5,11 +12,9 @@ $gituser        = $ModuleConfig.gituser
 $gitgroup       = $ModuleConfig.gitgroup
 #$gitlab_mirror_name = "gitlab_mirror"
 $github_mirror_name = "github_mirror"
-    #---CONFIG----------------------------
+#---CONFIG----------------------------
 
 try {
-
-
     # $repo_string = "https://$user`:$ENV:GITLAB_API_KEY@$gitlab.com/$user/$RepoName.git"
     # git remote add $gitlab_mirror_name $repo_string
     # git remote set-url --push $name $repo_string
@@ -25,18 +30,17 @@ try {
     $repo_string = "https://$gituser`:$ENV:GITHUB_API_KEY@github.com/$gitgroup/$ModuleName.git"
     git remote add $github_mirror_name $repo_string
     git remote set-url --push $github_mirror_name $repo_string
-    [console]::write("Adding Github Mirror: $repo_string`n")
+    $interLogger.invoke("release", "Adding Github Mirror: {kv:url=$repo_string}", $false, 'info')
     git push $github_mirror_name --all
     if($LASTEXITCODE -eq 0) {
-        Write-Host "Github Mirror Added" #! should throw here for ci to fail
+        $interLogger.invoke("release", "Successfully added Github Mirror: {kv:url=$repo_string}", $false, 'info')
     }else {
-        [console]::write("Failed to add Github Mirror Exit Code:$LASTEXITCODE, url:$repo_string`n")
+        $interLogger.invoke("release", "Failed to add Github Mirror Exit Code:{kv:code=$LASTEXITCODE}, {kv:url=$repo_string}", $false, 'error')
         exit 1
     }
 
 } catch [system.exception] {
-    [console]::write("failed to create local mirror: $($_.exception.message)`n")
-    
+    $interLogger.invoke("release", "Failed to create local mirror: {kv:error=$($_.exception.message)}", $false, 'error')    
 }
 
 # Remove local Mirrors

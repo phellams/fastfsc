@@ -1,4 +1,10 @@
 using module ../core/Test-GitLabReleaseVersion.psm1
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
 
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
@@ -10,10 +16,10 @@ $ModuleVersion  = $ModuleManifest.Version
 #---CONFIG----------------------------
 
 if(Test-GitLabReleaseVersion -reponame "$gitgroup/$modulename" -version $ModuleVersion) {
-  Write-Host "❌ Release $ModuleVersion already exists for $gitgroup/$modulename"
+  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} already exists for {kv:module=$gitgroup/$modulename}. Skipping release creation.", $false, 'info')
   exit 0
 }else{
-  Write-Host "✅ Release $ModuleVersion does not exist. Proceeding to create release."
+  $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
 }
 
 # Parse release body
@@ -26,7 +32,8 @@ if (!$prerelease -or $prerelease.Length -eq 0) {
 else { 
   $ModuleVersion = "$ModuleVersion-$prerelease" 
   $release_template = $release_template -replace 'PRERELEASE_CHOCO_PLACE_HOLDER', "--prerelease $prerelease" `
-                                        -replace 'PRERELEASE_PSGAL_PLACE_HOLDER', "-AllowPrerelease"
+                                        -replace 'PRERELEASE_PSGAL_PLACE_HOLDER', "-AllowPrerelease" `
+                                        -replace 'PRERELEASE_GITLAB_PLACE_HOLDER' , "-pre"
 }
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
@@ -37,24 +44,26 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
                                       -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"`
                                       -replace 'CI_PIPELINE_ID', "$env:CI_PIPELINE_ID" `
+                                      -replace 'CI_PIPELINE_URL', "$env:CI_PIPELINE_URL" `
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
-                                      -replace 'BUILD_DATE', "$env:CI_PIPELINE_CREATED_AT"
+                                      -replace 'BUILD_DATE', "$(Get-Date -Date $env:CI_PIPELINE_CREATED_AT)" `
+                                      -replace 'CI_PROJECT_ID', "$env:CI_PROJECT_ID" `
 
 $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion.nupkg"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion.nupkg/download"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/$modulename-$ModuleVersion-choco.nupkg"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion-choco.nupkg/download"
       link_type = "package"
     },
     @{
-      name      = "$modulename.$moduleversion-psgal.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$env:CI_PROJECT_ID/packages/generic/module/$env:CI_COMMIT_TAG/module-$env:CI_COMMIT_TAG.zip"
+      name      = "$modulename.$moduleversion-psgal.zip"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion-psgal.zip/download"
       link_type = "package"
     }
   )
@@ -73,17 +82,15 @@ $body = @{
 } | ConvertTo-Json -Depth 5
 
 try {
-  Write-Host "Creating release v$ModuleVersion for $gitgroup/$modulename"
+  $interLogger.invoke("release", "Creating release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
   $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$($ENV:CI_PROJECT_ID)/releases" `
                                 -Method 'POST' `
                                 -Headers $headers `
                                 -Body $body
-
-  Write-Host "✅ Release created successfully: $($response.tag_name)"
-  Write-Host "🔗 Release URL: $($response._links.self)"
+  $interLogger.invoke("release", "Successfully created release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
+  $interLogger.invoke("release", "Release URL: {kv:url=$($response._links.self)}", $false, 'info')
 }
 catch {
-    Write-Error "❌ Failed to create release: $($_.Exception.Message)"
-    Write-Error "Response: $($_.Exception.Response)"
+    $interLogger.invoke("release", "Failed to create release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}: {kv:error=$($_.exception.message)}", $false, 'error')
     exit 1
 }

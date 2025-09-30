@@ -1,3 +1,12 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
+$interLogger.invoke("Build", "Running build on nuspec for nuget {inf:kv:buildMethod=NUPSFORGE}", $false, 'info')
+
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName

@@ -1,4 +1,10 @@
-using module ../../Get-GitAutoVersion.psm1
+using module ../core/Get-GitAutoVersion.psm1
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv          = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened-------------
 
 #---CONFIG----------------------------
 $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-Json
@@ -10,6 +16,8 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 
 $AutoVersion = (Get-GitAutoVersion).Version
 
+$interLogger.invoke("Build", "Running Build on {kv:module=$ModuleName} ", $false, 'info')
+$interLogger.invoke("Build", "Creating dist folders", $false, 'info')
 
 # Create dist folder
 if (!(Test-Path -Path ./dist)){                                                                         
@@ -25,6 +33,8 @@ if (!(Test-Path -path "./dist/psgal")) { mkdir "./dist/psgal" }
 if (!(Test-Path -Path "./dist/$moduleName/tools")) { 
     New-Item -Path "./dist/$moduleName/tools" -ItemType Directory 
 }
+
+$interLogger.invoke("Build", "Copying files to dist {inf:kv:BuildSource=PSMPacker}", $false, 'info')
 
 # Copy module files to dist for packaging
 Build-Module -SourcePath ./ `
@@ -44,9 +54,9 @@ Build-Module -SourcePath ./ `
 # Set the choco package name as a ENV and use choco push
 # Name will be pulled by the gitlab ci script and use to rename the choco package after choco pack
 if((Test-ModuleManifest -path "./dist/$ModuleName/$ModuleName.psd1")) {
-    [console]::writeline("Module manifest found at ./dist/$ModuleName/$ModuleName.psd1")    
+    $interLogger.invoke("Build", "Module manifest found at ./dist/$ModuleName/$ModuleName.psd1", $false, 'info') 
 } else {
-    [console]::writeline("Module manifest not found at ./dist/$ModuleName/$ModuleName.psd1")
+    $interLogger.invoke("Build", "Module manifest not found at ./dist/$ModuleName/$ModuleName.psd1", $false, 'error')
     exit 1
 
 }
@@ -56,6 +66,9 @@ $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$Module
 
 if (!$prerelease -or $prerelease.Length -eq 0) { $moduleversion = $moduleversion }
 else { $moduleversion = "$moduleversion-$prerelease" }
+
+$interLogger.invoke("Build", "Module version is {kv:version=$moduleversion}", $false, 'info')
+$interLogger.invoke("Build", "Generating build env {kv:path=./build.env}", $false, 'info')
 
 New-Item -Type File -Path "build.env" -Force -Value $null
 
@@ -68,11 +81,11 @@ $BuildEnvContent = @(
 )
 
 # Echo out build env
-Write-Host "CHOCO_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-choco.nupkg"
-Write-Host "PSGAL_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion-psgal.nupkg"
-Write-Host "GITLAB_NUPKG_PACKAGE_NAME=$ModuleName.$moduleversion.nupkg"
-Write-Host "BUILD_PACKAGE_VERSION=$moduleversion"
-Write-Host "BUILD_PACKAGE_NAME=$ModuleName"
+$kv.invoke("CHOCO_NUPKG_PACKAGE_NAME", "$ModuleName.$moduleversion-choco.nupkg")
+$kv.invoke("PSGAL_NUPKG_PACKAGE_NAME", "$ModuleName.$moduleversion-psgal.nupkg")
+$kv.invoke("GITLAB_NUPKG_PACKAGE_NAME", "$ModuleName.$moduleversion.nupkg")
+$kv.invoke("BUILD_PACKAGE_VERSION", "$moduleversion")
+$kv.invoke("BUILD_PACKAGE_NAME", "$ModuleName")
 
 Set-Content -Path "build.env" -Value $BuildEnvContent -Force -Encoding UTF8
 

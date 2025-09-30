@@ -1,3 +1,10 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
 #---CONFIG----------------------------
 $ModuleConfig               = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName                 = $ModuleConfig.moduleName
@@ -5,55 +12,56 @@ $ModuleManifest             = Test-ModuleManifest -path "./dist/$ModuleName/$Mod
 $gitlab_username            = $ModuleConfig.gituser
 $gitlab_uri                 = "https://gitlab.com" # https://$($ENV:GITLAB_HOST)"
 $projectid                  = $ModuleConfig.gitlabID_public
-[string]$moduleversion   = $ModuleManifest.Version.ToString()
+[string]$moduleversion      = $ModuleManifest.Version.ToString()
 $prerelease                 = $ModuleManifest.PrivateData.PSData.Prerelease
-$NugetProjectPath           = "api/v4/projects/$projectid/packages/nuget/index.json"
+$NugetProjectPath           = "api/v4/projects/$projectid/packages/nuget/index.json" # push to poject level not group for public access without auth
 #---CONFIG----------------------------
 
 # Set PreRelease
 if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
 else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
+$interLogger.invoke("deploy", "GitLab package push to {kv:url=$gitlab_uri/$NugetProjectPath} for {kv:module=$ModuleName} version {kv:version=$ModuleVersion}", $false, 'info')
+
 try {
-  [console]::writeline("Attempting to Register Gitlab: $gitlab_uri@$Gitlab_Username")
+  $interLogger.invoke("deploy", "Registering Gitlab: $gitlab_uri/$NugetProjectPath", $false, 'info')
   #dotnet nuget add source $gitlab_uri/$NugetProjectPath --name gitlab --username $GitLab_Username --password $ENV:GITLAB_API_KEY
   nuget sources add -name "gitlab_$projectid_$ModuleName`_Packages" -source $gitlab_uri/$NugetProjectPath -username $GitLab_Username -password $env:GITLAB_API_KEY
-  [console]::writeline("Successfully registered Gitlab: $gitlab_uri/$NugetProjectPath")
+  $interLogger.invoke("deploy", "Successfully registered Gitlab: $gitlab_uri/$NugetProjectPath", $false, 'info')
 }
 catch [system.exception] {
-  [console]::writeline("Failed to register Gitlab: $gitlab_uri/$NugetProjectPath")
-  [console]::writeline($_.Exception.Message)
+  $interLogger.invoke("deploy", "Failed to register Gitlab: $gitlab_uri/$NugetProjectPath", $false, 'error')
+  $interLogger.invoke("deploy", $_.Exception.Message, $false, 'error')
   exit 1
 }
 
 # check if package already exists
 try {
-  [console]::writeline("Checking if package exists: $gitlab_uri/$NugetProjectPath")
+  $interLogger.invoke("deploy", "Checking if package exists: $gitlab_uri/$NugetProjectPath", $false, 'info')
   $response = Invoke-WebRequest -Uri "https://gitlab.com/api/v4/projects/$projectid/packages/nuget/$ModuleName/$ModuleVersion"
   if ($response.StatusCode -eq 200) {
-    [console]::writeline("Package already exists: $gitlab_uri/$NugetProjectPath")
+    $interLogger.invoke("deploy", "Package already exists: $gitlab_uri/$NugetProjectPath", $false, 'info')
     exit 0
   }
-  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
+  $interLogger.invoke("deploy", "Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath", $false, 'info')
 }
 catch {
-  [console]::writeline("Package does not exist, proceeding to push: $gitlab_uri/$NugetProjectPath")
+  $interLogger.invoke("deploy", "Failed to check if package exists: $gitlab_uri/$NugetProjectPath", $false, 'error')
 }
 
 try {
-  [console]::writeline("Pushing $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
+  $interLogger.invoke("deploy", "Pushing $modulename to Gitlab: $gitlab_uri/$NugetProjectPath", $false, 'info')
   #dotnet nuget push ./dist/nuget/$modulename.$SemVerVersion.nupkg --source gitlab 
   nuget push ./dist/nuget/$ModuleName.$ModuleVersion.nupkg -Source "gitlab_$projectid_$ModuleName`_Packages" -ApiKey $env:GITLAB_API_KEY
   
   if ($LASTEXITCODE -ne 0) {
-    [console]::writeline("Failed to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
+    $interLogger.invoke("deploy", "nuget push failed with exit code $LASTEXITCODE", $false, 'error')
     exit 1
   }
-
   nuget sources remove -Name "gitlab_$projectid_$ModuleName`_Packages"
 }
 catch [system.exception] {
-  [console]::writeline("Failed to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath")
-  [console]::writeline($_.Exception.Message)
+  $interLogger.invoke("deploy", "Failed to push $modulename to Gitlab: $gitlab_uri/$NugetProjectPath", $false, 'error')
+  $interLogger.invoke("deploy", $_.Exception.Message, $false, 'error')
   exit 1
 }
