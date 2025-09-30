@@ -13,14 +13,15 @@ function Request-GenericPackage {
         [switch]$ci
     )
 
-    # Construct the API URL for fetching the package details
-    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&version=$PackageVersion&Type=$PackageType&sort=desc&per_page=1"
-
      # Default to GitLab's public API if no ApiUrl is provided
 
     if(!$ApiUrl) {
         $ApiUrl = "https://gitlab.com/api/v4"
     }
+    
+    # Construct the API URL for fetching the package details
+    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&version=$PackageVersion&Type=$PackageType&sort=desc&per_page=1"
+
 
     if(!$apikey -and $ci) {
         $env:GITLAB_API_KEY = $ApiKey
