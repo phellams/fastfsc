@@ -237,8 +237,6 @@ gitlab_release:
       artifacts: true
     - job: git_tag
       artifacts: false
-    - job: upload_psgallery
-      artifacts: true
 
   script:
     - |
