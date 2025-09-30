@@ -5,3 +5,4 @@ build.env
 coverage.xml
 testResults.xml
 automator-devops
+libs/help_metadata
