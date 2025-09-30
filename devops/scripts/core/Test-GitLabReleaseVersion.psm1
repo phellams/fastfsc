@@ -51,8 +51,8 @@ a Personal Access Token using the -Headers parameter.
 
     # --- Construct the API URL ---
     # The API endpoint for a specific tag is: 
-    # '/projects/{encoded_path}/repository/tags/{tag_name}'
-    $url = "$gitlabUrl/api/v4/projects/$encodedRepoName/repository/tags/$version"
+    # '/projects/{encoded_path}/repository/releases/{release_name}'
+    $url = "$gitlabUrl/api/v4/projects/$encodedRepoName/repository/releases/$version"
 
     [console]::writeline("Checking URL: $url")
 
