@@ -1,6 +1,6 @@
 # Fastfsc
 
-<img src="https://img.shields.io/badge/License-_mit-License?style=flat-square&labelColor=%23383838&color=%237A5ACF23CD5C5C
+<a href="https://gitlab.com/phellams/fastfsc/readme"><img src="https://img.shields.io/badge/License-_mit-License?style=flat-square&labelColor=%23383838&color=%237A5ACF23CD5C5C
 " alt="MIT License" />
 <img src="https://img.shields.io/gitlab/pipeline-status/phellams%2Ffastfsc?style=flat-square&logo=Gitlab&logoColor=%233478BD&labelColor=%232D2D34" alt="Build Status">
 <img src="https://img.shields.io/codecov/c/gitlab/phellams/fastfsc?style=flat-square&logo=codecov&logoColor=%23E6746B&logoSize=auto&labelColor=%234A7A82
@@ -15,7 +15,7 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 
 - ⚡ **Ultra-fast performance** - 3-10x faster than `Get-ChildItem | Measure-Object`
 - 🔄 **Parallel processing** - Multi-threaded calculations for even better performance
-- 📊 **Multiple size units** - Automatic conversion to KB, MB, GB, TB, and PB
+- 📊 **Multiple size units** - Automatic conversion to KB, MB, ▒GB, TB, and PB
 - 🎯 **Smart unit selection** - `BestUnit` property shows the most readable format
 - 📈 **Detailed reporting** - File counts, folder counts, and calculation timing
 - 🛡️ **Error resilient** - Gracefully handles access denied and missing files
@@ -24,8 +24,8 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 
 ## Installation
 
-Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [**Gitlab Packages**](https://gitlab.com/phellams/fastfsc/-/packages/?orderBy=name&sort=desc&search[]=fastfsc&type=Generic).
-||||
+Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [**Gitlab Packages**](https://gitlab.com/phellams/fastfsc/-/packages/?orderBy=name&sort=desc&search[]=fastfsc&type=NuGet).
+|▓▓▓▓▒▒▒▒░░░|▓▓▓▓▒▒▒▒░░░|▓▓▓▓▒▒▒▒░░░|
 |-|-|-|
 |📦 PSGallery | <img src="https://img.shields.io/powershellgallery/v/fastfsc?label=version&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery"> | <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery-downloads"> |
 |📦 Chocolatey | <img src="https://img.shields.io/chocolatey/v/fastfsc?label=version&include_prereleases&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey"> | <img src="https://img.shields.io/chocolatey/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&include_prereleases&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey-downloads"> |
