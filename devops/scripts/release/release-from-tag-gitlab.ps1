@@ -38,7 +38,6 @@ if (Test-GitLabReleaseVersion -reponame "$gitgroup/$modulename" -version $Module
   exit 0
 }
 else {
-  exit 1
   $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
 }
 
