@@ -13,7 +13,7 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 
 ## Features
 
-- ⚡ **Ultra-fst performance** - 3-10x faster than `Get-ChildItem | Measure-Object`
+- ⚡ **Ultra-fast performance** - 3-10x faster than `Get-ChildItem | Measure-Object`
 - 🔄 **Parallel processing** - Multi-threaded calculations for even better performance
 - 📊 **Multiple size units** - Automatic conversion to KB, MB, GB, TB, and PB
 - 🎯 **Smart unit selection** - `BestUnit` property shows the most readable format
@@ -24,7 +24,7 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 
 ## Installation
 
-Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [**Gitlab Packages**](https://gitlab.com/phellams/fastfsc/-/packages?type=NuGet&orderBy=name&sort=asc).
+Phellams modules are available from [**PowerShell Gallery**](https://www.powershellgallery.com/packages/Fastfsc) and [**Chocolatey**](https://chocolatey.org/packages/fastfsc). you can access the raw assets via [**Gitlab Generic Assets**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=desc&search[]=fastfsc) or nuget repository via [**Gitlab Packages**](https://gitlab.com/phellams/fastfsc/-/packages/?orderBy=name&sort=desc&search[]=fastfsc&type=Generic).
 ||||
 |-|-|-|
 |📦 PSGallery | <img src="https://img.shields.io/powershellgallery/v/fastfsc?label=version&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery"> | <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery-downloads"> |
