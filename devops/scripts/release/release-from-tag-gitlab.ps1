@@ -62,21 +62,21 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
 # Extract package versions using request-genericpackage
 $nuget_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
                                         -PackageType "generic" `
-                                        -PackageName "$modulename.$ModuleVersion.nupkg" `
+                                        -PackageName "$modulename" `
                                         -PackageVersion "$ModuleVersion" `
                                         -ApiKey $ENV:GITLAB_API_KEY `
                                         -ci
 
 $choco_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
                                         -PackageType "generic" `
-                                        -PackageName "$modulename.$ModuleVersion-choco.nupkg" `
+                                        -PackageName "$modulename" `
                                         -PackageVersion "$ModuleVersion" `
                                         -ApiKey $ENV:GITLAB_API_KEY `
                                         -ci
 
 $psgal_package = Request-GenericPackage -ProjectId "$env:CI_PROJECT_ID" `
                                         -PackageType "generic" `
-                                        -PackageName "$modulename.$ModuleVersion-psgal.zip" `
+                                        -PackageName "$modulename" `
                                         -PackageVersion "$ModuleVersion" `
                                         -ApiKey $ENV:GITLAB_API_KEY `
                                         -ci

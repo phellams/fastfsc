@@ -233,6 +233,12 @@ gitlab_release:
   needs:
     - job: psmpacker_build
       artifacts: true
+    - job: mono_choco_package
+      artifacts: true
+    - job: zip_build
+      artifacts: true
+    - job: nupsforge_general_nuget_package
+      artifacts: true
     - job: upload_artifacts
       artifacts: true
     - job: git_tag
