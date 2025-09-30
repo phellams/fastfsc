@@ -21,7 +21,7 @@ $global:__phellams_devops_template = @{
     
     # Internal Logger
     utility = @{
-        logName                = "PHELLAMS_DEVOPS_TEMPLATE"
+        logName                = "AUTOMATOR-DEVOPS"
         logname_color          = "darkmagenta"
         logchar                = "▣"
         logchar_color          = "darkmagenta"

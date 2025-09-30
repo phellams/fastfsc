@@ -53,17 +53,17 @@ $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion.nupkg/download"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion.nupkg/download"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion-choco.nupkg/download"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-choco.nupkg/download"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-psgal.zip"
-      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets-v$ModuleVersion/$modulename-$ModuleVersion-psgal.zip/download"
+      url       = "$env:GITLAB_HOST/$gitgroup/$env:CI_PROJECT_NAME/-/package_files/assets/$ModuleVersion/$modulename-$ModuleVersion-psgal.zip/download"
       link_type = "package"
     }
   )
