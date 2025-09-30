@@ -1,3 +1,10 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened-------------
+
 #---CONFIG----------------------------
 $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName              = $ModuleConfig.moduleName
@@ -5,6 +12,8 @@ $ModuleManifest          = Test-ModuleManifest -path "./dist/$ModuleName/$Module
 [string]$moduleversion   = $ModuleManifest.Version.ToString()
 [string]$PreRelease      = $ModuleManifest.PrivateData.PSData.Prerelease
 #---CONFIG----------------------------
+
+$interLogger.invoke("Build", "Running build on nuspec for choco", $false, 'info')
 
 # Set PreRelease
 if (!$prerelease -or $prerelease.Length -eq 0) { $ModuleVersion = $ModuleVersion }
@@ -69,10 +78,14 @@ try {
   # Test-Verification -Path ./ | Format-Table -auto
   # Set-Location ../../ # back
   # Create Choco nuspec
+
+  $interLogger.invoke("Build", "Creating choco nuspec", $false, 'info')
+
   New-ChocoNuspecFile @NuSpecParamsChoco
 
   # Use Choco mono to create choco package and deploy
   if($IsWindows){
+    $interLogger.invoke("Build", "Creating choco package {wrn:kv:Platform=Windows}", $false, 'info')
     New-ChocoPackage -path ".\dist\$ModuleName"  -outpath ".\dist\choco"
   }
 

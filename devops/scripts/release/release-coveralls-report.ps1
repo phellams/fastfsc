@@ -1,4 +1,10 @@
 # Codecov Coverage Report (Note: This script is for Coveralls, not Codecov)
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
 
 #---CONFIG----------------------------
 # Define the expected name of the Coveralls executable.
@@ -13,32 +19,31 @@ $coverageReportFilePath = "./coverage.xml"
 #---CONFIG----------------------------
 
 #------------------------------------
-[console]::writeline("--- Starting Coveralls Coverage Report Upload ---")
+$interLogger.invoke("release", "Starting Coveralls Coverage Report Upload for {kv:module=$ModuleName}", $false, 'info')
 # 1. Verify Coveralls executable exists in PATH
 # Get-Command is more robust for checking if an executable is truly available.
 # Using -ErrorAction Stop ensures immediate termination on failure.
 try {
     $coverallsCommand = Get-Command $coveralls -ErrorAction Stop
-    [console]::writeline("Found Coveralls executable: $($coverallsCommand.Source)")
+    $interLogger.invoke("release", "Found Coveralls executable: {kv:path=$($coverallsCommand.Source)}", $false, 'info')
 }
 catch {
-    [console]::writeline("Error: Unable to find '$coveralls' in your system's PATH. Please ensure it's installed and accessible.`n")
+    $interLogger.invoke("release", "Unable to find Coveralls executable: {kv:name=$coveralls}. Please ensure it's installed and accessible.", $false, 'error')
     exit 1
 }
 
 # 2. Verify the coverage report file exists
 if (!(Test-Path $coverageReportFilePath)) {
-    [console]::writeline("Error: Coverage report file not found at '$coverageReportFilePath'. Please ensure your test runner generated it correctly.`n")
+    $interLogger.invoke("release", "Coverage report file not found at {kv:path=$coverageReportFilePath}. Please ensure your test runner generated it correctly.", $false, 'error')
     exit 1 
 }
 
-[console]::writeline("Found coverage report file: $coverageReportFilePath")
+$interLogger.invoke("release", "Found coverage report file: {kv:path=$coverageReportFilePath}", $false, 'info')
 # 3. Verify the repository token environment variable is set
-if ([string]::IsNullOrWhiteSpace("$env:coveralls_repo_token_$Modulename")) {
-    throw [System.Exception]::new("Error: COVERALLS_REPO_TOKEN_COMMITFUSION environment variable is not set or is empty. This token is required for Coveralls upload.")
+if ([string]::IsNullOrWhiteSpace("$env:coveralls_token")) {
+    throw [System.Exception]::new("Coveralls repository token environment variable 'coveralls_repo_token_$Modulename' is not set. Please set it in your CI/CD environment.")
 }
-
-[console]::writeline("Coveralls repository token environment variable found.")
+$interLogger.invoke("release", "Coveralls repository token environment variable found.", $false, 'info')
 # 4. Execute the Coveralls report command
 
 [console]::writeline("Executing Coveralls upload command...")
@@ -63,7 +68,7 @@ try {
 
     # Option 2: If it's a .NET/OpenCover/Cobertura scenario, it might be implicitly detected or need specific flags:
     # Example for Coveralls.NET with OpenCover:
-    & $coveralls report --repo-token=$env:coveralls_repo_token_$ModuleName --opencover $coverageReportFilePath
+    & $coveralls report --repo-token=$env:coveralls_token --opencover $coverageReportFilePath
 
     # Or if your test runner produces Cobertura XML:
     # & $coverallsExe report --repo-token=$ENV:COVERALLS_REPO_TOKEN_COMMITFUSION --cobertura $coverageReportFilePath

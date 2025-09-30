@@ -1,3 +1,12 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
+$interLogger.invoke("Build", "Running build on nuspec for nuget {inf:kv:target=Powershell Gallery} {inf:kv:buildMethod=NUPSFORGE}", $false, 'info')
+
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
@@ -40,14 +49,16 @@ $NuSpecParams = @{
 # Create Nuget nuspec, Proget, gitlab, PSGallery
 New-NuspecPackageFile @NuSpecParams
 
+$interLogger.invoke("Build", "After Build create zip of psgallery upload", $false, 'info')
+
 # Create Zip With .nuspec file for PSGallery
 # copy-item -recurse -path "./dist/$ModuleName" -destination "./dist/psgal/$ModuleName"
 $module_source_path = [system.io.path]::combine($pwd, "dist", "$ModuleName")
 $module_output_path = [system.io.path]::combine($pwd, "dist", "psgal")
 $zipFileName = "$ModuleName-$ModuleVersion-psgal.zip"
-[console]::write( "Creating Zip File for PSGallery `n" )
-[console]::write( "Source: $module_source_path/* `n" )
-[console]::write( "output: $module_output_path/$($zipFileName) `n" )
+$interLogger.invoke("Build", "Creating Zip File for PSGallery", $false, 'info')
+$interLogger.invoke("Build", "Source: $module_source_path/*", $false, 'info')
+$interLogger.invoke("Build", "output: $module_output_path/$($zipFileName)", $false, 'info')
 
 try{
   compress-archive -path "$module_source_path/*" `
@@ -55,6 +66,6 @@ try{
                    -compressionlevel optimal `
                    -update
 }catch {
-  [console]::write( "Error creating ZIP of PSGallery Folder: $($_.Exception.Message)`n" )
+  $interLogger.invoke("Build", "Error creating ZIP of PSGallery Folder: $($_.Exception.Message)", $false, 'error')
   exit 1
 }

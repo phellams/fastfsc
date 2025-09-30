@@ -2,14 +2,20 @@
 
 
 ### **Build Information:**
- 
-- **Pipeline ID...** 🔸 CI_PIPELINE_ID
-- **Build Date....** 🔸 BUILD_DATE
-- **Commit........** 🔸 COMMIT_SHA
 
-## Package Repositories REPONAME_PLACE_HOLDER
+||||
+|-|-|-|
+|🏷️ |  Project Name |`⦿` **REPONAME_PLACE_HOLDER**|
+|🆔 | Project ID |`⦿` **CI_PROJECT_ID** |
+|🆔 | Pipeline ID |`⦿` **CI_PIPELINE_ID** |
+|🅱️ | Pipeline URL |`⦿` **CI_PIPELINE_URL** |
+|🗓️ | Build Date |`⦿` **BUILD_DATE** |
+|🔑 | Commit SHA |`⦿` **COMMIT_SHA** |
 
-Phellams Modules are distributed in the following repositories:
+
+## REPONAME_PLACE_HOLDER Package epositories 
+
+Phellams Modules are distributed to **GitLab Packages**, **Chocolatey Packages**, and **Powershell Gallery** repositories.
 
 ### 🟦 **Powershell Gallery**
 
@@ -34,34 +40,39 @@ Import-Module -Name REPONAME_PLACE_HOLDER
 
 ### 🟧 **Gitlab Packages**
 
+> Note: Gitlab packages requiries authentication even through public packages
+
 ```powershell
 # Add nuget source
-nuget add source --name GITGROUP_PLACE_HOLDER https://gitlab.com/GITGROUP_PLACE_HOLDER/nuget/v3/index.json
+nuget sources add -name GITGROUP_PLACE_HOLDER_REPONAME_PLACE_HOLDER -source https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/nuget/index.json
 
-# Install from gitlab package
-nuget install REPONAME_PLACE_HOLDER
+# Install from gitlab package into current directory
+nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -version VERSION_AND_PRERELEASE_PLACE_HOLDER-Source GITGROUP_PLACE_HOLDER_REPONAME_PLACE_HOLDER
 
-# or install from source
+# Install from gitlab package into user profile
+nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -Source gitlab-fastfsc PRERELEASE_GITLAB_PLACE_HOLDER -OutputDirectory $env:USERPROFILE/documents/powershell
 
-nuget install REPONAME_PLACE_HOLDER -source https://gitlab.com/GITGROUP_PLACE_HOLDER/nuget/v3/index.json
+# Without added sources
+
+nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -version VERSION_AND_PRERELEASE_PLACE_HOLDER -source https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/nuget/index.json -OutputDirectory $env:USERPROFILE/documents/powershell
 
 # Default nuget install directory for nuget
 # $path = $env:USERPROFILE\.nuget\packages #windows
-# $path = $home\.nuget\packages #linux
+# $path = $home/.nuget/packages #linux
 import-module -name $path\REPONAME_PLACE_HOLDER
 ```
 
-## 💼 Build Artifactes
+## Build Artifactes
 
 For all module output variations, you can simply extract the `.zip` files, or rename `.nupkg` files to `.zip`, then extract them using your preferred compression tool (e.g., **ZIP**, **PeaZip**, **7-Zip**, etc.). After extracting, navigate to the module directory (`cd`) and run Import-Module. Alternatively, you can use any of the methods mentioned above or below.
 
-### Download and Installation
+Or you can use the individual build artifacts to install the module, using the target package manager ie: **chocolatey(choco.exe)**, **Gitlab Packages(nuget.exe)**, **powershell gallery(install-module|install-package)**, gitlab packages(nuget)
 
-#### Nupkg
+### Nupkg's Manual Download and Installation
 
-`REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg` 
+🚪 `REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg`
 
-⚫ Using `Install-Package`
+🔹 Using `Install-Package` cmdlet.
 
 ```powershell
 # Download the Package from the build artifact
@@ -78,7 +89,8 @@ Install-Package -Name REPONAME_PLACE_HOLDER `
 Import-Module -Name REPONAME_PLACE_HOLDER
 ``` 
 
-⚙️ Using `nuget` from Gitlab packages
+🔹 Using `nuget.exe` 
+> NOTE: nuget v6.11+
 
 ```powershell
 Invoke-WebRequest -url "https://gitlab.com/GITGROUP_PLACE_HOLDER/REPONAME_PLACE_HOLDER/-/jobs/$($ENV:CI_JOB_ID)/artifacts/raw/dist/nuget/REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" -OutFile "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg"
@@ -92,7 +104,10 @@ Copy-Item -Path $env:APPDATA\NuGet\NuGet\REPONAME_PLACE_HOLDER -Destination $env
 Import-Module -Name REPONAME_PLACE_HOLDER
 ```
 
-⚙️ Using `zip|7zp|pzip`
+
+🔹 Using `zip`|`7zp`|`pzip` exe
+
+🚪 `REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER-psgal.zip`
 
 ```powershell
 # Zip
@@ -106,9 +121,9 @@ Expand-Archive -Path "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PREREL
 Import-Module REPONAME_PLACE_HOLDER
 ```
 
-⚙️ Using Choco
+🔹 Using Choco
 
-`REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER-choco.nupkg`
+🚪 `REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER-choco.nupkg`
 
 ```powershell
 # Install from chocolatey nupkg file

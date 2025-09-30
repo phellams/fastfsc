@@ -1,8 +1,15 @@
-############## CONFIG ##############
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
+#---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $ModuleName     = $ModuleConfig.moduleName
 $gitgroup       = $ModuleConfig.gitgroup
-####################################
+#---CONFIG----------------------------
 
 # Define the path where you'll download the Codecov Uploader
 $codecovUploaderPath = "codecov" # Or any other suitable path
@@ -20,7 +27,7 @@ $coverageReportFile = "./coverage.xml" # <--- IMPORTANT: Update this path!
 
 if (!(Test-Path $coverageReportFile)) {
     throw [System.Exception]::new("Coverage report file not found: $coverageReportFile. Please ensure your test runner generated it correctly.")
-    [console]::write("Coverage report file not found: $coverageReportFile. Please ensure your test runner generated it correctly.`n")
+    $interLogger.invoke("release", "Coverage report file not found: {kv:file=$coverageReportFile}. Please ensure your test runner generated it correctly.", $false, 'error')
     exit 1
 }
 
@@ -29,10 +36,10 @@ if (!(Test-Path $coverageReportFile)) {
 # It's highly recommended to store this as an environment variable in your CI/CD.
 # Example: $ENV:CODECOV_TOKEN_YOURPROJECTNAME
 # You can also use -f to explicitly specify the coverage file.
-Write-Host "Uploading coverage report to Codecov..."
+$interLogger.invoke("release", "Uploading coverage report to Codecov for {kv:module=$ModuleName}", $false, 'info')
 try {
     & $codecovUploaderPath upload-process -r "$gitgroup/$ModuleName" -t $env:codecov_token -f $coverageReportFile -v # -v for verbose output
-    [console]::writeline("Codecov upload completed.")
+    $interLogger.invoke("release", "Codecov upload completed for {kv:module=$ModuleName}", $false, 'info')
 }
 catch {
     throw [System.Exception]::new("Codecov upload failed: $($_.Exception.Message)")

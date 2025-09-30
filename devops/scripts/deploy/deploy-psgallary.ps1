@@ -1,3 +1,10 @@
+using module ../core/core.psm1
+
+#---UI ELEMENTS Shortened-------------
+$interLogger = $global:__phellams_devops_template.interLogger
+$kv = $global:__phellams_devops_template.kvinc
+#---UI ELEMENTS Shortened------------
+
 #---CONFIG----------------------------
 $ModuleConfig   = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $modulename     = $ModuleConfig.modulename
@@ -12,22 +19,22 @@ else { $ModuleVersion = "$ModuleVersion-$prerelease" }
 
 
 # Check if module version exists
-[console]::writeline("Checking if module version $ModuleVersion exists in PSGallery")
+$interLogger.invoke("deploy", "Checking if module version {kv:version=$ModuleVersion} exists in PSGallery", $false, 'info')
 [string]$psgal_currentnversion = Find-Module -Name $modulename `
                                             -RequiredVersion $ModuleVersion `
                                             -Repository 'psgallery' `
                                             -AllowPrerelease | Select-Object -ExpandProperty Version
 
 if ($psgal_currentnversion -eq $ModuleVersion) {
-  [console]::writeline("Module version $ModuleVersion already exists in PSGallery")
+  $interLogger.invoke("deploy", "Module version {kv:version=$ModuleVersion} already exists in PSGallery, skipping publish", $false, 'info')
   exit 0
 } else {
-  [console]::writeline("Module version $ModuleVersion does not exist in PSGallery")
+  $interLogger.invoke("deploy", "Module version {kv:version=$ModuleVersion} does not exist in PSGallery", $false, 'info')
 }
 
 # Publish to PSGallery if version does not exist
+$interLogger.invoke("deploy", "Attempting to publish {kv:module=$modulename} version {kv:version=$ModuleVersion} to PSGallery", $false, 'info')
 try {
-  [console]::writeline("Attempting to publish $modulename to PSGallery")
   publish-Module `
     -path "./dist/$modulename" `
     -Repository 'psgallery' `
@@ -40,9 +47,8 @@ try {
     -Verbose
 
 } catch {
-  [console]::writeline("Failed to publish $modulename to PSGallery")
-  [console]::writeline("Error details:")
-  [console]::writeline($_.Exception.Message)
+  $interLogger.invoke("deploy", "Failed to publish $modulename to PSGallery", $false, 'error')
+  $interLogger.invoke("deploy", $_.Exception.Message, $false, 'error')
   exit 1
 }
 
