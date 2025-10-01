@@ -112,8 +112,8 @@ $body = @{
     name        = "v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
-    assets      = $assets
-} | ConvertTo-Json -Depth 10
+    assets      = $assets | ConvertTo-Json
+} | ConvertTo-Json -Depth 5
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
