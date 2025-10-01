@@ -17,7 +17,7 @@ $ModuleVersion  = $ModuleManifest.Version
 #---CONFIG----------------------------
 
 # Parse release body
-$release_template = Get-Content -Path './devops/templates/release-template.md' -Raw
+$release_template = Get-Content -Path './automator-devops/templates/release-template.md' -Raw
 
 
 if (!$prerelease -or $prerelease.Length -eq 0) { 
@@ -46,7 +46,7 @@ else {
 # Note: Change variables to file name for reuse with assets below
 $nuget_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion.nupkg"
 $choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$psgal_zip_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
+$psgal_zip_url   = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
@@ -58,7 +58,12 @@ $kv.invoke("PSGAL ZIP URL", "$psgal_zip_url")
 
 $nuget_nupkg_hash = Get-RemoteFileHash -Url $nuget_nupkg_url
 $choco_nupkg_hash = Get-RemoteFileHash -Url $choco_nupkg_url
-$psgal_zip_hash  = Get-RemoteFileHash -Url $psgal_zip_url
+
+#!WARN: because zip files operate a little different
+#!WARN: we need to get the hash from the zip file by downloading then hashing
+$interlogger.invoke("Fetching PSGAL ZIP", $false, 'info')
+Invoke-WebRequest -Uri $psgal_zip_url -OutFile "./$modulename.$moduleversion-psgal.zip"
+$psgal_zip_hash  = Get-FileHash -Path "./$modulename.$moduleversion-psgal.zip" -Algorithm SHA256
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
@@ -86,17 +91,17 @@ $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = $nuget_nupkg_url
+      url       = "$nuget_nupkg_url"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = $choco_nupkg_url
+      url       = "$choco_nupkg_url"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = $choco_nupkg_url
+      url       = "$choco_nupkg_url"
       link_type = "package"
     }
   )
@@ -112,8 +117,8 @@ $body = @{
     name        = "v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
-    assets      = $assets | ConvertTo-Json
-} | ConvertTo-Json -Depth 5
+    assets      = $assets
+} | ConvertTo-Json -Depth 10
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
