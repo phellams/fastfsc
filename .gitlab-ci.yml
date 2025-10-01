@@ -66,7 +66,7 @@ pester_coverage:
   <<: *test_template
   script:
     - |
-      pwsh -c Invoke-Pester -Script ./devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script ./automator-devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
 
 #---------------------------------------------
 # ! || Build Stage ||
@@ -84,7 +84,7 @@ psmpacker_build:
       when: on_success
   script:
     - |
-      pwsh -c ./devops/scripts/build/build-module.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/build/build-module.ps1 || exit 1
 
 analyzer:
   stage: build
@@ -99,8 +99,8 @@ analyzer:
       git fetch --all
   script:
     - |
-      chmod +x ./devops/scripts/test/test-sa-before-build.ps1
-      pwsh -c ./devops/scripts/test/test-sa-before-build.ps1
+      chmod +x ./automator-devops/scripts/test/test-sa-before-build.ps1
+      pwsh -c ./automator-devops/scripts/test/test-sa-before-build.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
 nupsforge_general_nuget_package:
@@ -118,7 +118,7 @@ nupsforge_general_nuget_package:
       git fetch --all
   script:
     - |
-      pwsh -c ./devops/scripts/build/build-package-generic-nuget.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/build/build-package-generic-nuget.ps1 || exit 1
 
 nupsforge_chocolatey_nupsec_file:
   stage: build
@@ -135,7 +135,7 @@ nupsforge_chocolatey_nupsec_file:
       git fetch --all
   script:
     - |
-      pwsh -c ./devops/scripts/build/build-nuspec-choco.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/build/build-nuspec-choco.ps1 || exit 1
 
 mono_chocolatey_package:
   stage: build
@@ -154,8 +154,8 @@ mono_chocolatey_package:
       when: on_success
   script:
     - |
-      chmod +x ./devops/scripts/build/build-package-choco.sh || exit 1
-      bash -c ./devops/scripts/build/build-package-choco.sh || exit 1
+      chmod +x ./automator-devops/scripts/build/build-package-choco.sh || exit 1
+      bash -c ./automator-devops/scripts/build/build-package-choco.sh || exit 1
 
 zip_build:
   stage: build
@@ -172,7 +172,7 @@ zip_build:
       git fetch --all
   script:
     - |
-      pwsh -c ./devops/scripts/build/build-package-psgallery.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/build/build-package-psgallery.ps1 || exit 1
 
 #---------------------------------------------
 # ! || Release Stage ||
@@ -196,7 +196,7 @@ upload_artifacts:
      artifacts: true
   script:
     - |
-      pwsh -c ./devops/scripts/deploy/deploy-artifacts.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/deploy/deploy-artifacts.ps1 || exit 1
       
 # Create Git tag from the current commit
 git_tag:
@@ -208,7 +208,7 @@ git_tag:
       artifacts: true
   script:
     - |
-      pwsh -c ./devops/scripts/release/create-tag.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/release/create-tag.ps1 || exit 1
 
 # Mirror the repository to GitHub and GitLab
 mirror_pointer_github:
@@ -218,7 +218,7 @@ mirror_pointer_github:
       artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/release/mirror-create-pointers.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/release/mirror-create-pointers.ps1 || exit 1
 
 # mirror_pointer_gitlab:
 #   <<: *release_template
@@ -240,7 +240,7 @@ gitlab_release:
 
   script:
     - |
-      pwsh -c ./devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/release/release-from-tag-gitlab.ps1 || exit 1
 
 # github_release:
 #   <<: *release_template
@@ -267,7 +267,7 @@ codecov_release_coverage:
       artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/release/release-codecov-report.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/release/release-codecov-report.ps1 || exit 1
   
 
 # coveralls_release_coverage:
@@ -276,7 +276,7 @@ codecov_release_coverage:
 #     - job: pester_coverage
 #       artifacts: true
 #   script:
-#     - ./devops/scripts/release/release-codecov-report.ps1
+#     - ./automator-devops/scripts/release/release-codecov-report.ps1
 
 #---------------------------------------------
 # ! || Deploy Stage ||
@@ -290,7 +290,7 @@ upload_gitlab_package:
       artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/deploy/deploy-gitlab.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/deploy/deploy-gitlab.ps1 || exit 1
 
 # proget_nuget:
 #   <<: *deploy_template
@@ -298,7 +298,7 @@ upload_gitlab_package:
 #     - job: nupsforge_general_nuget_package
 #       artifacts: true
 #   script:
-#     - ./devops/scripts/deploy-proget.ps1
+#     - ./automator-devops/scripts/deploy-proget.ps1
 
 # Deploy Chocolatey package via choco push
 upload_chocolatey:
@@ -315,8 +315,8 @@ upload_chocolatey:
     - docker
   script:
     - |
-      chmod +x ./devops/scripts/deploy/deploy-choco.sh || exit 1
-      bash -c ./devops/scripts/deploy/deploy-choco.sh || exit 1
+      chmod +x ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
+      bash -c ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
       
 
 # Deploy PSGallery module via zip and Publish modules
@@ -331,4 +331,4 @@ upload_psgallery:
      artifacts: false
   script:
     - |
-      pwsh -c ./devops/scripts/deploy/deploy-psgallary.ps1 || exit 1
+      pwsh -c ./automator-devops/scripts/deploy/deploy-psgallary.ps1 || exit 1
