@@ -1,0 +1,20 @@
+# Global variables
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# NOTES FOR COMMIT
+- Used choco docker image to package.
+  - Will need to have
+
+# Build New Chocolater image based on Choco:latest
+  - Confirm Powershell Version
+  - Import/Copy Powershell Modules
+  - Copy Powershell Profile
+  - Confirm Mono Version
+
+Name Image: docker.io/sgkens/phellams-automator-choco:latest
+ - Version Test Successfull, works with choco pack and choco push, cant install
+   and test choco powershell or binary packages.
+ - Chart at
