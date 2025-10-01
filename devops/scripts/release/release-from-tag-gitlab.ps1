@@ -42,9 +42,16 @@ else {
 }
 
 # nupkg, choco, psgal file hash from asset repo
-$nuget_nupkg_hash = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
-$choco_nupkg_hash = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$psgal_zip_hash  = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-psgal.zip"
+# Note: Add verbose output to console for all files
+# Note: Change variables to file name for reuse with assets below
+$nuget_nupkg_url =  "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
+$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
+$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-psgal.zip"
+
+$nuget_nupkg_hash = Get-RemoteFileHash -Url $nuget_nupkg_url
+$choco_nupkg_hash = Get-RemoteFileHash -Url $choco_nupkg_url
+$psgal_zip_hash  = Get-RemoteFileHash -Url $psgal_zip_url
+
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
@@ -63,17 +70,17 @@ $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
+      url       = $nuget_nupkg_url
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
+      url       = $choco_nupkg_url
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
+      url       = $choco_nupkg_url
       link_type = "package"
     }
   )
