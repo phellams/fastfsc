@@ -46,7 +46,7 @@ else {
 # Note: Change variables to file name for reuse with assets below
 $nuget_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion.nupkg"
 $choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
+$psgal_zip_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
@@ -102,9 +102,6 @@ $assets = @{
   )
 }
 
-$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
-[console]::writeline("====================================")
-
 
 $headers = @{
   "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
@@ -115,8 +112,8 @@ $body = @{
     name        = "v$ModuleVersion"
     tag_name    = $ModuleVersion
     description = $release_template
-    assets      = $assets
-} | ConvertTo-Json
+    assets      = $assets | ConvertTo-Json
+} | ConvertTo-Json -Depth 5
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")

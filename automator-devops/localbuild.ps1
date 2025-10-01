@@ -8,6 +8,14 @@ param (
     [switch]$ChocoNupkgWindows
 )
 
+# Import Module config
+
+#---CONFIG----------------------------
+$ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName = $ModuleConfig.moduleName
+$moduleVersion = $ModuleConfig.moduleVersion
+#---CONFIG----------------------------
+
 # Remove dist folder if it exists
 if ( test-path ".\dist" ){ remove-item ".\dist" -Recurse -Force -erroraction silentlycontinue }
 else { New-Item -Path .\ -Name "dist" -ItemType Directory }
@@ -36,16 +44,28 @@ if ($isLinux -and !$Automator) {
 # docker phellams/automator
 if ($automator) {
     [console]::WriteLine("Local Build Docker Automator [ARC] - Importing Modules")
+    # Start WSL2 and run docker as sudo
+    # init docker run with remove
+    # Change the folder build
+    if (!Get-Command wsl){
+        [console]::WriteLine("WSL2 not found")
+        return
+    }
+
+    # Start wsl
+    wsl
+    sudo docker run --rm -v .:$ModuleName docker.io/sgkens/phellams-automator:latest \ 
+        pwsh -c "cd /$modulename; ./automator-devops/scripts/build-module.ps1; ./automator-devops/scripts/build-package-generic-nuget.ps1; ./automator-devops/scripts/build-package-psgallery.ps1"
 }
 
 # =================================
 # BUILD SCRIPTS
 # =================================
-if ($build) { ./devops/scripts/build/build-module.ps1 }
-if ($psgal) { ./devops/scripts/build/build-package-psgallery.ps1 }
-if ($Nupkg) { ./devops/scripts/build/build-package-generic-nuget.ps1 }
-if ($ChocoNuSpec)  { ./devops/scripts/build/Build-nuspec-choco.ps1 }
-if ($ChocoNupkgWindows)   { ./devops/scripts/build/build-package-choco-windows.ps1  }
+if ($build) { ./automator-devops/scripts/build/build-module.ps1 }
+if ($psgal) { ./automator-devops/scripts/build/build-package-psgallery.ps1 }
+if ($Nupkg) { ./automator-devops/scripts/build/build-package-generic-nuget.ps1 }
+if ($ChocoNuSpec) { ./automator-devops/scripts/build/Build-nuspec-choco.ps1 }
+if ($ChocoNupkgWindows)   { ./automator-devops/scripts/wip/build-package-choco-windows.ps1  }
 
 # TEST DEPLOY
 #./devops/scripts/deploy/deploy-gitlab.ps1
