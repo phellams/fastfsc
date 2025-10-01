@@ -1,11 +1,12 @@
 [cmdletbinding()]
 param (
     [switch]$Automator,
-    [switch]$build,
+    [switch]$Build,
     [switch]$PsGal,
-    [switch]$Nupkg,
+    [switch]$Nuget,
     [switch]$ChocoNuSpec,
-    [switch]$ChocoNupkgWindows
+    [switch]$ChocoPackage,
+    [switch]$ChocoPackageWindows
 )
 
 # Import Module config
@@ -42,30 +43,41 @@ if ($isLinux -and !$Automator) {
     import-module -name /mnt/g/devspace/projects/powershell/_repos/csverify/;
 }
 # docker phellams/automator
-if ($automator) {
+if ($Automator) {
     [console]::WriteLine("Local Build Docker Automator [ARC] - Importing Modules")
-    # Start WSL2 and run docker as sudo
-    # init docker run with remove
-    # Change the folder build
-    if (!Get-Command wsl){
-        [console]::WriteLine("WSL2 not found")
-        return
-    }
+    $docker_image = "docker.io/sgkens/phellams-automator:latest"
 
-    # Start wsl
-    wsl
-    sudo docker run --rm -v .:$ModuleName docker.io/sgkens/phellams-automator:latest \ 
-        pwsh -c "cd /$modulename; ./automator-devops/scripts/build-module.ps1; ./automator-devops/scripts/build-package-generic-nuget.ps1; ./automator-devops/scripts/build-package-psgallery.ps1"
+    [string]$scripts_to_run = ""
+    $build_Module = "./automator-devops/scripts/build/build-module.ps1;"
+    $build_package_generic_nuget = "./automator-devops/scripts/build/build-package-generic-nuget.ps1;"
+    $build_choco_nuspec = "./automator-devops/scripts/build/build-nuspec-choco.ps1;"
+    $build_package_psgallery = "./automator-devops/scripts/build/build-package-psgallery.ps1"
+    $build_package_choco = "./automator-devops/scripts/build/build-package-choco.sh"
+
+    if($build){ $scripts_to_run += $build_Module }
+    if($psgal){ $scripts_to_run += $build_package_psgallery }
+    if($nuget){ $scripts_to_run += $build_package_generic_nuget }
+    if ($ChocoNuSpec) { $scripts_to_run += $build_choco_nuspec  }
+    if ($ChocoPackage) { 
+        if(!$ChocoNuSpec -or !$build){
+            throw [System.Exception]::new("ChocoMonoPackage requires ChocoNuSpec and Build")
+        }
+        docker run --rm -v .:/$ModuleName $docker_image pwsh -c "cd /$modulename; $scripts_to_run"
+        $docker_image = "docker.io/chocolatey/choco:latest"
+        docker run --rm -v .:/$ModuleName $docker_image bash -c "cd /$modulename; $build_package_choco"
+    }else{
+        docker run --rm -v .:/$ModuleName $docker_image pwsh -c "cd /$modulename; $scripts_to_run"
+    }
 }
 
 # =================================
 # BUILD SCRIPTS
 # =================================
-if ($build) { ./automator-devops/scripts/build/build-module.ps1 }
-if ($psgal) { ./automator-devops/scripts/build/build-package-psgallery.ps1 }
-if ($Nupkg) { ./automator-devops/scripts/build/build-package-generic-nuget.ps1 }
-if ($ChocoNuSpec) { ./automator-devops/scripts/build/Build-nuspec-choco.ps1 }
-if ($ChocoNupkgWindows)   { ./automator-devops/scripts/wip/build-package-choco-windows.ps1  }
+if ($build -and !$Automator) { ./automator-devops/scripts/build/build-module.ps1 }
+if ($psgal -and !$Automator) { ./automator-devops/scripts/build/build-package-psgallery.ps1 }
+if ($Nuget -and !$Automator) { ./automator-devops/scripts/build/build-package-generic-nuget.ps1 }
+if ($ChocoNuSpec -and !$Automator) { ./automator-devops/scripts/build/Build-nuspec-choco.ps1 }
+if ($ChocoPackageWindows -and !$Automator) { ./automator-devops/scripts/wip/build-package-choco-windows.ps1 }
 
 # TEST DEPLOY
 #./devops/scripts/deploy/deploy-gitlab.ps1
