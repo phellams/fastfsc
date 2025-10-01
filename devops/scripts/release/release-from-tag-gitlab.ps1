@@ -44,14 +44,28 @@ else {
 # nupkg, choco, psgal file hash from asset repo
 # Note: Add verbose output to console for all files
 # Note: Change variables to file name for reuse with assets below
-$nuget_nupkg_url =  "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
-$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-psgal.zip"
+$nuget_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion.nupkg"
+$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-choco.nupkg"
+$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
+
+$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+[console]::writeline("====================================")
+$kv.invoke("NUGET NUPKG URL", "$nuget_nupkg_url")
+$kv.invoke("CHOCO NUPKG URL", "$choco_nupkg_url")
+$kv.invoke("PSGAL ZIP URL", "$psgal_zip_url")
+[console]::writeline("====================================")
+
 
 $nuget_nupkg_hash = Get-RemoteFileHash -Url $nuget_nupkg_url
 $choco_nupkg_hash = Get-RemoteFileHash -Url $choco_nupkg_url
 $psgal_zip_hash  = Get-RemoteFileHash -Url $psgal_zip_url
 
+$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+[console]::writeline("====================================")
+$kv.invoke("NUGET NUPKG HASH", "$nuget_nupkg_hash")
+$kv.invoke("CHOCO NUPKG HASH", "$choco_nupkg_hash")
+$kv.invoke("PSGAL ZIP HASH", "$psgal_zip_hash")
+[console]::writeline("====================================")
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
@@ -65,6 +79,8 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'NUGET_NUPKG_HASH', "$nuget_nupkg_hash" `
                                       -replace 'CHOCO_NUPKG_HASH', "$choco_nupkg_hash" `
                                       -replace 'PSGAL_ZIP_HASH', "$psgal_zip_hash"
+
+$interLogger.invoke("release", "Constructing Assets for {kv:module=$gitgroup/$modulename}", $false, 'info')
 
 $assets = @{
   links = @(
@@ -86,6 +102,10 @@ $assets = @{
   )
 }
 
+$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+[console]::writeline("====================================")
+
+
 $headers = @{
   "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
   "Content-Type"  = "application/json"
@@ -98,9 +118,14 @@ $body = @{
     assets      = $assets
 } | ConvertTo-Json
 
+$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+[console]::writeline("====================================")
+$body
+[console]::writeline("====================================")
+
 try {
   $interLogger.invoke("release", "Creating release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
-  $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$($ENV:CI_PROJECT_ID)/releases" `
+  $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/releases" `
                                 -Method 'POST' `
                                 -Headers $headers `
                                 -Body $body
