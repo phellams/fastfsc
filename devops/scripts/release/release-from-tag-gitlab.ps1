@@ -42,14 +42,14 @@ else {
 }
 
 # nupkg, choco, psgal file hash from asset repo
-$nuget_nupkg_hash = Get-RemoteFileHash -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
-$choco_nupkg_hash = Get-RemoteFileHash -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$psgal_zip_hash  = Get-RemoteFileHash -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-psgal.zip"
+$nuget_nupkg_hash = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion.nupkg"
+$choco_nupkg_hash = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-choco.nupkg"
+$psgal_zip_hash  = Get-RemoteFileHash -Url "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$ModuleName/$moduleversion/$modulename.$moduleversion-psgal.zip"
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
                                       -replace 'GITGROUP_PLACE_HOLDER', "$gitgroup" `
-                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])"`
+                                      -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])" `
                                       -replace 'CI_PIPELINE_ID', "$env:CI_PIPELINE_ID" `
                                       -replace 'CI_PIPELINE_URL', "$env:CI_PIPELINE_URL" `
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
@@ -89,7 +89,7 @@ $body = @{
     tag_name    = $ModuleVersion
     description = $release_template
     assets      = $assets
-} | ConvertTo-Json -Depth 5
+} | ConvertTo-Json
 
 try {
   $interLogger.invoke("release", "Creating release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
