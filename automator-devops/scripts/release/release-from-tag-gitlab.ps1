@@ -61,9 +61,9 @@ $choco_nupkg_hash = Get-RemoteFileHash -Url $choco_nupkg_url
 
 #!WARN: because zip files operate a little different
 #!WARN: we need to get the hash from the zip file by downloading then hashing
-$interlogger.invoke("Fetching PSGAL ZIP", $false, 'info')
+$interlogger.invoke("release". "Fetching PSGAL ZIP locally for hash calculation", $false, 'info')
 Invoke-WebRequest -Uri $psgal_zip_url -OutFile "./$modulename.$moduleversion-psgal.zip"
-$psgal_zip_hash  = Get-FileHash -Path "./$modulename.$moduleversion-psgal.zip" -Algorithm SHA256
+$psgal_zip_hash  = (Get-FileHash -Path "./$modulename.$moduleversion-psgal.zip" -Algorithm SHA256).Hash
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
@@ -100,7 +100,7 @@ $assets = @{
       link_type = "package"
     },
     @{
-      name      = "$modulename.$moduleversion-choco.nupkg"
+      name      = "$modulename.$moduleversion-psgal.zip"
       url       = "$choco_nupkg_url"
       link_type = "package"
     }
@@ -118,7 +118,7 @@ $body = @{
     tag_name    = $ModuleVersion
     description = $release_template
     assets      = $assets
-} | ConvertTo-Json -Depth 10
+}
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
 [console]::writeline("====================================")
@@ -130,7 +130,7 @@ try {
   $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/releases" `
                                 -Method 'POST' `
                                 -Headers $headers `
-                                -Body $body
+                                -Body $body | ConvertTo-Json -Depth 10
   $interLogger.invoke("release", "Successfully created release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
   $interLogger.invoke("release", "Release URL: {kv:url=$($response._links.self)}", $false, 'info')
 }
