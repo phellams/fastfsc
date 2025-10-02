@@ -43,13 +43,16 @@ else {
 }
 
 $generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $ENV:GITLAB_API_KEY -PackageVersion $ModuleVersion
+
+$generic_packages | Format-Table -AutoSize
+
 $nuget_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} )
 $choco_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkg" })
 $psgal_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" } )
 
 $interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url)
+$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url)a
 $kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url)
 $kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url)
 [console]::writeline("====================================")
