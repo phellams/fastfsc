@@ -65,19 +65,22 @@ $psgal_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -P
                               Select-Object -First 1 |                                
                                 Sort-Object created_at -Descending                          
 
-$interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
+$interLogger.invoke("release", "DEBUG INFO: GENERIC PACKAGE", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url.toString())
-$kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url.toString())
-$kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url.toString())
+$kv.invoke("NUGET NUPKG URL", "$($nuget_generic_package[0].download_url)")
+$kv.invoke("CHOCO NUPKG URL", "$($choco_generic_package[0].download_url)")
+$kv.invoke("PSGAL ZIP URL", "$($psgal_generic_package[0].download_url)")
+[console]::writeline("====================================")
+$kv.invoke("NUGET NUPKG HASH", "$($nuget_generic_package[0].file_sha256)")
+$kv.invoke("CHOCO NUPKG HASH", "$($choco_generic_package[0].file_sha256)")
+$kv.invoke("PSGAL ZIP HASH", "$($psgal_generic_package[0].file_sha256)")
+[console]::writeline("====================================")
+$nuget_generic_package
+$choco_generic_package
+$psgal_generic_package
 [console]::writeline("====================================")
 
-$interLogger.invoke("release", "DEBUG INFO: FILE SHA256", $false, 'info')
-[console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG HASH", $nuget_generic_package.file_sha256)
-$kv.invoke("CHOCO NUPKG HASH", $choco_generic_package.file_sha256)
-$kv.invoke("PSGAL ZIP HASH", $psgal_generic_package.file_sha256)
-[console]::writeline("====================================")
+
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
                                       -replace 'VERSION_AND_PRERELEASE_PLACE_HOLDER', "$ModuleVersion" `
@@ -98,17 +101,17 @@ $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = $nuget_generic_package.download_url
+      url       = "$($nuget_generic_package[0].download_url)"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = $choco_generic_package.download_url
+      url       = "$($choco_generic_package[0].download_url)"
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-psgal.zip"
-      url       = $psgal_generic_package.download_url
+      url       = "$($psgal_generic_package[0].download_url)"
       link_type = "package"
     }
   )

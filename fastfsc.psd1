@@ -1,6 +1,6 @@
 @{
     RootModule         = 'fastfsc.psm1'
-    ModuleVersion      = '1.2.7'
+    ModuleVersion      = '1.2.8'
     GUID               = 'ccc9be26-17aa-4a86-8d5b-14d6d15def37'
     Author             = 'Garvey k. Snow'
     CompanyName        = 'Phellams'
@@ -28,13 +28,13 @@
 
             # CHOCOLATE ---------------------
             LicenseUrl       = 'https://choosealicense.com/licenses/mit'
-            ProjectUrl       = 'https://github.com/phellams/fastfsc'
+            ProjectUrl       = 'https://gitlab.com/phellams/fastfsc'
             IconUrl          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/phellams/dist/png/phellams-logo-128x128.png'
-            Docsurl          = 'https://pages.gitlab.io/sgkens/fastfsc'
+            Docsurl          = 'https://github.io/phellams/fastfsc'
             MailingListUrl   = 'https://gitlab.com/phellams/fastfsc/issues'
             projectSourceUrl = 'https://gitlab.com/phellams/fastfsc'
             bugTrackerUrl    = 'https://gitlab.com/phellams/fastfsc/issues'
-            Summary          = 'A PowerShell module for advanced file and folder searching with configuration management.'
+            Summary          = 'A PowerShell module designed for fast and efficient file system operations, It leverages parallel processing and optimized algorithms to handle large directories quickly.'
             chocoDescription = @"
 ## Features
 
