@@ -2,9 +2,6 @@ function Request-GenericPackage {
     param (
         [parameter(Mandatory=$true)]
         [string]$ProjectId,
-        [parameter(Mandatory=$true)]
-        [validateset('generic', 'nuget', 'maven', 'npm', 'composer', 'conan', 'pypi')]
-        [string]$PackageType,
         [parameter(Mandatory=$false)]
         [string]$PackageName,
         [string]$PackageVersion,
@@ -20,7 +17,7 @@ function Request-GenericPackage {
     }
 
     # Construct the API URL for fetching the package details
-    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&package_version=$PackageVersion&package_Type=$PackageType"
+    $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&package_version=$PackageVersion&package_Type=generic"
 
     if(!$apikey -and $ci) {
         $env:GITLAB_API_KEY = $ApiKey
@@ -39,14 +36,23 @@ function Request-GenericPackage {
         $response = Invoke-RestMethod -Uri $url -Method Get -Headers $Headers
 
         if ($response -and $response.Count -gt 0) {
-            return $response
-            # return @{
-            #     Id      = $response[0].id
-            #     Name    = $response[0].name
-            #     Version = $response[0].version
-            #     CreatedAt = $response[0].created_at
-            #     Links   = $response[0]._links
-            # }
+            $generic_package_id = $response[0].id
+            $package_files = Invoke-RestMethod -Uri "$ApiUrl/projects/$ProjectId/packages/$generic_package_id/package_files"
+            
+            $generic_package_files_reponse = @()
+
+            foreach($package in $package_files){
+                $download_url = "$apiurl/project/$projectid/packages/$generic_package_id/package_files/$($package.id)/download"
+                $generic_package_files_reponse += [pscustomobject]@{
+                    package_id   = $package.package_id
+                    id           = $package.id
+                    file_name    = $package.file_name
+                    file_sha256  = $package.file_sha256
+                    size         = $package.size
+                    download_url = $download_url
+                }
+            }
+            return $generic_package_files_reponse
         } else {
             Write-Error "No package found with name '$PackageName' and version '$PackageVersion'."
             return $null

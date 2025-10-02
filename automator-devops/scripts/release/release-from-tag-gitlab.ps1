@@ -41,35 +41,23 @@ else {
   $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
 }
 
-# nupkg, choco, psgal file hash from asset repo
-# Note: Add verbose output to console for all files
-# Note: Change variables to file name for reuse with assets below
-$nuget_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion.nupkg"
-$choco_nupkg_url = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-choco.nupkg"
-$psgal_zip_url   = "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/packages/generic/$modulename/$moduleversion/$modulename.$moduleversion-psgal.zip"
+$generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $ENV:GITLAB_API_KEY -PackageVersion $ModuleVersion
+$nuget_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} )
+$choco_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkg" })
+$psgal_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" } )
 
-$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+$interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG URL", "$nuget_nupkg_url")
-$kv.invoke("CHOCO NUPKG URL", "$choco_nupkg_url")
-$kv.invoke("PSGAL ZIP URL", "$psgal_zip_url")
+$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url)
+$kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url)
+$kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url)
 [console]::writeline("====================================")
 
-
-$nuget_nupkg_hash = Get-RemoteFileHash -Url $nuget_nupkg_url
-$choco_nupkg_hash = Get-RemoteFileHash -Url $choco_nupkg_url
-
-#!WARN: because zip files operate a little different
-#!WARN: we need to get the hash from the zip file by downloading then hashing
-$interlogger.invoke("release". "Fetching PSGAL ZIP locally for hash calculation", $false, 'info')
-Invoke-WebRequest -Uri $psgal_zip_url -OutFile "./$modulename.$moduleversion-psgal.zip"
-$psgal_zip_hash  = (Get-FileHash -Path "./$modulename.$moduleversion-psgal.zip" -Algorithm SHA256).Hash
-
-$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+$interLogger.invoke("release", "DEBUG INFO: FILE SHA256", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG HASH", "$nuget_nupkg_hash")
-$kv.invoke("CHOCO NUPKG HASH", "$choco_nupkg_hash")
-$kv.invoke("PSGAL ZIP HASH", "$psgal_zip_hash")
+$kv.invoke("NUGET NUPKG HASH", $nuget_generic_package.file_sha256)
+$kv.invoke("CHOCO NUPKG HASH", $choco_generic_package.file_sha256)
+$kv.invoke("PSGAL ZIP HASH", $psgal_generic_package.file_sha256)
 [console]::writeline("====================================")
 
 $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$modulename" `
@@ -81,9 +69,9 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
                                       -replace 'BUILD_DATE', "$(Get-Date -Date $env:CI_PIPELINE_CREATED_AT)" `
                                       -replace 'CI_PROJECT_ID', "$env:CI_PROJECT_ID" `
-                                      -replace 'NUGET_NUPKG_HASH', "$nuget_nupkg_hash" `
-                                      -replace 'CHOCO_NUPKG_HASH', "$choco_nupkg_hash" `
-                                      -replace 'PSGAL_ZIP_HASH', "$psgal_zip_hash"
+                                      -replace 'NUGET_NUPKG_HASH', $nuget_generic_package.file_sha256 `
+                                      -replace 'CHOCO_NUPKG_HASH', $choco_generic_package.file_sha256 `
+                                      -replace 'PSGAL_ZIP_HASH', $psgal_generic_package.file_sha256
 
 $interLogger.invoke("release", "Constructing Assets for {kv:module=$gitgroup/$modulename}", $false, 'info')
 
@@ -91,26 +79,20 @@ $assets = @{
   links = @(
     @{
       name      = "$modulename.$moduleversion.nupkg"
-      url       = "$nuget_nupkg_url"
+      url       = $nuget_generic_package.download_url
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-choco.nupkg"
-      url       = "$choco_nupkg_url"
+      url       = $choco_generic_package.download_url
       link_type = "package"
     },
     @{
       name      = "$modulename.$moduleversion-psgal.zip"
-      url       = "$choco_nupkg_url"
+      url       = $psgal_generic_package.download_url
       link_type = "package"
     }
   )
-}
-
-
-$headers = @{
-  "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
-  "Content-Type"  = "application/json"
 }
 
 $body = @{
@@ -118,6 +100,11 @@ $body = @{
     tag_name    = $ModuleVersion
     description = $release_template
     assets      = $assets
+} | ConvertTo-Json -Depth 10
+
+$headers = @{
+  "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
+  "Content-Type"  = "application/json"
 }
 
 $interLogger.invoke("release", "DEBUG INFO", $false, 'info')
@@ -127,10 +114,12 @@ $body
 
 try {
   $interLogger.invoke("release", "Creating release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
+  
   $response = Invoke-RestMethod -Uri "$env:CI_API_V4_URL/projects/$ENV:CI_PROJECT_ID/releases" `
                                 -Method 'POST' `
                                 -Headers $headers `
-                                -Body $body | ConvertTo-Json -Depth 10
+                                -Body $body 
+  
   $interLogger.invoke("release", "Successfully created release {kv:version=$ModuleVersion} for {kv:module=$gitgroup/$modulename}", $false, 'info')
   $interLogger.invoke("release", "Release URL: {kv:url=$($response._links.self)}", $false, 'info')
 }

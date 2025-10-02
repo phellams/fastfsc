@@ -50,6 +50,7 @@ $kv.invoke("MODULE VERSION", "$moduleversion")
 $kv.invoke("BASE URL", "$baseUrl")
 [console]::writeline("====================================")
 
+$file_hashes = @()
 
 # Upload NuGet package
 $interLogger.invoke("deploy", "Finding NuGet package: $ModuleName-$moduleversion.nupkg to upload...", $false, 'info')
