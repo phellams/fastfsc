@@ -5,6 +5,8 @@ function Request-GenericPackage {
         [parameter(Mandatory=$false)]
         [string]$PackageName,
         [string]$PackageVersion,
+        [string]$NameSpace,
+        [string]$projectName,
         [string]$ApiUrl,
         [string]$ApiKey,
         [switch]$ci
@@ -12,17 +14,14 @@ function Request-GenericPackage {
 
      # Default to GitLab's public API if no ApiUrl is provided
 
-    if(!$ApiUrl) {
-        $ApiUrl = "https://gitlab.com/api/v4"
-    }
+    if(!$ApiUrl) { $ApiUrl = "https://gitlab.com/api/v4" }
+    if(!$ApiKey -and $ci) { $env:GITLAB_API_KEY = $ApiKey }
+    if(!$ProjectName){ $projectName = $ENV:CI_PROJECT_NAME } else { $projectName = $projectName }
+    if(!$NameSpace){ $NameSpace = $ENV:CI_PROJECT_NAMESPACE } else { $NameSpace = $NameSpace }
 
-    # Construct the API URL for fetching the package details
+        # Construct the API URL for fetching the package details
     $url = "$ApiUrl/projects/$ProjectId/packages?package_name=$PackageName&package_version=$PackageVersion&package_Type=generic"
 
-    if(!$apikey -and $ci) {
-        $env:GITLAB_API_KEY = $ApiKey
-    }
-    
     Write-Host "Requesting package info from URL: $url"
     
     $headers = @{
@@ -42,7 +41,10 @@ function Request-GenericPackage {
             $generic_package_files_reponse = @()
 
             foreach($package in $package_files){
-                $download_url = "$apiurl/project/$projectid/packages/$generic_package_id/package_files/$($package.id)/download"
+                #$download_url = "$ApiUrl/projects/$ProjectId/packages/generic/$generic_package_id/package_files/$($package.id)/download"
+                $download_url = "https://gitlab.com/$NameSpace/$projectName/-/package_files/$($package.id)/download"
+                # NOTE: THE API LINK IS NOT CORRECT and downloads the file with the name download
+                
                 $generic_package_files_reponse += [pscustomobject]@{
                     package_id   = $package.package_id
                     id           = $package.id
@@ -50,6 +52,7 @@ function Request-GenericPackage {
                     file_sha256  = $package.file_sha256
                     size         = $package.size
                     created_at   = $package.created_at
+                    web_path     = $package.web_path
                     download_url = $download_url
                 }
             }
