@@ -52,28 +52,25 @@ else {
 
 $nuget_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion | 
                             Where-Object {$_.file_name -eq "$modulename.$moduleversion.nupkg"} | 
-                              Select-Object -First 1 | 
-                                Sort-Object created_at -Descending
+                              Sort-Object created_at -Descending | Select-Object -First 1   
 
 $choco_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
-                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-choco.nupkgw"} |
-                              Select-Object -First 1 |
-                                Sort-Object created_at -Descending
+                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-choco.nupkg"} |
+                              Sort-Object created_at -Descending | Select-Object -First 1   
 
 $psgal_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
                             Where-Object {$_.file_name -eq "$modulename.$moduleversion-psgal.zip"} |
-                              Select-Object -First 1 |                                
-                                Sort-Object created_at -Descending                          
+                              Sort-Object created_at -Descending | Select-Object -First 1                      
 
 $interLogger.invoke("release", "DEBUG INFO: GENERIC PACKAGE", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG URL", "$($nuget_generic_package[0].download_url)")
-$kv.invoke("CHOCO NUPKG URL", "$($choco_generic_package[0].download_url)")
+$kv.invoke("NUGET NUPKG URL", "$($nuget_generic_package.download_url)")
+$kv.invoke("CHOCO NUPKG URL", "$($choco_generic_package.download_url)")
 $kv.invoke("PSGAL ZIP URL", "$($psgal_generic_package[0].download_url)")
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG HASH", "$($nuget_generic_package[0].file_sha256)")
-$kv.invoke("CHOCO NUPKG HASH", "$($choco_generic_package[0].file_sha256)")
-$kv.invoke("PSGAL ZIP HASH", "$($psgal_generic_package[0].file_sha256)")
+$kv.invoke("NUGET NUPKG HASH", "$($nuget_generic_package.file_sha256)")
+$kv.invoke("CHOCO NUPKG HASH", "$($choco_generic_package.file_sha256)")
+$kv.invoke("PSGAL ZIP HASH", "$($psgal_generic_package.file_sha256)")
 [console]::writeline("====================================")
 $nuget_generic_package
 $choco_generic_package
