@@ -50,17 +50,12 @@ else {
 # $choco_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkgw" }))[0]
 # $psgal_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" }))[0]
 
-$nuget_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion | 
-                            Where-Object {$_.file_name -eq "$modulename.$moduleversion.nupkg"} | 
-                              Sort-Object created_at -Descending | Select-Object -First 1   
-
-$choco_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
-                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-choco.nupkg"} |
-                              Sort-Object created_at -Descending | Select-Object -First 1   
-
-$psgal_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
-                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-psgal.zip"} |
-                              Sort-Object created_at -Descending | Select-Object -First 1                      
+#NOTE: The download file link via the api-v4 url doenst work as it should, from the assets web gui, ive copied the link manually and 
+#NOTE: used as a template and ajusted Request-GenericPackage.psm1 to use the api-v4 url and return the correct constucted download_url
+$generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion 
+$nuget_generic_package = $generic_package | Where-Object { $_.file_name -match "$modulename.$moduleversion.nupkg"} | Sort-Object created_at -Descending | Select-Object -First 1   
+$choco_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-choco.nupkg"} | Sort-Object created_at -Descending | Select-Object -First 1   
+$psgal_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-psgal.zip"} | Sort-Object created_at -Descending | Select-Object -First 1                      
 
 $interLogger.invoke("release", "DEBUG INFO: GENERIC PACKAGE", $false, 'info')
 [console]::writeline("====================================")
