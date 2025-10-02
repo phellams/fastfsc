@@ -49,6 +49,7 @@ function Request-GenericPackage {
                     file_name    = $package.file_name
                     file_sha256  = $package.file_sha256
                     size         = $package.size
+                    created_at   = $package.created_at
                     download_url = $download_url
                 }
             }
