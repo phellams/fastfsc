@@ -46,15 +46,15 @@ $generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -Packag
 
 $generic_packages | Format-Table -AutoSize
 
-$nuget_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} )
-$choco_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkg" })
-$psgal_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" } )
+$nuget_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} ))[0]
+$choco_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkgw" }))[0]
+$psgal_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" }))[0]
 
 $interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
 [console]::writeline("====================================")
-$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url)
-$kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url)
-$kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url)
+$kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url.toString())
+$kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url.toString())
+$kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url.toString())
 [console]::writeline("====================================")
 
 $interLogger.invoke("release", "DEBUG INFO: FILE SHA256", $false, 'info')
