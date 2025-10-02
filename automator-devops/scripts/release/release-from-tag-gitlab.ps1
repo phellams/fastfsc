@@ -42,13 +42,28 @@ else {
   $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
 }
 
-$generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $ENV:GITLAB_API_KEY -PackageVersion $ModuleVersion
+# $generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $ENV:GITLAB_API_KEY -PackageVersion $ModuleVersion
 
-$generic_packages | Format-Table -AutoSize
+# $generic_packages | Format-Table -AutoSize
 
-$nuget_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} ))[0]
-$choco_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkgw" }))[0]
-$psgal_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" }))[0]
+# $nuget_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} ))[0]
+# $choco_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkgw" }))[0]
+# $psgal_generic_package = ($generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" }))[0]
+
+$nuget_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion | 
+                            Where-Object {$_.file_name -eq "$modulename.$moduleversion.nupkg"} | 
+                              Select-Object -First 1 | 
+                                Sort-Object created_at -Descending
+
+$choco_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
+                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-choco.nupkgw"} |
+                              Select-Object -First 1 |
+                                Sort-Object created_at -Descending
+
+$psgal_generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion |
+                            Where-Object {$_.file_name -eq "$modulename.$moduleversion-psgal.zip"} |
+                              Select-Object -First 1 |                                
+                                Sort-Object created_at -Descending                          
 
 $interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
 [console]::writeline("====================================")
