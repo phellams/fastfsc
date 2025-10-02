@@ -28,7 +28,7 @@ function Request-GenericPackage {
         "PRIVATE-TOKEN" = "$env:GITLAB_API_KEY"
         "Content-Type"  = "application/json"
     }
-     # Make the API request to get package details
+     # Make the API request to get package details.
 
     try {
         # Make the API request to get package details
@@ -44,7 +44,7 @@ function Request-GenericPackage {
                 #$download_url = "$ApiUrl/projects/$ProjectId/packages/generic/$generic_package_id/package_files/$($package.id)/download"
                 $download_url = "https://gitlab.com/$NameSpace/$projectName/-/package_files/$($package.id)/download"
                 # NOTE: THE API LINK IS NOT CORRECT and downloads the file with the name download
-                
+                write-host "Generating Generic Package File: $($package.package_id) Metadata for: $NameSpace/$projectName/-/package_files/$($package.id)" 
                 $generic_package_files_reponse += [pscustomobject]@{
                     package_id   = $package.package_id
                     id           = $package.id
