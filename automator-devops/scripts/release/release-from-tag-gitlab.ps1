@@ -1,6 +1,7 @@
 using module ../core/core.psm1
 using module ../core/Test-GitLabReleaseVersion.psm1
 using module ../core/Get-RemoteFileHash.psm1
+using module ../core/Request-GenericPackage.psm1
 
 #---UI ELEMENTS Shortened-------------
 $interLogger = $global:__phellams_devops_template.interLogger
