@@ -41,27 +41,19 @@ else {
   $interLogger.invoke("release", "Release {kv:version=$ModuleVersion} does not exist for {kv:module=$gitgroup/$modulename}. Proceeding to create release.", $false, 'info')
 }
 
-
-# Source for the package
-# - https://<<gitlab_host>>/api/v4/projects/72971048/packages?package_name=fastfsc&package_version=1.2.3-prerelease&package_type=generic
-# List package files
-# - https://gitlab.com/phellams/fastfsc/-/package_files
-# Download Link
-# - https://gitlab.com/phellams/fastfsc/-/package_files/234049479/download
-
 $generic_packages = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $ENV:GITLAB_API_KEY -PackageVersion $ModuleVersion
 $nuget_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion.nupkg"} )
 $choco_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-choco.nupkg" })
 $psgal_generic_package = $generic_packages.Where({ $_.file_name -eq "$modulename.$moduleversion-psgal.zip" } )
 
-$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+$interLogger.invoke("release", "DEBUG INFO: DOWNLOAD URL", $false, 'info')
 [console]::writeline("====================================")
 $kv.invoke("NUGET NUPKG URL", $nuget_generic_package.download_url)
 $kv.invoke("CHOCO NUPKG URL", $choco_generic_package.download_url)
 $kv.invoke("PSGAL ZIP URL", $psgal_generic_package.download_url)
 [console]::writeline("====================================")
 
-$interLogger.invoke("release", "DEBUG INFO", $false, 'info')
+$interLogger.invoke("release", "DEBUG INFO: FILE SHA256", $false, 'info')
 [console]::writeline("====================================")
 $kv.invoke("NUGET NUPKG HASH", $nuget_generic_package.file_sha256)
 $kv.invoke("CHOCO NUPKG HASH", $choco_generic_package.file_sha256)
@@ -77,9 +69,9 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
                                       -replace 'BUILD_DATE', "$(Get-Date -Date $env:CI_PIPELINE_CREATED_AT)" `
                                       -replace 'CI_PROJECT_ID', "$env:CI_PROJECT_ID" `
-                                      -replace 'NUGET_NUPKG_HASH', "$nuget_nupkg_hash" `
-                                      -replace 'CHOCO_NUPKG_HASH', "$choco_nupkg_hash" `
-                                      -replace 'PSGAL_ZIP_HASH', "$psgal_zip_hash"
+                                      -replace 'NUGET_NUPKG_HASH', $nuget_generic_package.file_sha256 `
+                                      -replace 'CHOCO_NUPKG_HASH', $choco_generic_package.file_sha256 `
+                                      -replace 'PSGAL_ZIP_HASH', $psgal_generic_package.file_sha256
 
 $interLogger.invoke("release", "Constructing Assets for {kv:module=$gitgroup/$modulename}", $false, 'info')
 
