@@ -1,6 +1,6 @@
 @{
     RootModule         = 'fastfsc.psm1'
-    ModuleVersion      = '1.2.8'
+    ModuleVersion      = '1.2.10'
     GUID               = 'ccc9be26-17aa-4a86-8d5b-14d6d15def37'
     Author             = 'Garvey k. Snow'
     CompanyName        = 'Phellams'
@@ -10,11 +10,15 @@
     FunctionsToExport  = @(
         'Get-FolderSizeFast',
         'Get-FolderSizeParallel',
-        'Get-BestSizeUnit'
+        'Request-FolderReport'
     )
     CmdletsToExport    = @()
     VariablesToExport  = @()
-    AliasesToExport    = @()
+    AliasesToExport    = @(
+        'fscf',
+        'fscp',
+        'fscr'
+    )
     PrivateData        = @{
         PSData = @{
             Tags             = @('FolderSize', 'speed', 'PowerShell', 'paralell', 'performance')
@@ -23,7 +27,7 @@
             )
             LicenseUri       = 'https://choosealicense.com/licenses/mit'
             ProjectUri       = 'https://gitlab.com/phellams/fastfsc.git'
-            IconUri          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/fastfsc/dist/png/fastfsc-logo-128x128.png'
+            IconUri          = 'https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/phellams/dist/png/phellams-logo-128x128.png'
             Prerelease       = 'prerelease'
 
             # CHOCOLATE ---------------------
