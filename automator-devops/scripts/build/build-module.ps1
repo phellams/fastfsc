@@ -2,8 +2,8 @@ using module ../core/Get-GitAutoVersion.psm1
 using module ../core/core.psm1
 
 #---UI ELEMENTS Shortened-------------
-$interLogger = $global:__phellams_devops_template.interLogger
-$kv          = $global:__phellams_devops_template.kvinc
+$interLogger = $global:__automator_devops.interLogger
+$kv          = $global:__automator_devops.kvinc
 #---UI ELEMENTS Shortened-------------
 
 #---CONFIG----------------------------
@@ -12,6 +12,7 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 [string[]]$ModuleFiles   = $ModuleConfig.ModuleFiles
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
+$source                  = $ModuleConfig.phwriter_source
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
@@ -20,14 +21,35 @@ $interLogger.invoke("Build", "Running Build on {kv:module=$ModuleName} ", $false
 $interLogger.invoke("Build", "Creating dist folders", $false, 'info')
 
 if((Test-Path -Path './phwriter-metadata.ps1')) {                                                                         
-    $interLogger.invoke("Build", "Generating PHWriter metadata from {kv:path=./phwriter-metadata.ps1}", $false, 'info')
-    . ./phwriter-metadata.ps1
+    $interlogger.invoke("Build", "Generating PHWriter help meta data for {kv:module=$modulename}", $false, 'info')
+
+    # ps1 script to generate phwriter metadata for cmdlets
+    # exports will be stored in json, phwriter cant load help data from json Using
+    # output file will be store per cmdlet to limit the size of the import time.
+
+    # Each object represents a cmdlet's help metadata which is then looped below and exported
+    # as cmdlet_<cmdletname>.json in the ./libs/help_data/ folder
+
+    . './phwriter-metadata.ps1'
+
     foreach ($helpdata in $phwriter_metadata_array) {
         $cmdlet_name = $helpdata.CommandInfo.cmdlet
-        $json_output_path = "./libs/help_metadata/$($cmdlet_name)_phwriter_metadata.json"
-        $helpdata | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8
-        $interLogger.invoke("Build", "Generated help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $false, 'info')
+        # Add Module Name
+        $helpdata.module = $modulename
+        # Add version to each cmdlet propery
+        $helpdata.version = $moduleversion
+        # Add Padding to each cmdlet propery
+        $helpdata.padding = 1
+        # Add indenting to each cmdlet propery
+        $helpdata.indent = 1
+        # Add source to each cmdlet propery
+        $helpdata.source = $source
+        
+        $json_output_path = "./libs/help_metadata/$($cmdlet_name.tolower())_phwriter_metadata.json"
+        $helpdata  | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8
+        $interlogger.invoke("generated", "help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $true, 'info')
     }
+
 } else {
     $interLogger.invoke("Build", "PHWriter metadata file not found at {kv:path=./phwriter-metadata.ps1}", $false, 'warning')
 }
