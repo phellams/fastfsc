@@ -1,5 +1,8 @@
+using module cmdlets/Get-BestSizeUnit.psm1
+
 BeforeAll { 
     import-module -name .\fastfsc.psm1 -Force
+
 }
 
 Describe "cmdlets" {
