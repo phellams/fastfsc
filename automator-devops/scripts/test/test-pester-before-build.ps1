@@ -7,6 +7,9 @@ $interLogger = $global:__automator_devops.interLogger
 #---UI ELEMENTS Shortened-------------
 
 #---CONFIG----------------------------
+$ModuleConfig = $ModuleConfig.pester_test_filesGet-Content -Path ./build_config.json | ConvertFrom-Json
+$ModuleName = $ModuleConfig.moduleName
+$pester_test_files =  $ModuleConfig.pester_test_files
 #---CONFIG----------------------------
 
 # Pester Configration settings
@@ -21,8 +24,7 @@ $pesterConfig = New-PesterConfiguration -hashtable @{
     OutputPath            = 'coverage.xml'
     OutputEncoding        = 'utf8'
     CoveragePercentTarget = 85
-    #path                  = @(".\cmdlets\*.psm1", ".\libs\*.psm1", ".\*.psm1")
-    path                  = @(".\cmdlets\*.psm1", ".\*.psm1")
+    path                  = $pester_test_files
   }
   Run = @{
     #PassThru = $true
