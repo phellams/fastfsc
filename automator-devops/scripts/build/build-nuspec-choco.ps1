@@ -1,8 +1,8 @@
 using module ../core/core.psm1
 
 #---UI ELEMENTS Shortened-------------
-$interLogger = $global:__phellams_devops_template.interLogger
-$kv = $global:__phellams_devops_template.kvinc
+$interLogger = $global:__automator_devops.interLogger
+$kv = $global:__automator_devops.kvinc
 #---UI ELEMENTS Shortened-------------
 
 #---CONFIG----------------------------

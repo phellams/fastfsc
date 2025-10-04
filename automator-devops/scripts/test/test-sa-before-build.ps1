@@ -2,7 +2,7 @@ using module ../core/New-ColorConsole.psm1
 using module ../core/core.psm1
 
 #---UI ELEMENTS Shortened-------------
-$interLogger = $global:__phellams_devops_template.interLogger
+$interLogger = $global:__automator_devops.interLogger
 #---UI ELEMENTS Shortened-------------
 
 #---CONFIG----------------------------

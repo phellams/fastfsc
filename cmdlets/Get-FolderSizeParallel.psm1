@@ -1,5 +1,5 @@
 using module .\Get-BestSizeUnit.psm1
-using module ../libs/phwriter/phwriter.psm1
+using module ..\libs\phwriter\phwriter.psm1
 
 Add-Type -TypeDefinition @"
 using System;
@@ -77,26 +77,33 @@ public static class ParallelFolderSize
         Calculates the size of a folder using parallel processing to enhance performance.
 
     .DESCRIPTION
+
         Calculates the size of a folder using parallel processing to enhance performance. This cmdlet processes files and subdirectories in parallel, which can significantly speed up the calculation process.
 
     .PARAMETER Path
+
         The path of the folder to calculate the size for. This parameter is mandatory and accepts pipeline input.
 
     .PARAMETER Format
+
         The format to use for the output. Valid options are 'json' and 'xml'. Default is 'json'.
 
     .PARAMETER Help
+
         If specified, the cmdlet returns help information for the command.
 
     .EXAMPLE
+
         Get-FolderSizeParallel -Path "C:\MyFolder"
         Calculates the size of "C:\MyFolder" and returns the size in bytes, MB, and GB.
 
     .EXAMPLE
+
         Get-FolderSizeParallel -Path "C:\MyFolder" -Detailed
         Calculates the size of "C:\MyFolder" and returns detailed information including file count, folder count, and calculation time.
 
     .EXAMPLE
+
         "C:\MyFolder" | Get-FolderSizeParallel -Detailed
         Uses pipeline input to calculate the size of "C:\MyFolder" with detailed output.
 
@@ -106,6 +113,7 @@ public static class ParallelFolderSize
 
 function Get-FolderSizeParallel {
     [CmdletBinding()]
+    [Alias('fscsizep')]
     param(
         [Parameter(Mandatory = $false, ValueFromPipeline = $true)]
         [string]$Path,
@@ -118,7 +126,7 @@ function Get-FolderSizeParallel {
     process {
 
         if ($help) {
-            New-PHWriter -JsonFile "./libs/help_metadata/Get-FolderSizeParallel_phwriter_metadata.json"
+            New-PHWriter -JsonFile "./libs/help_metadata/get-foldersizeparallel_phwriter_metadata.json"
             return;
         }
         if(!$Path -and !$Help) {
@@ -129,14 +137,18 @@ function Get-FolderSizeParallel {
         try {
             $resolvedPath = Resolve-Path $Path -ErrorAction Stop
             $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
-            
-            $size = [ParallelFolderSize]::GetFolderSizeParallel($resolvedPath.Path)
+
+            $fileCount = 0
+            $folderCount = 0
+            $size = [FastFolderSize]::GetFolderSizeWithSubfolders($resolvedPath.Path, [ref]$fileCount, [ref]$folderCount)
             
             $stopwatch.Stop()
             
             $folderstats = [PSCustomObject]@{
                 Path              = $resolvedPath.Path
                 SizeBytes         = $size
+                FileCount         = $fileCount
+                FolderCount       = $folderCount
                 SizeKB            = [Math]::Round($size / 1KB, 2)
                 SizeMB            = [Math]::Round($size / 1MB, 2)
                 SizeGB            = [Math]::Round($size / 1GB, 3)
@@ -151,9 +163,9 @@ function Get-FolderSizeParallel {
         catch {
             [console]::writeline("Error: $($_.Exception.Message)")
         }
-        if ($json) {
+        if ($Format -eq 'json') {
             return $folderstats | ConvertTo-Json -Depth 5
-        } elseif($xml){
+        } elseif($Format -eq 'xml'){
             return $folderstats | ConvertTo-Xml -NoTypeInformation -Depth 5
         } else {
             return $folderstats

@@ -4,8 +4,8 @@ using module ../core/Get-RemoteFileHash.psm1
 using module ../core/Request-GenericPackage.psm1
 
 #---UI ELEMENTS Shortened-------------
-$interLogger = $global:__phellams_devops_template.interLogger
-$kv = $global:__phellams_devops_template.kvinc
+$interLogger = $global:__automator_devops.interLogger
+$kv = $global:__automator_devops.kvinc
 #---UI ELEMENTS Shortened------------
 
 #---CONFIG----------------------------
@@ -53,9 +53,9 @@ else {
 #NOTE: The download file link via the api-v4 url doenst work as it should, from the assets web gui, ive copied the link manually and 
 #NOTE: used as a template and ajusted Request-GenericPackage.psm1 to use the api-v4 url and return the correct constucted download_url
 $generic_package = Request-GenericPackage -ProjectId $ENV:CI_PROJECT_ID -PackageName $modulename -ApiKey $env:GITLAB_API_KEY -PackageVersion $moduleversion 
-$nuget_generic_package = $generic_package | Where-Object { $_.file_name -match "$modulename.$moduleversion.nupkg"} | Sort-Object created_at -Descending | Select-Object -First 1   
-$choco_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-choco.nupkg"} | Sort-Object created_at -Descending | Select-Object -First 1   
-$psgal_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-psgal.zip"} | Sort-Object created_at -Descending | Select-Object -First 1                      
+$nuget_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion.nupkg"} | Sort-Object created_at | Select-Object -First 1   
+$choco_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-choco.nupkg"} | Sort-Object created_at | Select-Object -First 1   
+$psgal_generic_package = $generic_package | Where-Object {$_.file_name -match "$modulename.$moduleversion-psgal.zip"} | Sort-Object created_at | Select-Object -First 1                      
 
 $interLogger.invoke("release", "DEBUG INFO: GENERIC PACKAGE", $false, 'info')
 [console]::writeline("====================================")
@@ -80,6 +80,7 @@ $release_template = $release_template -replace 'REPONAME_PLACE_HOLDER', "$module
                                       -replace 'ONLY_VERSION_PLACE_HOLDER', "$($ModuleVersion.split("-")[0])" `
                                       -replace 'CI_PIPELINE_ID', "$env:CI_PIPELINE_ID" `
                                       -replace 'CI_PIPELINE_URL', "$env:CI_PIPELINE_URL" `
+                                      -replace 'CI_JOB_ID', "$env:CI_JOB_ID" `
                                       -replace 'COMMIT_SHA', "$env:CI_COMMIT_SHA" `
                                       -replace 'BUILD_DATE', "$(Get-Date -Date $env:CI_PIPELINE_CREATED_AT)" `
                                       -replace 'CI_PROJECT_ID', "$env:CI_PROJECT_ID" `

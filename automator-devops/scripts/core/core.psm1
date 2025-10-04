@@ -12,7 +12,7 @@ using module ../core/New-ColorConsole.psm1
  * - ConvertKvString
  * - interLogger
 <# . . . . . . . . .#>
-$global:__phellams_devops_template = @{
+$global:__automator_devops = @{
     
     # Enable global logging
     # Set via Set-Logging Cmdlets with -Enable or -Disable parameters
@@ -29,8 +29,8 @@ $global:__phellams_devops_template = @{
         logchar_sperator       = "≈"
         logchar_sperator_color = "darkmagenta"
         logchar_sperator_format = "none"
-        sublog_spacer          = "$(" "*12)"
-        sublog_sperator        = " + "
+        sublog_spacer          = "$(" "*1)"
+        sublog_sperator        = "+ "
         message_color          = "gray"
         message_format         = "none"
         kvinc_bracket_color    = "magenta"
@@ -75,7 +75,7 @@ $global:__phellams_devops_template = @{
         param([string]$keyName, [string]$KeyValue, [string]$type)
         
         [string]$string = ''
-        $string += "$(csole -s '{' -c $global:__phellams_devops_template.utility.kvinc_bracket_color -format $global:__phellams_devops_template.utility.kvinc_bracket_format)"
+        $string += "$(csole -s '{' -c $global:__automator_devops.utility.kvinc_bracket_color -format $global:__automator_devops.utility.kvinc_bracket_format)"
 
         switch($type){
             'inf' {
@@ -92,10 +92,10 @@ $global:__phellams_devops_template = @{
             }
         }
         
-        $string += " $(csole -s $keyName -c $global:__phellams_devops_template.utility.kvinc_key_color -format $global:__phellams_devops_template.utility.kvinc_key_format) "
-        $string += "$(csole -s ':' -c $global:__phellams_devops_template.utility.kvinc_bracket_color -format $global:__phellams_devops_template.utility.kvinc_bracket_format)"
-        $string += " $(csole -s $KeyValue -c $global:__phellams_devops_template.utility.kvinc_value_color -format $global:__phellams_devops_template.utility.kvinc_value_format) "
-        $string += "$(csole -s '}' -c $global:__phellams_devops_template.utility.kvinc_bracket_color -format $global:__phellams_devops_template.utility.kvinc_bracket_format)"
+        $string += " $(csole -s $keyName -c $global:__automator_devops.utility.kvinc_key_color -format $global:__automator_devops.utility.kvinc_key_format) "
+        $string += "$(csole -s ':' -c $global:__automator_devops.utility.kvinc_bracket_color -format $global:__automator_devops.utility.kvinc_bracket_format)"
+        $string += " $(csole -s $KeyValue -c $global:__automator_devops.utility.kvinc_value_color -format $global:__automator_devops.utility.kvinc_value_format) "
+        $string += "$(csole -s '}' -c $global:__automator_devops.utility.kvinc_bracket_color -format $global:__automator_devops.utility.kvinc_bracket_format)"
 
         return $string
     }
@@ -111,7 +111,7 @@ $global:__phellams_devops_template = @{
     ConvertKvString = {
         param ([string]$Message)
 
-        $kvinc = $global:__phellams_devops_template.kvinc
+        $kvinc = $global:__automator_devops.kvinc
         $pattern = '(?<Prefix>\{(?<Level>inf|wrn|err):)?kv:(?<Key>[^=]+)=(?<Value>.*?)\}'
     
         $finalMessage = $Message
@@ -137,13 +137,13 @@ $global:__phellams_devops_template = @{
         ------------------
         Internal Logger
         Using a combination of colorconsole, [console]::write and kvinc, kvoinc, kvtinc
-            - Uses $global:__phellams_devops_template.utility.logName
-            - Uses $global:__phellams_devops_template.kvinc
+            - Uses $global:__automator_devops.utility.logName
+            - Uses $global:__automator_devops.kvinc
         Examples:
-            $global:__phellams_devops_template.interLogger.invoke('Action','Message',$false,'error')
+            $global:__automator_devops.interLogger.invoke('Action','Message',$false,'error')
             
             Using ConvertKvString with kv:Key=Value pairs
-            $global:__phellams_devops_template.interLogger.invoke('Action','This is a message with kv : Key=Value and {wrn:kv:Key=Value} and {err:kv:Key=Value}',$false,'info')
+            $global:__automator_devops.interLogger.invoke('Action','This is a message with kv : Key=Value and {wrn:kv:Key=Value} and {err:kv:Key=Value}',$false,'info')
         -
         #NOTE: The 'sublog' switch is used to indicate if this is a sublog message
         #NOTE: logname is only shown on main log messages
@@ -154,23 +154,22 @@ $global:__phellams_devops_template = @{
     interLogger = {
         param([string]$Action, [string]$Message, [switch]$sublog, [string]$type)
         
-        if($global:__phellams_devops_template.logging -eq $true) {
+        if($global:__automator_devops.logging -eq $true) {
             # Local Variables
-            $logName                 = $global:__phellams_devops_template.utility.logName
-            $logname_color           = $global:__phellams_devops_template.utility.logname_color
-            $sublog                  = $global:__phellams_devops_template.utility.sublog
-            $logchar                 = $global:__phellams_devops_template.utility.logchar
-            $logchar_color           = $global:__phellams_devops_template.utility.logchar_color
-            $logchar_format          = $global:__phellams_devops_template.utility.logchar_format
-            $logchar_sperator        = $global:__phellams_devops_template.utility.logchar_sperator
-            $logchar_sperator_color  = $global:__phellams_devops_template.utility.logchar_sperator_color
-            $logchar_sperator_format = $global:__phellams_devops_template.utility.logchar_sperator_format
-            $action_color            = $global:__phellams_devops_template.utility.action_color
-            $action_format           = $global:__phellams_devops_template.utility.action_format
-            # $message_color         = $global:__phellams_devops_template.utility.message_color
-            # $message_format        = $global:__phellams_devops_template.utility.message_format
-            $sublog_spacer           = $global:__phellams_devops_template.utility.sublog_spacer
-            $sublog_sperator         = $global:__phellams_devops_template.utility.sublog_sperator
+            $logName                 = $global:__automator_devops.utility.logName
+            $logname_color           = $global:__automator_devops.utility.logname_color
+            $logchar                 = $global:__automator_devops.utility.logchar
+            $logchar_color           = $global:__automator_devops.utility.logchar_color
+            $logchar_format          = $global:__automator_devops.utility.logchar_format
+            $logchar_sperator        = $global:__automator_devops.utility.logchar_sperator
+            $logchar_sperator_color  = $global:__automator_devops.utility.logchar_sperator_color
+            $logchar_sperator_format = $global:__automator_devops.utility.logchar_sperator_format
+            $action_color            = $global:__automator_devops.utility.action_color
+            $action_format           = $global:__automator_devops.utility.action_format
+            # $message_color         = $global:__automator_devops.utility.message_color
+            # $message_format        = $global:__automator_devops.utility.message_format
+            $sublog_spacer           = $global:__automator_devops.utility.sublog_spacer
+            $sublog_sperator         = $global:__automator_devops.utility.sublog_sperator
 
             [string]$logger_message = ''
             if (!$sublog) {
@@ -208,7 +207,7 @@ $global:__phellams_devops_template = @{
                 }
             }
             
-            $logger_message += $global:__phellams_devops_template.ConvertKvString.invoke($Message)
+            $logger_message += $global:__automator_devops.ConvertKvString.invoke($Message)
             
             # Console log the Message
             [console]::write("$logger_message `n")

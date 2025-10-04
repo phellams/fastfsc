@@ -1,102 +1,130 @@
 $phwriter_metadata_array = @(
     @{
-        Name        = $modulename;
-        version     = $moduleversion
-        Padding     = 1
-        Indent      = 1
         #CustomLogo  = $CustomLogo
-        CommandInfo = @{
+        commandinfo = @{
             cmdlet      = "Get-FolderSizeFast";
             synopsis    = "Get-FolderSizeFast [-Path <String>] [-Recurse] [-Detailed] [-Format <String>] [-Help]";
             description = "This cmdlet calculates the size of a folder quickly by leveraging .NET methods. It supports recursion, progress display, and can output results in various formats including JSON and XML.";
         }
-        ParamTable  = @(
+        paramtable  = @(
             @{
-                Name        = "Path"
-                Param       = "p|Path"
-                Type        = "string"
+                name        = "Path"
+                param       = "p|Path"
+                type        = "string"
                 required    = $true
-                Description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
-                Inline      = $false # Description on a new line
+                description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
+                inline      = $false # Description on a new line
             },
             @{
-                Name        = "Recurse"
-                Param       = "r|Recurse"
-                Type        = "switch"
+                name        = "Detailed"
+                param       = "d|Detailed"
+                type        = "switch"
                 required    = $false
-                Description = "Indicates that the operation should process subdirectories recursively."
-                Inline      = $false
+                description = "Outputs detailed information about each file and folder processed."
+                inline      = $false
             },
             @{
-                Name        = "Detailed"
-                Param       = "d|Detailed"
-                Type        = "switch"
+                name        = "format"
+                param       = "f|Format"
+                type        = "string"
                 required    = $false
-                Description = "Outputs detailed information about each file and folder processed."
-                Inline      = $false
-            },
+                description = "Specifies the output format. Supported formats are 'json' and 'xml'."
+                inline      = $false
+            }
             @{
-                Name        = "format"
-                Param       = "f|Format"
-                Type        = "string"
+                name        = "Help"
+                param       = "h|Help"
+                type        = "switch"
                 required    = $false
-                Description = "Specifies the output format. Supported formats are 'json' and 'xml'."
-                Inline      = $false
+                description = "Displays help information for the cmdlet."
+                inline      = $false
             }
         )
-        Examples    = @(
+        examples    = @(
             "Get-FolderSizeFast -Path 'C:\MyFolder' -Detailed",
-            "Get-FolderSizeFast -Path 'C:\MyFolder\*' -Recurse -ShowProgress",
-            "Get-FolderSizeFast -Path 'C:\MyFolder' -Recurse -format json",
+            "Get-FolderSizeFast -Path 'C:\MyFolder' -format json",
             "Get-FolderSizeFast -Path 'C:\MyFolder' -format xml"
         )
     },
     @{
-        Name        = $modulename;
-        version     = $moduleversion
-        Padding     = 1
-        Indent      = 1
-        #CustomLogo  = $CustomLogo
-        CommandInfo = @{
+        commandinfo = @{
             cmdlet      = "Get-FolderSizeParallel";
-            synopsis    = "Get-FolderSizeParallel [-Path <String>] [-Recurse] [-ShowProgress] [-Detailed] [-Format <String>] [-Help]";
+            synopsis    = "Get-FolderSizeParallel [-Path <String>] [-Detailed] [-Format <String>] [-Help]";
             description = "This cmdlet calculates the size of a folder using parallel processing to enhance performance. It supports recursion, progress display, and can output results in various formats including JSON and XML.";
         }
-        ParamTable  = @(
+        paramtable  = @(
             @{
-                Name        = "Path"
-                Param       = "p|Path"
-                Type        = "string"
+                name        = "Path"
+                param       = "p|Path"
+                type        = "string"
                 required    = $true
-                Description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
-                Inline      = $false # Description on a new line
+                description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
+                inline      = $false # Description on a new line
             },
             @{
-                Name        = "Recurse"
-                Param       = "r|Recurse"
-                Type        = "switch"
+                name        = "Recurse"
+                param       = "r|Recurse"
+                type        = "switch"
                 required    = $false
-                Description = "Indicates that the operation should process subdirectories recursively."
-                Inline      = $false
+                description = "Indicates that the operation should process subdirectories recursively."
+                inline      = $false
             },
             @{
-                Name        = "Detailed"
-                Param       = "d|Detailed"
-                Type        = "switch"
+                name        = "format"
+                param       = "f|Format"
+                type        = "string"
                 required    = $false
-                Description = "Outputs detailed information about each file and folder processed."
-                Inline      = $false
-            },
-            @{
-                Name        = "format"
-                Param       = "f|Format"
-                Type        = "string"
-                required    = $false
-                Description = "Specifies the output format. Supported formats are 'json' and 'xml'."
-                Inline      = $false
+                description = "Specifies the output format. Supported formats are 'json' and 'xml'."
+                inline      = $false
             }
         )
-        Examples    = @(
+        examples    = @(
+            "Get-FolderSizeParallel -Path 'C:\MyFolder'",
+            "Get-FolderSizeParallel -Path 'C:\MyFolder' -format json",
+            "Get-FolderSizeParallel -Path 'C:\MyFolder' -format xml"
+        )
+    }
+    @{
+        commandinfo = @{
+            cmdlet      = "Request-FolderReport";
+            synopsis    = "Requst-FolderReport [-Path <String>] [-Format <String>] [-Help]";
+            description = "This cmdlet generates a report of the size of a folder and can output results in various formats including JSON and XML.";
+        }
+        paramtable  = @(
+            @{
+                name        = "Path"
+                param       = "p|Path"
+                type        = "string"
+                required    = $true
+                description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
+                inline      = $false # Description on a new line
+            },
+            @{
+                name        = "Recurse"
+                param       = "r|Recurse"
+                type        = "switch"
+                required    = $false
+                description = "Indicates that the operation should process subdirectories recursively."
+                inline      = $false
+            },
+            @{
+                name        = "Detailed"
+                param       = "d|Detailed"
+                type        = "switch"
+                required    = $false
+                description = "Outputs detailed information about each file and folder processed."
+                inline      = $false
+            },
+            @{
+                name        = "format"
+                param       = "f|Format"
+                type        = "string"
+                required    = $false
+                description = "Specifies the output format. Supported formats are 'json' and 'xml'."
+                inline      = $false
+            }
+        )
+        examples    = @(
             "Get-FolderSizeParallel -Path 'C:\MyFolder' -Detailed",
             "Get-FolderSizeParallel -Path 'C:\MyFolder\*' -Recurse -ShowProgress",
             "Get-FolderSizeParallel -Path 'C:\MyFolder' -Recurse -format json",
