@@ -9,8 +9,8 @@
     "iconurl": "https://raw.githubusercontent.com/phellams/phellams-general-resources/main/logos/phellams/dist/png/phellams-logo-128x128.png",
     "phwriter_source": "https://gitlab.com/phellams/fastfsc/-/blob/main/readme.md",
     "pester_test_files": [
-        ".\cmdlets\*.psm1", 
-        ".\*.psm1"       
+        ".\\cmdlets\\*.psm1", 
+        ".\\*.psm1"       
     ], 
     "modulefiles": [
         "fastfsc.psm1",
