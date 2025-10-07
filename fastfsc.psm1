@@ -2,7 +2,9 @@ using module cmdlets\Get-FolderSizeFast.psm1
 using module cmdlets\Get-FolderSizeParallel.psm1
 using module cmdlets\Request-FolderReport.psm1
 
-$global:__fastfsc = @{}
+$global:__fastfsc = @{
+    rootpath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+}
 
 $module_config = @{
     function = @(

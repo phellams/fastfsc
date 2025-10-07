@@ -126,7 +126,7 @@ function Get-FolderSizeParallel {
     process {
 
         if ($help) {
-            New-PHWriter -JsonFile "./libs/help_metadata/get-foldersizeparallel_phwriter_metadata.json"
+            New-PHWriter -JsonFile "$($global:__fastfsc.rootpath)\libs\help_metadata\get-foldersizeparallel_phwriter_metadata.json"
             return;
         }
         if(!$Path -and !$Help) {
