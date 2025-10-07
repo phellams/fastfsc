@@ -66,7 +66,7 @@ Describe "fastfsc.Request-FolderReport" {
 
     it "Request-FolderReport | Should Return a FolderSize array" {
         # different unit mearurement
-        $result = Request-FolderReport -Path  .\dist, .\libs
+        $result = Request-FolderReport -Path  .\cmdlet, .\libs
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PSCustomObject
     }
