@@ -40,7 +40,7 @@ function Request-FolderReport {
         Write-Host "🤖≈ GENERATING FASTFSC FOLDER REPORT..."
 
         if ($help) {
-            New-Phwriter -JsonFile "./libs/help_metadata/request-folderreport_phwriter_metadata.json"
+            New-Phwriter -JsonFile "$($global:__fastfsc.rootpath)\libs\help_metadata\request-folderreport_phwriter_metadata.json"
             return;
         }
         if (!$Path -and !$Help) {

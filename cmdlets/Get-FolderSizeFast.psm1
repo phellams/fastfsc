@@ -175,7 +175,7 @@ function Get-FolderSizeFast {
     process {
         
         if ($help) {
-            New-PHWriter -JsonFile "./libs/help_metadata/get-foldersizefast_phwriter_metadata.json"
+            New-PHWriter -JsonFile "$($global:__fastfsc.rootpath)\libs\help_metadata\get-foldersizefast_phwriter_metadata.json"
             return;
         }
         if(!$Path -and !$Help) {

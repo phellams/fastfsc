@@ -269,7 +269,8 @@ function New-PHWriter {
         # Load JSON data if a JsonFile is provided
         [pscustomobject]$jsonData = $null
         if ($JsonFile) {
-            if (Test-Path $JsonFile) {
+            $jsonFile_FullPath = Get-ChildItem -Path $JsonFile | Select-Object -First 1
+            if ($null -ne $jsonFile_FullPath) {
                 try {
                     # Get Property 
                     $jsonFile_FullPath = Get-ChildItem -Path $JsonFile | Select-Object -First 1
