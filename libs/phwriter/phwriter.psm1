@@ -107,7 +107,7 @@ function New-PHWriter {
 
         # Default to the current command name props: 'ModuleName', 'Cmdlet', 'Description'
         [Parameter(Mandatory = $false, HelpMessage = "Name & Description of the cmdlet to display version information.")]
-        [hashtable]$CommandInfo, 
+        [pscustomobject]$CommandInfo, 
 
         # ParamTable is a mandatory parameter that accepts an array of hashtables.
         # Each hashtable defines a parameter for which help text will be generated.
@@ -120,17 +120,15 @@ function New-PHWriter {
         [Parameter(Mandatory = $false, HelpMessage = "Version of the cmdlet to display.")]
         [string]$Version, # Default version of the cmdlet
 
-        [Parameter(Mandatory = $false, HelpMessage = "Source repository or readme documenation for the cmdlet")]
-        [string]$source,
         # Padding specifies the number of spaces between the parameter alias/name, type, and description.
         # This helps in aligning columns for a clean look.
         [Parameter(HelpMessage = "Number of spaces for padding between columns.")]
-        [int]$Padding = 4, # Default padding of 4 spaces
+        [int]$Padding = 3, # Default padding of 4 spaces
 
         # Indent specifies the left padding for each line of the help output.
         # This indents the entire help block from the left edge of the console.
         [Parameter(HelpMessage = "Number of spaces for left indentation of each line.")]
-        [int]$Indent = 4, # Default indent of 4 spaces
+        [int]$Indent = 1, # Default indent of 4 spaces
 
         [Parameter(HelpMessage = "Sets a custom logo for the module display. If not provided, a default logo will be used.")]
         [string]$CustomLogo = $null, # Optional custom logo, if provided
@@ -148,7 +146,7 @@ function New-PHWriter {
         # Create an indentation string based on the Indent parameter.
         $indentString = " " * $Indent
         if(!$Description){$Description = "-"}
-        $phwriter_ParamTable = @(
+        $ParamTable = @(
             @{
                 name        = "Name"
                 param       = "n|Name"
@@ -231,7 +229,7 @@ function New-PHWriter {
             [console]::write("`n") # Add a new line for spacing after the
             return
         }
-
+        #TODO: examples paths with double // replace with / 
         # Load JSON data if a JsonFile is provided
         [pscustomobject]$jsonData = $null
         if ($JsonFile) {
@@ -243,7 +241,7 @@ function New-PHWriter {
                     if ($jsonData.commandinfo) { $CommandInfo = $jsonData.commandinfo } else { throw "CommandInfo is required." }
                     if ($jsonData.paramtable) { $ParamTable = $jsonData.paramtable }
                     if ($jsonData.examples) { $Examples = $jsonData.examples }
-                    if ($jsonData.version) { $Version = $jsonData.version }
+                    if ($jsonData.version  ) { $Version = $jsonData.version }
                     if ($jsonData.padding) { $Padding = $jsonData.padding }
                     if ($jsonData.indent) { $Indent = $jsonData.indent }
                     if ($jsonData.customlogo) { $CustomLogo = $jsonData.customlogo }
@@ -260,30 +258,29 @@ function New-PHWriter {
         # Fallback to default name if not provided
         if (!$name -or !$jsonfile) { $name = 'PHW' } 
         # Display the ASCII logo at the top of the help output.
-        if(!$CustomLogo -or !$JsonFile) {
-            Write-PHAsciiLogo -Name $name
-        }else{
-            Write-PHAsciiLogo -CustomLogo $CustomLogo -Name $name
-        }
+        if(!$CustomLogo -or !$JsonFile) { Write-PHAsciiLogo -Name $name}
+        else{ Write-PHAsciiLogo -CustomLogo $CustomLogo -Name $name }
 
         $section_char = "$(csole -String "◉" -color darkgreen -format bold, italic)"
+        $header_char = "$(csole -String "▶" -color darkgreen -format bold, italic)"
         
         #NOTE: change write-host to New-ColorConsole 4bit color with formatting
         # Display the module version information.
         [console]::write("$indentString $(csole -s "MODULE " -color gray) $(csole -s $Name -color cyan -bgcolor gray)")
-        [console]::write("$indentString$section_char $(csole -s "CMDLET" -color gray) $(csole -s $($CommandInfo.cmdlet) -color cyan -bgcolor gray)")
-        [console]::write("$indentString$section_char $(csole -s "VERSION" -color gray) $(csole -s "v$Version" -color DarkMagenta -bgcolor gray)")
+        [console]::write("$indentString$header_char  $(csole -s "CMDLET" -color gray) $(csole -s $($CommandInfo.cmdlet) -color cyan -bgcolor gray)")
+        [console]::write("$indentString$header_char $(csole -s "VERSION" -color gray) $(csole -s "v$Version" -color DarkMagenta -bgcolor gray)")
         [console]::write("`n`n") # Add a new line for spacing
 
         # Display the SYNOPSIS section, outlining the basic usage of the cmdlet.
-        [console]::write("$indentString$section_char$(csole -s "SYNTAX" -color Yellow -format bold,underline)`n")
-        [console]::write("$(csole -s "$indentString   $($CommandInfo.synopsis)" -color white)")
+        [console]::write("$indentString$section_char$(csole -s "SYNTAX" -color Yellow -format bold,underline)`n`n")
+        #[console]::write("$indentString $(csole -string "$($CommandInfo.synopsis)" -color white)")
+        New-Paragraph -position 100 -indent $indentString+2 -string "$(csole -s "$($CommandInfo.synopsis)" -color white)"
         [console]::write("`n`n") # Add a new line for spacing
 
         # Display a general DESCRIPTION of what this cmdlet does.
-        [console]::write("$indentString$section_char$(csole -s "DESCRIPTION" -color Yellow -format bold,underline)`n")
+        [console]::write("$indentString$section_char$(csole -s "DESCRIPTION" -color Yellow -format bold,underline)`n`n")
         #[console]::write("$(csole -s "$indentString     $($CommandInfo.description)" -color white)")
-        New-Paragraph -position 100 -indent 7 -string "$(csole -s "$($CommandInfo.description)" -color white)"
+        New-Paragraph -position 100 -indent $indentString+2 -string "$(csole -s "$($CommandInfo.description)" -color white)"
         [console]::write("`n`n") # Add a new line for spacing
 
         # Display the PARAMETERS section header.
@@ -365,14 +362,14 @@ function New-PHWriter {
         #TODO: Implement examples for cmdlet parameters
         [console]::write("$indentString$section_char$(csole -s "EXAMPLES" -color White -format bold,underline)`n")
         foreach ($example in $Examples) {
-            [console]::write("`n$indentString$(" "* 3)$(csole -s "$example" -color Gray)")
+            [console]::write("`n$indentString$(" "* 3)$(csole -s "$($example.replace("//","/"))" -color Gray)")
             # Add a new line after each example for better readability
             [console]::write("`n") # Add a new line for spacing
         }
         # Output at the end github docs LINK
         [console]::write("`n")
 
-        [console]::write("$indentString ★ Docs: $(csole -s $CommandInfo.source -format bold,underline) for more info")
+        [console]::write("$indentString ★ Docs: $(csole -s "$($CommandInfo.source)" -format bold,underline -c darkcyan) for more info")
 
         [console]::write("`n`n") # Add a new line for spacing
 
