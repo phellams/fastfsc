@@ -10,9 +10,7 @@ $ModuleConfig = Get-Content -Path ./build_config.json | ConvertFrom-Json
 $modulename = $ModuleConfig.moduleName
 #---CONFIG----------------------------
 
-$interLogger.invoke("ScriptAnalyzer", "Running Analyzer on {inf:kv:path=./dist/$modulename} ", $false, 'info')
-
-[console]::writeline("$($interLogger.invoke('sa')) Running script analyzer on $() ./dist/$modulename")
+$interLogger.invoke("ScriptAnalyzer", "Running Analyzer on {inf:kv:path=./dist/$modulename}", $false, 'info')
 
 Invoke-ScriptAnalyzer -Path ./dist/$modulename `
                       -Recurse `

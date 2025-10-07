@@ -61,7 +61,7 @@ nuget sources add -name GITGROUP_PLACE_HOLDER_REPONAME_PLACE_HOLDER -source http
 nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -version VERSION_AND_PRERELEASE_PLACE_HOLDER -Source GITGROUP_PLACE_HOLDER_REPONAME_PLACE_HOLDER
 
 # B: Install from gitlab package into user profile
-nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -Source gitlab-fastfsc PRERELEASE_GITLAB_PLACE_HOLDER -OutputDirectory $env:USERPROFILE/documents/powershell
+nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -Source gitlab-fastfsc PRERELEASE_GITLAB_PLACE_HOLDER -OutputDirectory $ENV:USERPROFILE/documents/powershell
 ```
 
 #### **Nuget direct download method**
@@ -69,17 +69,17 @@ nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -Source gitla
 Install the package from gitlab packages by using the `nuget` download and install direct to specified directory.
 
 ```powershell
-nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -version VERSION_AND_PRERELEASE_PLACE_HOLDER -source https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/nuget/index.json -OutputDirectory $env:USERPROFILE/documents/powershell
+nuget install REPONAME_PLACE_HOLDER PRERELEASE_GITLAB_PLACE_HOLDER -version VERSION_AND_PRERELEASE_PLACE_HOLDER -source https://gitlab.com/api/v4/projects/CI_PROJECT_ID/packages/nuget/index.json -OutputDirectory $ENV:USERPROFILE/documents/powershell
 ```
 
 ### Import the module
 
 Common locations for PowerShell modules:
  -  **linux**:
-    - `$path = $env:USERPROFILE/.nuget/packages`
+    - `$path = $ENV:USERPROFILE/.nuget/packages`
     - `$path = $home/.nuget/packages`
  - **Windows**
-    - `$path = $env:USERPROFILE\.nuget\packages`
+    - `$path = $ENV:USERPROFILE\.nuget\packages`
 
 🟢 ***Import the module***
 
@@ -126,7 +126,7 @@ Invoke-WebRequest -url "https://gitlab.com/GITGROUP_PLACE_HOLDER/REPONAME_PLACE_
 Install-Package -Name REPONAME_PLACE_HOLDER `
                 -RequiredVersion VERSION_AND_PRERELEASE_PLACE_HOLDER `
                 -Source "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" `
-                -Destination "$env:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER" `
+                -Destination "$ENV:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER" `
                 -Force
 
 # Import module into powershell session
@@ -149,13 +149,13 @@ Install-Package -Name REPONAME_PLACE_HOLDER `
 🚪 `REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg`
 
 ```powershell
-Invoke-WebRequest -url "https://gitlab.com/GITGROUP_PLACE_HOLDER/REPONAME_PLACE_HOLDER/-/jobs/$($ENV:CI_JOB_ID)/artifacts/raw/dist/nuget/REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" -OutFile "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg"
+Invoke-WebRequest -url "https://gitlab.com/GITGROUP_PLACE_HOLDER/REPONAME_PLACE_HOLDER/-/jobs/CI_JOB_ID/artifacts/raw/dist/nuget/REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" -OutFile "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg"
 
 # default windows install location
 # - %APPDATA%\NuGet\NuGet
 nuget install REPONAME_PLACE_HOLDER -Version VERSION_AND_PRERELEASE_PLACE_HOLDER
 
-Copy-Item -Path $env:APPDATA\NuGet\NuGet\REPONAME_PLACE_HOLDER -Destination $env:USERPROFILE\Documents\PowerShell\Modules
+Copy-Item -Path $ENV:APPDATA\NuGet\NuGet\REPONAME_PLACE_HOLDER -Destination $ENV:USERPROFILE\Documents\PowerShell\Modules
 
 Import-Module -Name REPONAME_PLACE_HOLDER
 ```
@@ -169,11 +169,11 @@ Import-Module -Name REPONAME_PLACE_HOLDER
 
 ```powershell
 # Zip
-Expand-Archive -Path "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" `
-               -DestinationPath "$env:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER"
+Expand-Archive -Path ".\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" `
+               -DestinationPath "$ENV:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER"
 
 # 7zip
-7z.exe e "\path\to\download\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" -o$env:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER
+7z.exe e ".\REPONAME_PLACE_HOLDER.VERSION_AND_PRERELEASE_PLACE_HOLDER.nupkg" -o$ENV:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER
 
 # Import the module
 Import-Module REPONAME_PLACE_HOLDER
@@ -196,7 +196,7 @@ Import-Module "C:\ProgramData\chocolatey\lib\REPONAME_PLACE_HOLDER"
 
 # or
 
-Copy-Item -Path "C:\ProgramData\chocolatey\lib\REPONAME_PLACE_HOLDER" -Destination $env:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER
+Copy-Item -Path "C:\ProgramData\chocolatey\lib\REPONAME_PLACE_HOLDER" -Destination $ENV:USERPROFILE\Documents\PowerShell\Modules\REPONAME_PLACE_HOLDER
 
 # import the module
 Import-Module REPONAME_PLACE_HOLDER
