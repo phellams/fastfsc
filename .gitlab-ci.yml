@@ -204,6 +204,7 @@ git_tag:
       artifacts: true
   script:
     - |
+      pwsh -c chmod +x ./automator-devops/scripts/release/create-tag.ps1 || exit 1
       pwsh -c ./automator-devops/scripts/release/create-tag.ps1 || exit 1
 
 # Mirror the repository to GitHub and GitLab
@@ -317,6 +318,7 @@ upload_chocolatey:
       git clone https://gitlab.com/phellams/automator-devops.git
   script:
     - |
+      bash -c chmod +x ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
       bash -c ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
       
 
