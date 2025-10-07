@@ -1,6 +1,9 @@
 using module ../cmdlets/Get-BestSizeUnit.psm1
 
 BeforeAll { 
+    # generate phwriter meta data
+    ./automator-devops/scripts/tools/generate-phwriter-metadata.ps1
+    # import module
     import-module -name ./fastfsc.psm1 -Force
 
 }
@@ -26,6 +29,13 @@ Describe "fastfsc.Get-FolderSizeFast" {
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType xml
     }
+
+    it "Should Return a help string" {
+        # help
+        $result = Get-FolderSizeFast -Help
+        $result | Should -Not -BeNullOrEmpty
+        $result | Should -BeOfType string
+    }
 }
 
 Describe "fastfsc.Get-FolderSizeFast" {
@@ -35,23 +45,23 @@ Describe "fastfsc.Get-FolderSizeFast" {
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PsCustomObject
     }
-}
-
-Describe "fastfsc.Get-FolderSizeParallel" {
     it "Get-FolderSizeParallel | Should Return a FolderSize PsCustomObject" {
         $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
         $result = Get-FolderSizeParallel -Path $folder.FullName
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PsCustomObject
     } 
-}
-
-Describe "fastfsc.Get-BestSizeUnit" {
     it "Get-BestSizeUnit | Should Return a UnitSize String" {
         $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
         $result = Get-BestSizeUnit -Bytes (Get-FolderSizeFast -Path $folder.FullName).SizeBytes
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType String
+    }
+    it "Should Return a help string" {
+        # help
+        $result = Get-FolderSizeParallel -Help
+        $result | Should -Not -BeNullOrEmpty
+        $result | Should -BeOfType string
     }
     
 }
@@ -69,7 +79,7 @@ Describe "fastfsc.Request-FolderReport" {
         $cmdlets = Get-ItemProperty -Path .\cmdlets\
         $libs = Get-ItemProperty -Path .\libs\
         Get-ItemProperty -Path .\cmdlets\
-        $result = Request-FolderReport -Path  $cmdlets.FullName, $libs.FullName
+        $result = Request-FolderReport -Path  $cmdlets.FullName, $libs.fullname
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PSCustomObject
     }
@@ -82,7 +92,7 @@ Describe "fastfsc.Request-FolderReport" {
         $result | Should -BeOfType string
     }
 
-    it "Should Return a FolderSize string" {
+    it "Should Return a help string" {
         # help
         $result = Request-FolderReport -Help
         $result | Should -Not -BeNullOrEmpty
