@@ -66,14 +66,6 @@ $phwriter_metadata_array = @(
                 inline      = $false # Description on a new line
             },
             @{
-                name        = "Recurse"
-                param       = "r|Recurse"
-                type        = "switch"
-                required    = $false
-                description = "Indicates that the operation should process subdirectories recursively."
-                inline      = $false
-            },
-            @{
                 name        = "format"
                 param       = "f|Format"
                 type        = "string"
@@ -103,14 +95,6 @@ $phwriter_metadata_array = @(
                 required    = $true
                 description = "Specifies the path of the folder to calculate its size. Wildcards are supported."
                 inline      = $false # Description on a new line
-            },
-            @{
-                name        = "Recurse"
-                param       = "r|Recurse"
-                type        = "switch"
-                required    = $false
-                description = "Indicates that the operation should process subdirectories recursively."
-                inline      = $false
             },
             @{
                 name        = "Detailed"
