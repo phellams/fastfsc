@@ -43,7 +43,7 @@ if((Test-Path -Path './phwriter-metadata.ps1')) {
         # Add indenting to each cmdlet propery
         $helpdata.indent = 1
         # Add source to each cmdlet propery
-        $helpdata.source = $source
+        $helpdata.CommandInfo.source = $source
         
         $json_output_path = "./libs/help_metadata/$($cmdlet_name.tolower())_phwriter_metadata.json"
         $helpdata  | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8

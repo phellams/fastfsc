@@ -1,3 +1,4 @@
+using module ./scripts/core/core.psm1
 [cmdletbinding()]
 param (
     [switch]$Automator,
@@ -38,7 +39,7 @@ else { New-Item -Path .\ -Name "dist" -ItemType Directory }
 # NOTE: LOCAL MACHINE ONLY WITH MODULES LOCATED IN G:\ AND /MNT/G/
 # local build on windows
 if ($isWindows -and !$Automator) {
-    $interLogger.invoke("Local-Build", "Importing local modules from G:\ {inf:kv:ARC=Windows}", $false, 'info')
+    $interLogger.invoke("Local-Build", "Importing local modules from 'G:\' {kv:ARC=Windows}", $false, 'info')
     import-module -Name G:\devspace\projects\powershell\_repos\commitfusion\; # Get-GitAutoVerion extracted and used as standalone
     import-module -name G:\devspace\projects\powershell\_repos\quicklog\;
     import-module -name G:\devspace\projects\powershell\_repos\shelldock\;
@@ -48,7 +49,7 @@ if ($isWindows -and !$Automator) {
 }
 # linux build
 if ($isLinux -and !$Automator) {
-    $interlogger.invoke("Local-Build", "Importing local modules from /mnt/g/devspace/projects/powershell/_repos/ {inf:kv:ARC=Linux}", $false, 'info')
+    $interlogger.invoke("Local-Build", "Importing local modules from /mnt/g/devspace/projects/powershell/_repos/ {kv:ARC=Linux}", $false, 'info')
     Import-Module -Name /mnt/g/devspace/projects/powershell/_repos/colorconsole/;
     import-module -Name /mnt/g/devspace/projects/powershell/_repos/commitfusion/;
     import-module -name /mnt/g/devspace/projects/powershell/_repos/quicklog/;
@@ -99,6 +100,9 @@ if ($Nuget -and !$Automator) { ./automator-devops/scripts/build/build-package-ge
 if ($ChocoNuSpec -and !$Automator) { ./automator-devops/scripts/build/Build-nuspec-choco.ps1 }
 if ($ChocoPackageWindows -and !$Automator) { ./automator-devops/scripts/wip/build-package-choco-windows.ps1 }
 if ($Phwriter) {./automator-devops/scripts/tools/generate-phwriter-metadata.ps1 }
+
+#TODO: add switch for clean up so it can be run sperately if needed
+#TODO: move run-cleanup to scripts dir
 
 ./automator-devops/run-cleanup.ps1
 

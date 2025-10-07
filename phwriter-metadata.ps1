@@ -1,3 +1,5 @@
+# COMMON params
+$source = "https://gitlab.com/phellams/fastfsc/-/blob/main/readme.md"
 $phwriter_metadata_array = @(
     @{
         #CustomLogo  = $CustomLogo
@@ -5,6 +7,7 @@ $phwriter_metadata_array = @(
             cmdlet      = "Get-FolderSizeFast";
             synopsis    = "Get-FolderSizeFast [-Path <String>] [-Recurse] [-Detailed] [-Format <String>] [-Help]";
             description = "This cmdlet calculates the size of a folder quickly by leveraging .NET methods. It supports recursion, progress display, and can output results in various formats including JSON and XML.";
+            source      = ""
         }
         paramtable  = @(
             @{
@@ -51,6 +54,7 @@ $phwriter_metadata_array = @(
             cmdlet      = "Get-FolderSizeParallel";
             synopsis    = "Get-FolderSizeParallel [-Path <String>] [-Detailed] [-Format <String>] [-Help]";
             description = "This cmdlet calculates the size of a folder using parallel processing to enhance performance. It supports recursion, progress display, and can output results in various formats including JSON and XML.";
+            source      = ""
         }
         paramtable  = @(
             @{
@@ -89,6 +93,7 @@ $phwriter_metadata_array = @(
             cmdlet      = "Request-FolderReport";
             synopsis    = "Requst-FolderReport [-Path <String>] [-Format <String>] [-Help]";
             description = "This cmdlet generates a report of the size of a folder and can output results in various formats including JSON and XML.";
+            source      = ""
         }
         paramtable  = @(
             @{
@@ -125,10 +130,9 @@ $phwriter_metadata_array = @(
             }
         )
         examples    = @(
-            "Get-FolderSizeParallel -Path 'C:\MyFolder' -Detailed",
-            "Get-FolderSizeParallel -Path 'C:\MyFolder\*' -Recurse -ShowProgress",
-            "Get-FolderSizeParallel -Path 'C:\MyFolder' -Recurse -format json",
-            "Get-FolderSizeParallel -Path 'C:\MyFolder' -format xml"
+            "Request-FolderReport -Path C:\Users\User\Desktop\* -Format xml",
+            "Request-FolderReport -Path C:\Users\User\Desktop\* -Format json",
+            "Request-FolderReport -Path C:\Users\User\Desktop\*"
         )
     }
 )

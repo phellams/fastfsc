@@ -1,46 +1,52 @@
 
 using module ../core/New-ColorConsole.psm1
 
-<# . . . . . . . . .
+# ============== NOTES FOR USE ==============
+# NOTE: Rename $global:<__automator_devops> to your module name so globals variables can work correctly
+# TODO: change $global
+# ============== NOTES FOR USE ==============
+
+<# . . . . . . . . . . . . . .
 # Global Module Hashtable object
 # Containg Functions, utilities and props
  * GLOBAL HASHTABLE MODULE OBJECT
- * - Enable Logging
- * - utility object
- * - kvtinc
- * - kvinc
- * - ConvertKvString
- * - interLogger
-<# . . . . . . . . .#>
+ * --- Enable Logging
+ * --- utility object
+ * --- kvtinc
+ * --- kvinc
+ * --- ConvertKvString
+ * --- interLogger  
+<# . . . . . . . . . . . . . .#>
 $global:__automator_devops = @{
     
     # Enable global logging
     # Set via Set-Logging Cmdlets with -Enable or -Disable parameters
     # Default is true
-    logging = $true
+    logging                     = $true
     
     # Internal Logger
-    utility = @{
-        logName                = "AUTOMATOR-DEVOPS"
-        logname_color          = "darkmagenta"
-        logchar                = "▣"
-        logchar_color          = "darkmagenta"
-        logchar_format         = "none"
-        logchar_sperator       = "≈"
-        logchar_sperator_color = "darkmagenta"
+    # Properties for UI elements
+    utility         = @{
+        logName                 = "🤖≈ AUTOMATOR-DEVOPS"
+        logname_color           = "darkmagenta"
+        logchar                 = "▣"
+        logchar_color           = "darkmagenta"
+        logchar_format          = "none"
+        logchar_sperator        = "≈"
+        logchar_sperator_color  = "darkmagenta"
         logchar_sperator_format = "none"
-        sublog_spacer          = "$(" "*1)"
-        sublog_sperator        = "+ "
-        message_color          = "gray"
-        message_format         = "none"
-        kvinc_bracket_color    = "magenta"
-        kvinc_bracket_format   = "none"
-        kvinc_key_color        = "cyan"
-        kvinc_key_format       = "none"
-        kvinc_value_color      = "gray"
-        kvinc_value_format     = "none"
-        action_color           = "white"
-        action_format          = "none"
+        sublog_spacer           = "$(" "*1)"
+        sublog_sperator         = "+ "
+        message_color           = "gray"
+        message_format          = "none"
+        kvinc_bracket_color     = "magenta"
+        kvinc_bracket_format    = "none"
+        kvinc_key_color         = "cyan"
+        kvinc_key_format        = "none"
+        kvinc_value_color       = "gray"
+        kvinc_value_format      = "none"
+        action_color            = "white"
+        action_format           = "none"
 
     }
 
@@ -78,20 +84,13 @@ $global:__automator_devops = @{
         $string += "$(csole -s '{' -c $global:__automator_devops.utility.kvinc_bracket_color -format $global:__automator_devops.utility.kvinc_bracket_format)"
 
         switch($type){
-            'inf' {
-                $string += "$(csole -s "INF" -c cyan -bgcolor gray -format bold) ≡"
-            }
-            'wrn' {
-                $string += "$(csole -s "WRN" -c black -bgcolor yellow -format bold) ≡"
-            }
-            'err' {
-                $string += "$(csole -s "ERR" -c white -bgcolor red -format bold) ≡"
-            }
-            default {
-
-            }
+            # NOTE: Add in more options
+            'inf' { $string += "$(csole -s "INF" -c cyan -bgcolor gray -format bold) ≡" }
+            'wrn' { $string += "$(csole -s "WRN" -c black -bgcolor yellow -format bold) ≡" }
+            'err' { $string += "$(csole -s "ERR" -c white -bgcolor red -format bold) ≡" }
+            default { }
         }
-        
+
         $string += " $(csole -s $keyName -c $global:__automator_devops.utility.kvinc_key_color -format $global:__automator_devops.utility.kvinc_key_format) "
         $string += "$(csole -s ':' -c $global:__automator_devops.utility.kvinc_bracket_color -format $global:__automator_devops.utility.kvinc_bracket_format)"
         $string += " $(csole -s $KeyValue -c $global:__automator_devops.utility.kvinc_value_color -format $global:__automator_devops.utility.kvinc_value_format) "
@@ -149,7 +148,8 @@ $global:__automator_devops = @{
         #NOTE: logname is only shown on main log messages
         #NOTE: Action is a short string to indicate the action being performed
         #NOTE: Message is the main message to be logged, can contain kv:Key=Value pairs for color coding
-        #NOTE: type is used to color code the message, can be 'error', 'warn', 'info', 'success'  
+        #NOTE: type is used to color code the message, can be 'error', 'warn', 'info', 'success
+        #TODO: Switch the Type and sublog and sublog can be omitted and default to false
       . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .#> 
     interLogger = {
         param([string]$Action, [string]$Message, [switch]$sublog, [string]$type)
@@ -190,21 +190,11 @@ $global:__automator_devops = @{
             $logger_message += " $(csole -s $Action -c $action_color -format $action_format) "
             
             switch ($type) {
-                'error' {
-                    $Message = csole -s $Message -c red
-                }
-                'warn' {
-                    $Message = csole -s $Message -c yellow
-                }
-                'info' {
-                    $Message = csole -s $Message -c gray
-                }
-                'success' {
-                    $Message = csole -s $Message -c green
-                }
-                default {
-                    $Message = csole -s $Message -c white
-                }
+                'error' { $Message = csole -s $Message -c red }
+                'warn' { $Message = csole -s $Message -c yellow }
+                'info' { $Message = csole -s $Message -c gray }
+                'success' { $Message = csole -s $Message -c green }
+                default { $Message = csole -s $Message -c white }
             }
             
             $logger_message += $global:__automator_devops.ConvertKvString.invoke($Message)

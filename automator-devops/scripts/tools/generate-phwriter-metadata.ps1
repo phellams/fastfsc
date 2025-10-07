@@ -27,6 +27,7 @@ $interlogger.invoke("Build", "Generating PHWriter help meta data for {kv:module=
 # Each object represents a cmdlet's help metadata which is then looped below and exported
 # as cmdlet_<cmdletname>.json in the ./libs/help_data/ folder
 
+#Note: load hashtable data from ps1 file
 . './phwriter-metadata.ps1'
 
 foreach ($helpdata in $phwriter_metadata_array) {
@@ -36,13 +37,13 @@ foreach ($helpdata in $phwriter_metadata_array) {
     # Add version to each cmdlet propery
     $helpdata.version = $moduleversion
     # Add Padding to each cmdlet propery
-    $helpdata.padding = 1
+    $helpdata.padding = 3
     # Add indenting to each cmdlet propery
-    $helpdata.indent = 0
+    $helpdata.indent = 2
     # Add source to each cmdlet propery
-    $helpdata.source = $source
+    $helpdata.CommandInfo.source = $source
 
     $json_output_path = "./libs/help_metadata/$($cmdlet_name.tolower())_phwriter_metadata.json"
     $helpdata  | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8
-    $interlogger.invoke("generated", "help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $true, 'info')
+    $interlogger.invoke("generated", "help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $false, 'info')
 }

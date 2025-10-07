@@ -15,7 +15,7 @@ A high-performance PowerShell module for calculating folder sizes using inline C
 
 - ⚡ **Ultra-fast performance** - 3-10x faster than `Get-ChildItem | Measure-Object`
 - 🔄 **Parallel processing** - Multi-threaded calculations for even better performance
-- 📊 **Multiple size units** - Automatic conversion to KB, MB, ▒GB, TB, and PB
+- 📊 **Multiple size units** - Automatic conversion to **KB**, **MB**, **GB**, **TB**, and **PB**
 - 🎯 **Smart unit selection** - `BestUnit` property shows the most readable format
 - 📈 **Detailed reporting** - File counts, folder counts, and calculation timing
 - 🛡️ **Error resilient** - Gracefully handles access denied and missing files
@@ -30,22 +30,24 @@ Phellams modules are available from [**PowerShell Gallery**](https://www.powersh
 |-|-|-|
 |📦 PSGallery | <a href="https://www.powershellgallery.com/packages/fastfsc"> <img src="https://img.shields.io/powershellgallery/v/fastfsc?label=version&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery"></a> | <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59" alt="powershellgallery-downloads"> |
 |📦 Chocolatey | <a href="https://community.chocolatey.org/packages/fastfsc/"><img src="https://img.shields.io/chocolatey/v/fastfsc?label=version&include_prereleases&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey"/></a> | <img src="https://img.shields.io/chocolatey/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&include_prereleases&labelColor=23CD5C5C&color=%231E3D59" alt="chocolatey-downloads"> |
-|💼 Releases/Tags | <a href="https://gitlab.com/phellams/fastfsc/-/releases"> <img src="https://img.shields.io/gitlab/v/release/phellams%2Ffastfsc?include_prereleases&style=flat-square&logoColor=%2300B2A9&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab-release"></a> | <a href="https://gitlab.com/phellams/fastfsc/-/tags"> <img src="https://img.shields.io/gitlab/v/tag/phellams%2Ffastfsc?include_prereleases&style=flat-square&logoColor=%&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab tags"></a> |
 
 ### Additinonal Installation Options:
+ 
+|▓▓▓▓▒▒▒▒░░░|▓▓▓▓▒▒▒▒░░░|▓▓▓▓▒▒▒▒░░░|
+|-|-|-|
+|💼 Releases/Tags | <a href="https://gitlab.com/phellams/fastfsc/-/releases"> <img src="https://img.shields.io/gitlab/v/release/phellams%2Ffastfsc?include_prereleases&style=flat-square&logoColor=%2300B2A9&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab-release"></a> | <a href="https://gitlab.com/phellams/fastfsc/-/tags"> <img src="https://img.shields.io/gitlab/v/tag/phellams%2Ffastfsc?include_prereleases&style=flat-square&logoColor=%&labelColor=%23CD5C5C&color=%231E3D59" alt="gitlab tags"></a> |
 
-🗂️  **GitLab Packages using nuget**
+#### 📦 GitLab Packages
 
-See the [**packages**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=asc&search[]=fastfsc&type=NuGet) page for installation instructions, instructions can be found in the release notes.
+Using `nuget`: See the [**packages**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=asc&search[]=fastfsc&type=NuGet) page for installation instructions.
 
-For instructions on using nuget to source module packages from gitlb see [**Releases**](https://github.com/sgkens/fastfsc/releases) artifacts.
+> For instructions on adding `nuget` **sources** packages from *GitLab* see [**Releases**](https://github.com/sgkens/fastfsc/releases) artifacts or via the [**Packages**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=name&sort=asc&search[]=fastfsc&type=NuGet) page.
 
-🗂️ **Generic Assets**
+#### 🧺 Generic Asset
 
 The latest release artifacts can be downloaded from the [**Generic Assets Artifacts**](https://gitlab.com/phellams/fastfsc/-/packages?orderBy=type&sort=desc&type=Generic) page.
 
-🗂️ **Git Clone**
-> **Note**: This method is not recommended for production use.
+#### 💾 Git Clone
 
 ```bash
 # Clone the repository
@@ -72,7 +74,7 @@ Get-FolderSizeParallel -Path "D:\LargeDataset"
 # Pipeline support
 "C:\Users", "C:\Program Files" | Get-FolderSizeFast
 ```
-## Functions
+## Functions/Cmdlets
 
 ### ♾️ `Get-FolderSizeFast`
 
@@ -129,6 +131,41 @@ BestUnit         : 5.0 TB
 CalculationTimeMs: 2847
 ```
 
+### ♾️ `Get-FolderReport`
+
+Generates a detailed report for a folder, including file counts, folder counts, and additional metrics, uses `Get-FolderSizeParallel` internally.
+
+**Parameters:**
+- `Path` (Mandatory) - The folder path to analyze
+- `Format` (Optional) - Output format: "json" or "xml"
+
+**Example Output:**
+
+```powershell
+# Generate a report
+Path               : G:\devspace\projects\powershell\
+SizeBytes          : 5325303150
+SizeMB             : 5078.6
+SizeGB             : 4.96
+FileCount          : 18745
+FolderCount        : 9136
+BestUnit           : 4.96 GB
+CalculationTimeMs  : 2277
+CalculationTimeSec : 2.28
+CalculationTimeMin : 0.04
+
+Path               : G:\devspace\projects\web\
+SizeBytes          : 5505939633
+SizeMB             : 5250.87
+SizeGB             : 5.128
+FileCount          : 92296
+FolderCount        : 14280
+BestUnit           : 5.13 GB
+CalculationTimeMs  : 3873
+CalculationTimeSec : 3.87
+CalculationTimeMin : 0.06
+```
+
 ## Usage Examples
 
 ### Basic Folder Analysis
@@ -139,10 +176,20 @@ Write-Host "Documents folder is $($result.BestUnit)"
 ```
 
 ### Batch Analysis
+
 ```powershell
 # Analyze multiple folders
 $folders = @("C:\Program Files", "C:\Program Files (x86)", "C:\Windows")
 $results = $folders | Get-FolderSizeFast | Sort-Object SizeBytes -Descending
+
+$results | Format-Table Path, BestUnit, @{Name="Files";Expression={$_.FileCount}} -AutoSize
+```
+
+### Batch Analysis  using `Get-FolderReport`
+
+```powershell
+$folders = @("C:\Program Files", "C:\Program Files (x86)", "C:\Windows")
+$results = $folders | Get-FolderReport
 
 $results | Format-Table Path, BestUnit, @{Name="Files";Expression={$_.FileCount}} -AutoSize
 ```
@@ -261,8 +308,3 @@ This code is provided as-is for educational and practical use. Feel free to modi
 
 
 <!--LINKS AND BADGES-->
-[psgal-badge-version]: https://img.shields.io/powershellgallery/v/fastfsc?label=psgallery&style=flat-square&logoColor=blue&labelColor=23CD5C5C&color=%231E3D59
-[psgal-badge-downloads]: <img src="https://img.shields.io/powershellgallery/dt/fastfsc?style=flat-square&logoColor=blue&label=downloads&labelColor=23CD5C5C&color=%231E3D59"alt="powershellgallery-downloads">
-[choco-badge-version]:
-[choco-badge-downloads]:
-

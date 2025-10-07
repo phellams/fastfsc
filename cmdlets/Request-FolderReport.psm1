@@ -37,14 +37,14 @@ function Request-FolderReport {
 
     process {
     
-        Write-Host "GENERATING FASTFSC FOLDER REPORT..."
+        Write-Host "🤖≈ GENERATING FASTFSC FOLDER REPORT..."
 
         if ($help) {
             New-Phwriter -JsonFile "./libs/help_metadata/request-folderreport_phwriter_metadata.json"
             return;
         }
         if (!$Path -and !$Help) {
-            Write-Error "Path parameter is required. Use -Help for usage information."
+            Write-Error "🤖≈ Path parameter is required. Use -Help for usage information."
             return;
         }
         

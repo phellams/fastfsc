@@ -29,7 +29,7 @@ $pesterConfig = New-PesterConfiguration -hashtable @{
   Run = @{
     #PassThru = $true
     #scriptblock = {'.\test\Test-Unit-Pester.ps1'}
-    Path     = '.\test\Test-Unit-Pester.ps1';
+    Path     = '.\test\test-unit-pester.ps1';
   }
 }
 

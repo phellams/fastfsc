@@ -60,7 +60,7 @@ pester:
   <<: *test_template
   script:
     - |
-      pwsh -c Invoke-Pester -Script ./test/Test-Unit-Pester.ps1 -CI || exit 1
+      pwsh -c Invoke-Pester -Script ./test/test-unit-pester.ps1 -CI || exit 1
 
 pester_coverage:
   <<: *test_template
@@ -85,7 +85,7 @@ psmpacker_build:
   script:
     - |
       pwsh -c ./automator-devops/scripts/build/build-module.ps1 || exit 1
-
+      
 analyzer:
   stage: build
   needs:

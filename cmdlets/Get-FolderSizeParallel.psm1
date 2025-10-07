@@ -130,13 +130,15 @@ function Get-FolderSizeParallel {
             return;
         }
         if(!$Path -and !$Help) {
-            Write-Error "Path parameter is required. Use -Help for usage information."
+            Write-Error "🤖≈ Path parameter is required. Use -Help for usage information."
             return;
         }
 
         try {
             $resolvedPath = Resolve-Path $Path -ErrorAction Stop
             $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
+
+            [console]::writeline("🤖≈ Generating <parallel> fastfsc folder report on '$Path' ...")
 
             $fileCount = 0
             $folderCount = 0
@@ -161,7 +163,7 @@ function Get-FolderSizeParallel {
             }
         }
         catch {
-            [console]::writeline("Error: $($_.Exception.Message)")
+            [console]::writeline("🤖≈ Error: $($_.Exception.Message)")
         }
         if ($Format -eq 'json') {
             return $folderstats | ConvertTo-Json -Depth 5
