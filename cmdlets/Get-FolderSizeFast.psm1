@@ -166,7 +166,7 @@ function Get-FolderSizeFast {
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('json', 'xml')]                    
-        [switch]$Format,
+        [string]$Format,
 
         [parameter(mandatory=$false)]
         [switch] $help
@@ -196,28 +196,45 @@ function Get-FolderSizeFast {
                 $size = [FastFolderSize]::GetFolderSizeWithSubfolders($resolvedPath.Path, [ref]$fileCount, [ref]$folderCount)
                 
                 $stopwatch.stop()
-                
-                [PSCustomObject]@{
-                    Path        = $resolvedPath.Path
-                    SizeBytes   = $size
-                    SizeMB      = [Math]::Round($size / 1MB, 2)
-                    SizeGB      = [Math]::Round($size / 1GB, 3)
-                    FileCount   = $fileCount
-                    FolderCount = $folderCount - 1  # Subtract 1 to exclude root folder
-                    BestUnit          = Get-BestSizeUnit -Bytes $size
-                    CalculationTimeMs = $stopwatch.ElapsedMilliseconds
+
+                $folderStats = [PSCustomObject]@{
+                    Path               = $resolvedPath.Path
+                    SizeBytes          = $size
+                    SizeMB             = [Math]::Round($size / 1MB, 2)
+                    SizeGB             = [Math]::Round($size / 1GB, 3)
+                    FileCount          = $fileCount
+                    FolderCount        = $folderCount - 1  # Subtract 1 to exclude root folder
+                    BestUnit           = Get-BestSizeUnit -Bytes $size
+                    CalculationTimeMs  = $stopwatch.ElapsedMilliseconds
                     CalculationTimeSec = [Math]::Round($stopwatch.Elapsed.TotalSeconds, 2)                              
                     CalculationTimeMin = [Math]::Round($stopwatch.Elapsed.TotalMinutes, 2)
                 }
+
+                if($Format -eq 'json') {
+                    return $folderStats | ConvertTo-Json -Depth 5   
+                }elseif($format -eq 'xml') {
+                    return $folderStats | ConvertTo-Xml -NoTypeInformation -Depth 5
+                }else{
+                    return $folderStats
+                }
+
             }
             else {
                 $size = [FastFolderSize]::GetFolderSize($resolvedPath.Path)
                 
-                [PSCustomObject]@{
+                $folderStats = [PSCustomObject]@{
                     Path      = $resolvedPath.Path
                     SizeBytes = $size
                     SizeMB    = [Math]::Round($size / 1MB, 2)
                     SizeGB    = [Math]::Round($size / 1GB, 3)
+                }
+
+                if($format -eq 'json') {
+                    return $folderStats | ConvertTo-Json -Depth 5   
+                }elseif($format -eq 'xml') {
+                    return $folderStats | ConvertTo-Xml -NoTypeInformation -Depth 5
+                }else{
+                    return $folderStats
                 }
             }
         }
