@@ -7,13 +7,25 @@ BeforeAll {
 
 Describe "fastfsc.Get-FolderSizeFast" {
 
-    it "Get-FolderSizeFast | Should Return a FolderSize PsCustomObject" {
+    it "Should Return a FolderSize PsCustomObject" {
         $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
         $result = Get-FolderSizeFast -Path $folder.FullName
         $result | Should -Not -BeNullOrEmpty
         $result | Should -BeOfType PsCustomObject
     }
+    it "-Format json | Should return json string" {
+        $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
+        $result = Get-FolderSizeFast -Path $folder.FullName -Format json
+        $result | Should -Not -BeNullOrEmpty
+        $result | Should -BeOfType string
+    }
     
+    it "-Format xml | should return xml" {
+        $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
+        $result = Get-FolderSizeFast -Path $folder.FullName -Format xml
+        $result | Should -Not -BeNullOrEmpty
+        $result | Should -BeOfType xml
+    }
 }
 
 Describe "fastfsc.Get-FolderSizeFast" {
@@ -45,21 +57,32 @@ Describe "fastfsc.Get-BestSizeUnit" {
 }
 
 Describe "fastfsc.Request-FolderReport" {
-    it "Request-FolderReport | Should Return a FolderSize PsCustomObject" {
+    it "Should Return a FolderSize PsCustomObject" {
         $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
         $result = Request-FolderReport -Path $folder.FullName
         $result | Should -Not -BeNullOrEmpty
-        $result | Should -BeOfType PsCustomObject
+        $result | Should -BeOfType PSCustomObject
+    }
 
+    it "Request-FolderReport | Should Return a FolderSize array" {
         # different unit mearurement
-        $result = Request-FolderReport -Path $folder.FullName -Format xml
+        $result = Request-FolderReport -Path  .\dist, .\libs
         $result | Should -Not -BeNullOrEmpty
-        $result | Should -BeOfType PsCustomObject
+        $result | Should -BeOfType PSCustomObject
+    }
 
+    it "Should Return a FolderSize string" {
+        # different unit mearurement
+        $folder = Get-ChildItem -Path .\ -Directory | Select-Object -First 1
+        $result = Request-FolderReport -Path $folder.FullName -Format json
+        $result | Should -Not -BeNullOrEmpty
+        $result | Should -BeOfType string
+    }
+
+    it "Should Return a FolderSize string" {
         # help
         $result = Request-FolderReport -Help
         $result | Should -Not -BeNullOrEmpty
-        $result | Should -BeOfType PsCustomObject
+        $result | Should -BeOfType string
     }
-    
 }
