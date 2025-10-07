@@ -30,6 +30,10 @@ $interlogger.invoke("Tools", "Generating PHWriter help meta data for {kv:module=
 #Note: load hashtable data from ps1 file
 . './phwriter-metadata.ps1'
 
+if((test-path ./libs/help_data)){
+    New-Item -Path ./libs/help_data -ItemType Directory
+}
+
 foreach ($helpdata in $phwriter_metadata_array) {
     $cmdlet_name = $helpdata.CommandInfo.cmdlet
     # Add Module Name
