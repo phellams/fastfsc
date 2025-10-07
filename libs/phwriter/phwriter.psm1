@@ -63,6 +63,10 @@ using module .\cmdlets\New-ColorConsole.psm1
 
 # }
 
+$script:__phwriter = @{
+    rootpath = Split-Path -Parent -Path $MyInvocation.MyCommand.Definition
+}
+
 # *=============================================
 # Function: Write-PHAsciiLogo
 # Description: Displays an ASCII art logo for the PHWriter module.
@@ -267,7 +271,9 @@ function New-PHWriter {
         if ($JsonFile) {
             if (Test-Path $JsonFile) {
                 try {
-                    $jsonData = ConvertFrom-Json $(get-content -path $JsonFile -raw) -AsHashtable
+                    # Get Property 
+                    $jsonFile_FullPath = Get-ChildItem -Path $JsonFile | Select-Object -First 1
+                    $jsonData = ConvertFrom-Json $(get-content -Path $jsonFile_FullPath.FullName -raw) -AsHashtable
                     # Override parameters with JSON data if they exist
                     if ($jsonData.name) { $Name = $jsonData.name } else { throw "Name is required." }
                     if ($jsonData.commandinfo) { $CommandInfo = $jsonData.commandinfo } else { throw "CommandInfo is required." }
