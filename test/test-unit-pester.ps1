@@ -2,7 +2,9 @@ using module ../cmdlets/Get-BestSizeUnit.psm1
 
 BeforeAll { 
     # generate phwriter meta data
-    New-Item -Path .\libs\help_metadata -ItemType Directory
+    if(!(Test-Path -Path .\libs\help_metadata)){
+        New-Item -Path .\libs\help_metadata -ItemType Directory
+    }
     ./automator-devops/scripts/tools/generate-phwriter-metadata.ps1
     # import module
     import-module -name ./fastfsc.psm1 -Force

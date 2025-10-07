@@ -10,9 +10,9 @@ default:
       - ./coverage.xml
       - ./build.env
     #expire_in: 1 week
-    # script:
-    #   - |
-    #     git clone https://gitlab.com/phellams/devops-template-powershell.git ./devops
+  before_script:
+      - |
+        git clone https://gitlab.com/phellams/automator-devops.git
 
 #---------------------------------------------
 # Define the stages of the pipeline
@@ -64,6 +64,9 @@ pester:
 
 pester_coverage:
   <<: *test_template
+  needs:
+    - job: pester
+      artifacts: false
   script:
     - |
       pwsh -c Invoke-Pester -Script ./automator-devops/scripts/test/test-pester-before-build.ps1 -CI || exit 1
