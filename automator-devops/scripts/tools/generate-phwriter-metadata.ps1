@@ -31,7 +31,7 @@ $interlogger.invoke("Tools", "Generating PHWriter help meta data for {kv:module=
 . './phwriter-metadata.ps1'
 
 if((test-path ./libs/help_data)){
-    New-Item -Path ./libs/help_data -ItemType Directory
+    New-Item -Path ./libs/help_metadata -ItemType Directory
 }
 
 foreach ($helpdata in $phwriter_metadata_array) {

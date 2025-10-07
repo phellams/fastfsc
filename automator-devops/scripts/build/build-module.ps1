@@ -33,7 +33,7 @@ if((Test-Path -Path './phwriter-metadata.ps1') -and $phwriter) {
 
     # Create help_data folder if it doest exists
     if ((test-path ./libs/help_data) -and $phwriter) {
-        New-Item -Path ./libs/help_data -ItemType Directory
+        New-Item -Path ./libs/help_metadata -ItemType Directory
     }
 
     # Load hashtable data from .ps1 meta file
