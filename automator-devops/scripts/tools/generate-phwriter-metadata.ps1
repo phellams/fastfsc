@@ -30,9 +30,9 @@ $interlogger.invoke("Tools", "Generating PHWriter help meta data for {kv:module=
 #Note: load hashtable data from ps1 file
 . './phwriter-metadata.ps1'
 
-if((test-path ./libs/help_data)){
-    New-Item -Path ./libs/help_metadata -ItemType Directory
-}
+# Creat help_data folder if it doest exists
+New-Item -Path .\libs\help_metadata -ItemType Directory
+
 
 foreach ($helpdata in $phwriter_metadata_array) {
     $cmdlet_name = $helpdata.CommandInfo.cmdlet
@@ -47,7 +47,7 @@ foreach ($helpdata in $phwriter_metadata_array) {
     # Add source to each cmdlet propery
     $helpdata.CommandInfo.source = $source
 
-    $json_output_path = "./libs/help_metadata/$($cmdlet_name.tolower())_phwriter_metadata.json"
+    $json_output_path = ".\libs\help_metadata\$($cmdlet_name.tolower())_phwriter_metadata.json"
     $helpdata  | ConvertTo-Json -Depth 5 | Out-File -FilePath $json_output_path -Force -Encoding UTF8
     $interlogger.invoke("generate", "help metadata for {kv:cmdlet=$cmdlet_name} at {kv:path=$json_output_path}", $false, 'info')
 }
