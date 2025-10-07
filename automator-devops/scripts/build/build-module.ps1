@@ -13,6 +13,7 @@ $ModuleConfig            = Get-Content -Path ./build_config.json | ConvertFrom-J
 [string[]]$ModuleFolders = $ModuleConfig.ModuleFolders
 [string[]]$ModuleExclude = $ModuleConfig.ModuleExclude
 $source                  = $ModuleConfig.phwriter_source
+$phwriter                = $ModuleConfig.phwriter
 #---CONFIG----------------------------
 
 $AutoVersion = (Get-GitAutoVersion).Version
@@ -20,7 +21,7 @@ $AutoVersion = (Get-GitAutoVersion).Version
 $interLogger.invoke("Build", "Running Build on {kv:module=$ModuleName} ", $false, 'info')
 $interLogger.invoke("Build", "Creating dist folders", $false, 'info')
 
-if((Test-Path -Path './phwriter-metadata.ps1')) {                                                                         
+if((Test-Path -Path './phwriter-metadata.ps1') -and $phwriter) {                                                                         
     $interlogger.invoke("Build", "Generating PHWriter help meta data for {kv:module=$modulename}", $false, 'info')
 
     # ps1 script to generate phwriter metadata for cmdlets
@@ -30,6 +31,12 @@ if((Test-Path -Path './phwriter-metadata.ps1')) {
     # Each object represents a cmdlet's help metadata which is then looped below and exported
     # as cmdlet_<cmdletname>.json in the ./libs/help_data/ folder
 
+    # Create help_data folder if it doest exists
+    if ((test-path ./libs/help_data) -and $phwriter) {
+        New-Item -Path ./libs/help_data -ItemType Directory
+    }
+
+    # Load hashtable data from .ps1 meta file
     . './phwriter-metadata.ps1'
 
     foreach ($helpdata in $phwriter_metadata_array) {
