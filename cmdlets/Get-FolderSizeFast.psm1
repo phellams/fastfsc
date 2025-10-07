@@ -184,6 +184,9 @@ function Get-FolderSizeFast {
         }
 
         try {
+
+            [console]::writeline("🤖≈ Generating fastfsc folder report on '$Path' ...")
+
             $resolvedPath = Resolve-Path $Path -ErrorAction Stop
             $stopwatch = [System.Diagnostics.Stopwatch]::StartNew()
 
@@ -219,7 +222,7 @@ function Get-FolderSizeFast {
             }
         }
         catch {
-            Write-Error "Error calculating folder size for '$Path': $($_.Exception.Message)"
+            Write-Error "🤖≈ Error calculating folder size for '$Path': $($_.Exception.Message)"
         }
     }
 }
