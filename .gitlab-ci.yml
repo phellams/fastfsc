@@ -102,7 +102,6 @@ analyzer:
       git fetch --all
   script:
     - |
-      chmod +x ./automator-devops/scripts/test/test-sa-before-build.ps1
       pwsh -c ./automator-devops/scripts/test/test-sa-before-build.ps1
 
 # psgallery, gitlab, github, proget(psgallery,nuget)
@@ -157,7 +156,6 @@ mono_chocolatey_package:
       when: on_success
   script:
     - |
-      chmod +x ./automator-devops/scripts/build/build-package-choco.sh || exit 1
       bash -c ./automator-devops/scripts/build/build-package-choco.sh || exit 1
 
 zip_build:
@@ -318,7 +316,6 @@ upload_chocolatey:
     - docker
   script:
     - |
-      chmod +x ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
       bash -c ./automator-devops/scripts/deploy/deploy-choco.sh || exit 1
       
 
